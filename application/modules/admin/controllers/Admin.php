@@ -823,30 +823,33 @@ public function ManageDepartments(){
  
 public function VaccancyList(){
 
-		$Hrms_Session=$this->session->userdata('logged_in');  
- 		// echo "<pre>"; print_r($Hrms_Session); exit;
- 		if(isset($Hrms_Session) && !empty($Hrms_Session))
-		{	
-			//Get current URL (bid/CreateBids)
+    $Hrms_Session = $this->session->userdata('logged_in');  
+
+    if (isset($Hrms_Session) && !empty($Hrms_Session))
+    {	
+        $roleId = isset($Hrms_Session['EmpRoleId']) ? $Hrms_Session['EmpRoleId'] : null;
+        $roleRow = $this->db->select('RoleName')->from('emproles')->where('Erid', $roleId)->get()->row_array();
+        $roleName = !empty($roleRow) ? strtolower($roleRow['RoleName']) : '';
+
+        if ($roleName === 'hiring manager' || $roleId == 9) {
+            $this->session->set_flashdata('error', 'Hiring Managers do not have access to the Vacancy List page.');
+            redirect($this->config->item('base_url') . 'admin/RequestedResources');
+            return;
+        }  
+
         $currentUrl = strtolower(uri_string());
+        $data['currentUrlArray'] = $this->admin_model->getBreadcrumb($currentUrl);
+        $data['vaclist'] = $this->admin_model->get_VaccancyList();	
+        $data['department'] = $this->admin_model->getUserDepartments();
 
-       			 //Fetch breadcrumb data
-       			 $data['currentUrlArray'] = $this->admin_model->getBreadcrumb($currentUrl);
-       	 
-       	 		  $data['vaclist'] = $this->admin_model->get_VaccancyList();	
-       			  $data['department'] = $this->admin_model->getUserDepartments();
-				 // echo"<pre>";print_r( $data['vaclist']); exit;
-				$this->template->write_view('content', 'admin/VaccancyList', $data);
-				$this->template->render();
-       
-		} else
-		{
-		$this->session->set_flashdata('error','Invalid Session.Please Login Again..!!');
-			redirect($this->config->item('base_url')."admin/index");
-		}
-
+        $this->template->write_view('content', 'admin/VaccancyList', $data);
+        $this->template->render();
+    } else {
+        $this->session->set_flashdata('error', 'Invalid Session.Please Login Again..!!');
+        redirect($this->config->item('base_url') . "admin/index");
+    }
 }
- 
+
 public function searchLocation()
 {
 	$Hrms_Session=$this->session->userdata('logged_in');  
@@ -977,6 +980,50 @@ public function saveVacancy(){
     $Hrms_Session = $this->session->userdata('logged_in');
 
     if (isset($Hrms_Session) && !empty($Hrms_Session)) {
+
+        $roleId = isset($Hrms_Session['EmpRoleId']) ? $Hrms_Session['EmpRoleId'] : null;
+        $roleRow = $this->db->select('RoleName')->from('emproles')->where('Erid', $roleId)->get()->row_array();
+        $roleName = !empty($roleRow) ? strtolower($roleRow['RoleName']) : '';
+        $approverId = $this->input->post('approverId');
+
+        // If submitted by Hiring Manager OR if an Approver is selected, route to Resource Request workflow
+        if ($roleName === 'hiring manager' || !empty($approverId)) {
+            $count = $this->db->count_all("resource_requests") + 1;
+            $requestCode = "RR-" . date("Y") . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+
+            $reqData = [
+                "RequestCode"          => $requestCode,
+                "JobTitle"             => trim($this->input->post('jobTitle')),
+                "FunctionalRole"       => trim($this->input->post('role')),
+                "Did"                  => (int)$this->input->post('department'),
+                "NoofOpenings"         => (int)($this->input->post('positions') ? $this->input->post('positions') : 1),
+                "PositionType"         => $this->input->post('positionType') ? $this->input->post('positionType') : "New Position",
+                "ExpMin"               => (int)$this->input->post('expMin'),
+                "ExpMax"               => (int)$this->input->post('expMax'),
+                "SalMin"               => (int)($this->input->post('salaryMin') ? $this->input->post('salaryMin') : 0),
+                "SalMax"               => (int)($this->input->post('salaryMax') ? $this->input->post('salaryMax') : 0),
+                "RecruitmentStartDate" => $this->input->post('recruitmentStartDate') ? $this->input->post('recruitmentStartDate') : null,
+                "TargetOnboardingDate" => $this->input->post('targetOnboardingDate') ? $this->input->post('targetOnboardingDate') : null,
+                "ReasonForRequirement" => "",
+                "JobDescription"       => trim($this->input->post('JD')),
+                "Responsibilities"     => trim($this->input->post('RR')),
+                "RequestedBy"          => $Hrms_Session['IUid'],
+                "ApproverId"           => (int)$approverId,
+                "Status"               => "PENDING APPROVAL",
+                "CreatedAt"            => date("Y-m-d H:i:s")
+            ];
+
+            $requestId = $this->admin_model->insertResourceRequest($reqData);
+            if ($requestId) {
+                $this->_sendResourceRequestEmailToApprover($requestId);
+                $this->session->set_flashdata('true', 'Resource Request submitted successfully and sent for approval.');
+            } else {
+                $this->session->set_flashdata('error', 'Failed to submit Resource Request.');
+            }
+
+            redirect($this->config->item('base_url') . 'admin/RequestedResources');
+            return;
+        }
 
         $jobTitle   = trim($this->input->post('jobTitle'));
         $department = $this->input->post('department');

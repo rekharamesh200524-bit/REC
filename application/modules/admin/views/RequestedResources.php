@@ -41,7 +41,7 @@
       <div class="card-header d-flex align-items-center justify-content-between">
         <h3 class="card-title font-weight-bold mb-0"><i class="fas fa-list-alt mr-2"></i>Resource Requests List</h3>
         <div class="card-tools ml-auto">
-          <button type="button" class="btn btn-primary btn-sm" id="openRequestResourcePanel">
+          <button type="button" class="btn btn-sm btn-warning font-weight-bold" id="openRequestResourcePanel">
             <i class="fas fa-plus-circle mr-1"></i> Request Resource
           </button>
         </div>

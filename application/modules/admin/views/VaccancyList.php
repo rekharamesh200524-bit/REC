@@ -20,7 +20,7 @@
                       <h3 class="card-title mb-0"></h3>
 
                       <a class="btn btn-sm btn-warning" id="openVacancyPanel">
-                          <i class="fas fa-briefcase"></i> Add New Job
+                          <i class="fas fa-plus-circle"></i> Request Resource
                       </a>
                   </div>
               </div>
@@ -294,25 +294,24 @@
   </div>
 
   <!-- Right Side Panel -->
+    <!-- Right Side Panel -->
   <div id="vacancyPanel" class="right-form">
       <div class="right-form-header">
-          <h5>Create Vacancy</h5>
+          <h5>Request Resource</h5>
           <button type="button" class="close-btn" id="closeVacancyPanel">&times;</button>
       </div>
 
       <div class="right-form-body">
-        
           <div class="row">
               <div class="col-md-12">
-                  <div class="card card-default">
+                  <div class="card card-default shadow-none border-0">
                       <div class="card-header">
-                          <h3 class="card-title">Job Details</h3>
+                          <h3 class="card-title font-weight-bold">Job Details</h3>
                       </div>
                       <form action="<?= base_url('admin/saveVacancy') ?>" method="post">
                           <div class="card-body p-0">
                               <div class="bs-stepper">
                                   <div class="bs-stepper-header" role="tablist">
-                                      <!-- your steps here -->
                                       <div class="step" data-target="#logins-part">
                                           <button type="button" class="step-trigger" role="tab" aria-controls="logins-part" id="logins-part-trigger">
                                               <span class="bs-stepper-circle">1</span>
@@ -323,19 +322,20 @@
                                       <div class="step" data-target="#information-part">
                                           <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
                                               <span class="bs-stepper-circle">2</span>
-                                              <span class="bs-stepper-label">SALARY INFO</span>
+                                              <span class="bs-stepper-label">SALARY & DATES</span>
                                           </button>
                                       </div>
                                       <div class="line"></div>
                                       <div class="step" data-target="#skill-part">
                                           <button type="button" class="step-trigger" role="tab" aria-controls="skill-part" id="skill-part-trigger">
                                               <span class="bs-stepper-circle">3</span>
-                                              <span class="bs-stepper-label">SKILL INFO</span>
+                                              <span class="bs-stepper-label">SKILL & DETAILS</span>
                                           </button>
                                       </div>
                                   </div>
-                                  <div class="bs-stepper-content">
-                                      <!-- your steps content here -->
+                                  
+                                  <div class="bs-stepper-content mt-3">
+                                      <!-- STEP 1: JOB INFO -->
                                       <div id="logins-part" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
                                           <div class="form-group">
                                               <label class="text-label">Job Title*</label>
@@ -353,7 +353,7 @@
                                                   <option value="">Select Department</option>
                                                   <?php foreach ($department as $d): ?>
                                                       <option value="<?= $d['Did'] ?>">
-                                                          <?= $d['Departmentname'] ?>
+                                                          <?= htmlspecialchars($d['Departmentname']) ?>
                                                       </option>
                                                   <?php endforeach; ?>
                                               </select>
@@ -370,69 +370,52 @@
                                           </div>
 
                                           <div class="form-group">
+                                              <label class="text-label">Position Type <span class="text-danger">*</span></label>
+                                              <select name="positionType" id="positionType" class="form-control" required>
+                                                  <option value="New Position">New Position</option>
+                                                  <option value="Replacement">Replacement</option>
+                                              </select>
+                                          </div>
+
+                                          <div class="form-group">
+                                              <label class="text-label">Approver Name <span class="text-danger">*</span></label>
+                                              <select name="approverId" id="approverId" class="form-control" required>
+                                                  <option value="">Select Approver</option>
+                                                  <?php 
+                                                  $approverList = $this->admin_model->getApproverUsers();
+                                                  if (!empty($approverList)):
+                                                      foreach ($approverList as $app): ?>
+                                                          <option value="<?= $app['IUid'] ?>"><?= htmlspecialchars($app['EmpName']) ?> (<?= htmlspecialchars($app['RoleName'] ? $app['RoleName'] : 'Approver') ?>)</option>
+                                                      <?php endforeach; 
+                                                  endif; ?>
+                                              </select>
+                                          </div>
+
+                                          <div class="form-group">
                                               <label class="text-label">Work Mode*</label>
                                               <input type="hidden" name="workMode" id="work_mode" required>
-
                                               <div class="d-flex gap-2">
-                                                  <span class="work-mode badge badge-pill badge-outline-primary"
-                                                      data-value="Onsite">
-                                                      Onsite
-                                                  </span>
-
-                                                  <span class="work-mode badge badge-pill badge-outline-success"
-                                                      data-value="Remote">
-                                                      Remote
-                                                  </span>
-
-                                                  <span class="work-mode badge badge-pill badge-outline-info"
-                                                      data-value="Hybrid">
-                                                      Hybrid
-                                                  </span>
+                                                  <span class="work-mode badge badge-pill badge-outline-primary" data-value="Onsite">Onsite</span>
+                                                  <span class="work-mode badge badge-pill badge-outline-success" data-value="Remote">Remote</span>
+                                                  <span class="work-mode badge badge-pill badge-outline-info" data-value="Hybrid">Hybrid</span>
                                               </div>
                                           </div>
 
                                           <div class="form-group">
                                               <label class="text-label">Employment Type*</label>
                                               <input type="hidden" name="employmentType" id="employment_type" required>
-
-
                                               <div class="d-flex flex-wrap gap-2">
-                                                  <span class="emp-type badge badge-pill badge-outline-primary"
-                                                      data-value="Full-Time">
-                                                      Full-Time
-                                                  </span>
-
-                                                  <span class="emp-type badge badge-pill badge-outline-warning"
-                                                      data-value="Part-Time">
-                                                      Part-Time
-                                                  </span>
-
-                                                  <span class="emp-type badge badge-pill badge-outline-secondary"
-                                                      data-value="Contract">
-                                                      Contract
-                                                  </span>
-
-                                                  <span class="emp-type badge badge-pill badge-outline-dark"
-                                                      data-value="Internship">
-                                                      Internship
-                                                  </span>
+                                                  <span class="emp-type badge badge-pill badge-outline-primary" data-value="Full-Time">Full-Time</span>
+                                                  <span class="emp-type badge badge-pill badge-outline-warning" data-value="Part-Time">Part-Time</span>
+                                                  <span class="emp-type badge badge-pill badge-outline-secondary" data-value="Contract">Contract</span>
+                                                  <span class="emp-type badge badge-pill badge-outline-dark" data-value="Internship">Internship</span>
                                               </div>
                                           </div>
-                                          <div class="form-group">
-                                              <label>Expiry Date:*</label>
-                                              <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                                  <input type="text"
-                                                      name="ExpiryDate"
-                                                      id="expiryDate"
-                                                      class="form-control datetimepicker-input"
-                                                      data-target="#reservationdate" />
-                                                  <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                                  </div>
-                                              </div>
-                                          </div>
-                                          <button class="btn btn-primary" onclick="stepper.next()">Next</button>
+
+                                          <button type="button" class="btn btn-primary" onclick="stepper.next()">Next <i class="fas fa-arrow-right ml-1"></i></button>
                                       </div>
+
+                                      <!-- STEP 2: DATES & LOCATION -->
                                       <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
                                           <div class="form-group">
                                               <label>Location*</label>
@@ -444,6 +427,7 @@
                                               </div>
                                               <div class="chip-container mt-2" id="jobLocationChips"></div>
                                           </div>
+
                                           <div class="form-group">
                                               <div class="row">
                                                   <div class="col-md-6">
@@ -452,7 +436,6 @@
                                                           <option value="">Min</option>
                                                       </select>
                                                   </div>
-
                                                   <div class="col-md-6">
                                                       <label class="text-label">Max Experience*</label>
                                                       <select id="expMax" name="expMax" class="form-control" required>
@@ -461,23 +444,20 @@
                                                   </div>
                                               </div>
                                           </div>
+
                                           <div class="form-group">
                                               <div class="row">
                                                   <div class="col-md-6">
-                                                      <label class="text-label">Min Salary*</label>
-                                                      <select id="salaryMin" name="salaryMin" class="form-control" required>
-                                                          <option value="">Min Salary</option>
-                                                      </select>
+                                                      <label class="text-label">Recruitment Start Date</label>
+                                                      <input type="date" name="recruitmentStartDate" id="recruitmentStartDate" class="form-control">
                                                   </div>
-
                                                   <div class="col-md-6">
-                                                      <label class="text-label">Max Salary*</label>
-                                                      <select id="salaryMax" name="salaryMax" class="form-control" required>
-                                                          <option value="">Max Salary</option>
-                                                      </select>
+                                                      <label class="text-label">Target Onboarding Date</label>
+                                                      <input type="date" name="targetOnboardingDate" id="targetOnboardingDate" class="form-control">
                                                   </div>
                                               </div>
                                           </div>
+
                                           <div class="form-group">
                                               <label>Education*</label>
                                               <div class="position-relative">
@@ -489,19 +469,17 @@
                                               <div class="chip-container mt-2" id="educationChips"></div>
                                           </div>
 
-                                          <button class="btn btn-primary" onclick="stepper.previous()">Previous</button>
-                                          <button class="btn btn-primary" onclick="stepper.next()">Next</button>
-
+                                          <button type="button" class="btn btn-secondary mr-1" onclick="stepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
+                                          <button type="button" class="btn btn-primary" onclick="stepper.next()">Next <i class="fas fa-arrow-right ml-1"></i></button>
                                       </div>
+
+                                      <!-- STEP 3: SKILL & DESCRIPTION -->
                                       <div id="skill-part" class="content" role="tabpanel" aria-labelledby="skill-part-trigger">
-                                          <!-- text input -->
                                           <div class="form-group">
                                               <label class="text-label">Positions*</label>
                                               <div class="quantity-cart">
-                                                  <span class="qty-btn minus">−</span>
-
+                                                  <span class="qty-btn minus">-</span>
                                                   <input type="text" class="qty-input" id="positions" name="positions" value="1" inputmode="numeric" pattern="[0-9]*" required>
-
                                                   <span class="qty-btn plus">+</span>
                                               </div>
                                           </div>
@@ -516,6 +494,7 @@
                                               </div>
                                               <div class="chip-container mt-2" id="skillsChips"></div>
                                           </div>
+
                                           <div class="form-group">
                                               <label>Communication Language*</label>
                                               <div class="position-relative">
@@ -526,6 +505,7 @@
                                               </div>
                                               <div class="chip-container mt-2" id="languageChips"></div>
                                           </div>
+
                                           <div class="form-group">
                                               <label>Job Description*</label>
                                               <textarea name="JD" id="JD" class="form-control" rows="4" placeholder="Enter job description" required></textarea>
@@ -536,79 +516,21 @@
                                               <textarea name="RR" id="RR" class="form-control" rows="4" placeholder="Enter roles and responsibilities" required></textarea>
                                           </div>
 
-                                          <!-- ATS Score Breakdown Section -->
-                                          <div class="card card-outline card-success mt-4">
-                                              <div class="card-header">
-                                                  <h5 class="card-title mb-0 font-weight-bold text-success">ATS Score Breakdown</h5>
-                                              </div>
-                                              <div class="card-body p-3">
-                                                  <div class="row">
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Skills Match</label>
-                                                          <input type="number" name="SkillScore" class="form-control ats-score-input" min="0" value="50" required>
-                                                      </div>
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Education Match</label>
-                                                          <input type="number" name="EducationScore" class="form-control ats-score-input" min="0" value="20" required>
-                                                      </div>
-                                                  </div>
-                                                  <div class="row">
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Experience Match</label>
-                                                          <input type="number" name="ExperienceScore" class="form-control ats-score-input" min="0" value="20" required>
-                                                      </div>
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Projects & Achievements</label>
-                                                          <input type="number" name="ProjectScore" class="form-control ats-score-input" min="0" value="5" required>
-                                                      </div>
-                                                  </div>
-                                                  <div class="row">
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Certifications</label>
-                                                          <input type="number" name="CertificationScore" class="form-control ats-score-input" min="0" value="10" required>
-                                                      </div>
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Resume Quality</label>
-                                                          <input type="number" name="ResumeQualityScore" class="form-control ats-score-input" min="0" value="5" required>
-                                                      </div>
-                                                  </div>
-                                                  <div class="row">
-                                                      <div class="col-md-6 form-group">
-                                                          <label class="text-label">Role Fit / Domain Knowledge</label>
-                                                          <input type="number" name="DomainKnowledgeScore" class="form-control ats-score-input" min="0" value="5" required>
-                                                      </div>
-                                                  </div>
-                                                  <hr class="my-2">
-                                                  <div class="d-flex justify-content-between align-items-center">
-                                                      <h6 class="mb-0 font-weight-bold">Total ATS Marks:</h6>
-                                                      <span class="h5 text-success font-weight-bold total-ats-marks">115</span>
-                                                  </div>
-                                              </div>
-                                          </div>
-
-                                          <button type="button" class="btn btn-primary" onclick="stepper.previous()">Previous</button>
-                                          <!-- <button class="btn btn-primary" onclick="stepper.previous()">Previous</button> -->
-                                          <!--  <button type="button" onclick="alert(document.getElementById('education').value)">
-        Test Education Value
-    </button> -->
-                                          <button type="submit" class="btn btn-primary">Submit</button>
+                                          <button type="button" class="btn btn-secondary mr-1" onclick="stepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
+                                          <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane mr-1"></i> Submit</button>
                                       </div>
+
                                   </div>
                               </div>
                           </div>
-                          <!-- /.card-body -->
                       </form>
                   </div>
-                  <!-- /.card -->
               </div>
           </div>
-         
-
       </div>
+  </div>
 
-      <!-- edit start -->
-
-      <div id="editVacancyPanel" class="right-form">
+<div id="editVacancyPanel" class="right-form">
           <form id="editVacancyForm" action="<?= base_url('admin/updateVacancy') ?>" method="post">
 
               <input type="hidden" name="jid" id="edit_jid">
