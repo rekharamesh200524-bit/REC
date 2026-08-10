@@ -1,0 +1,1529 @@
+
+============================
+2026-08-06 11:12:22 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '3'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 11:12:22 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND3_20260806111222678.pdf
+    [vacancy] => 3
+)
+
+==============================
+2026-08-06 11:12:22 | PDF_EXTRACT_SUCCESS
+1	
+ASHOK.E	NO 898,NEITHAL NAGAR	
+ashokelancheliyan@gmail.com
++91 8675724116	
+SARAFOJI COLLEGE MAIN ROAD, 
+THANJAVUR-613005
+TAMIL NADU.	
+CAREER	OBJECTIVE	
+To become a successful professional in a globally reputed company and to achieve the
+objectives of the company with honesty and fairness while co ntinuously upgrading my
+knowledge and skills
+EDUCATIONALQUALIFICATION	
+Aggregate	Percentag	
+e	
+M	onth	&	
+Year	College/Institute	University/	
+Board	Qualification	
+61	61	May 2018	Anjalai AmmalMahalingam Engineering 
+college	AnnaUniversity	BE -
+CSE	
+65	65	April
+2014	Shanmugha PolytechnicCollege	DOTE	
+Diploma inComputer 
+Technology	
+70	70	March2011	Kamala SubramaniamMatriculation Higher 
+Secondary School	Matriculation	SSLC
+FIELD	OFINTEREST	: Testing and Networking	
+SKILLS	: Programming Language - HTML	
+PROJECT	DETAILS	
+DIPLOM	A	PROJECT	:“Solvingpatientm	edicalproblem	online”	
+Technology	: Java, SQL	
+Description	
+In this project we developed a health care environmentwhere clinical guidelines 
+==============================
+2026-08-06 11:12:22 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 11:12:22 | RAW_RESUME_TEXT
+1	
+ashok.e	no 898,neithal nagar	
+ashokelancheliyan@gmail.com
++91 8675724116	
+sarafoji college main road, 
+thanjavur-613005
+tamil nadu.	
+career	objective	
+to become a successful professional in a globally reputed company and to achieve the
+objectives of the company with honesty and fairness while co ntinuously upgrading my
+knowledge and skills
+educationalqualification	
+aggregate	percentag	
+e	
+m	onth	&	
+year	college/institute	university/	
+board	qualification	
+61	61	may 2018	anjalai ammalmahalingam engineering 
+college	annauniversity	be -
+cse	
+65	65	april
+2014	shanmugha polytechniccollege	dote	
+diploma incomputer 
+technology	
+70	70	march2011	kamala subramaniammatriculation higher 
+secondary school	matriculation	sslc
+field	ofinterest	: testing and networking	
+skills	: programming language - html	
+project	details	
+diplom	a	project	:“solvingpatientm	edicalproblem	online”	
+technology	: java, sql	
+description	
+in this project we developed a health care environmentwhere clinical guidelines were
+developed to assist healthcare practitioners to take decis ion on patient’s medical
+problems and as such they communicate with external applica tions to retrieve patient
+data to initiate medical actions through clinical workflow s and transmit information
+
+2	
+preventing wider deployment of clinical guidelines because each deployment requires a
+tedious custom adaptation phase.
+engineering	project	:generatingqueryfacetsusingknowledgebases	
+technology:	
+front end - visual studio, asp.net back end	
+-	sql server 2008	
+description	
+we propose a systematic solution, which we refer to as qdmine r, to automatically mine
+query facets by extracting and grouping frequent lists from free text, html tags and
+repeat regions within top search results. experimental res ults show that a large number
+of lists do exist and useful query facets can be mined by qdmin er. we further analyze
+the problem of list duplication and find better query facets can be mined by modeling
+fine-grained similarities b
+==============================
+2026-08-06 11:12:22 | Email
+ashokelancheliyan@gmail.com
+==============================
+2026-08-06 11:12:22 | name
+Ashok.e No
+==============================
+2026-08-06 11:12:22 | mobileno
++91 8675724116
+==============================
+2026-08-06 11:12:22 | expyrs
+3
+==============================
+2026-08-06 11:12:22 | Input skills
+
+==============================
+2026-08-06 11:12:22 | Skills
+Array
+(
+)
+
+============================
+2026-08-06 11:12:22 | vacancy
+Array
+(
+    [Jid] => 3
+    [JobCode] => #IHRMS-202606-0002
+    [JobTitle] => Frontend Developer
+    [RoleSummary] => Frontend Developer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Remote
+    [EducationRequired] => bca,btech,bsc
+    [ExpMin] => 6
+    [ExpMax] => 13
+    [SalMin] => 12
+    [SalMax] => 25
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => rekha
+    [Responsibilities] => nbheeg
+    [Qualifications] => bca,btech,bsc
+    [JobLocation] => chennai
+    [CommunicationLang] => english
+    [PostedOn] => 2026-06-26 14:53:28
+    [UpdatedOn] => 2026-06-26 15:37:24
+    [ExpiryDate] => 1970-01-01
+    [PostedBy] => 1
+    [SkillScore] => 50
+    [EducationScore] => 15
+    [ExperienceScore] => 10
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-06 11:12:22 | FINAL RESULT RETURN
+Array
+(
+    [score] => 15
+    [status] => Rejected
+    [email] => ashokelancheliyan@gmail.com
+    [name] => Ashok.e No
+    [mobileNumbers] => +91 8675724116
+    [expyrs] => 3
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Healthcare
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 11:12:40 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '3'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 11:12:40 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND3_20260806111240447.pdf
+    [vacancy] => 3
+)
+
+==============================
+2026-08-06 11:12:40 | PDF_EXTRACT_SUCCESS
+Keerthika S	| 9942345878 |keerthishanmugam	@gmail.com	                                                              	                                                                	
+1      	 	
+ 
+Keerthika S                                  	 	
+ 9942345878 	| keerthishanmugam@gmail.com	 	
+  
+Profile	 	 	
+ 
+   I strive to use automation testing tools to test software programs by coding automated test 
+scripts to ensure quality of product and effective value that meets customers' expectations.	  	
+ 
+Objective	 	 	
+ 
+With a strong technical	 skill	-set in automated test tools for online applications including Selenium 	
+Java  and  Cucumber  I  utilize  the  selenium/WebDriver  framework  for  proficient  bug  tracking	 and 	
+troubleshooting to implement smooth tests for the timely delivery of s	ervice	. 	
+ 
+Schola	stics	 Portfolio	 	
+ 	
+ME 	–Applied Electronics	 	
+Period	: 2011	-2013 (with 83.5% aggregate)	 	
+Institute	: Mahendra Institute of Technology,Tiruchengode	 	
+ 	
+ 	
+BE 	– Ele
+==============================
+2026-08-06 11:12:40 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 11:12:40 | RAW_RESUME_TEXT
+keerthika s	| 9942345878 |keerthishanmugam	@gmail.com	                                                              	                                                                	
+1      	 	
+ 
+keerthika s                                  	 	
+ 9942345878 	| keerthishanmugam@gmail.com	 	
+  
+profile	 	 	
+ 
+   i strive to use automation testing tools to test software programs by coding automated test 
+scripts to ensure quality of product and effective value that meets customers' expectations.	  	
+ 
+objective	 	 	
+ 
+with a strong technical	 skill	-set in automated test tools for online applications including selenium 	
+java  and  cucumber  i  utilize  the  selenium/webdriver  framework  for  proficient  bug  tracking	 and 	
+troubleshooting to implement smooth tests for the timely delivery of s	ervice	. 	
+ 
+schola	stics	 portfolio	 	
+ 	
+me 	–applied electronics	 	
+period	: 2011	-2013 (with 83.5% aggregate)	 	
+institute	: mahendra institute of technology,tiruchengode	 	
+ 	
+ 	
+be 	– electrical and communication engineering	 	
+period	: 2007	-2011 (with 87.8% aggregate)	 	
+institute	: mahendra	 institute of technology,tiruchengode	 	
+ 
+higher secondary school (hsc)	 	
+period	: 2006 	– 2007 (with 84.75% aggregate)	 	
+institute	: st joseph girls higher secondary school,dindigul.	 	
+ 
+secondary school leaving certificate (sslc)	 	
+period	: 2004	-2005 (with 88% aggregate)	 	
+institute: annamalaiar girls higher secondary school , dindigul.	 	
+ 
+career details	 	
+ 	
+assistant professor(ece dept)	 	
+period: 2016 	- 2018	 	
+organization: vsb engineering college,karur.
+
+keerthika s	| 9942345878 |keerthishanmugam	@gmail.com	                                                              	                                                                	
+2      	 	
+ 
+skills acquired	 	
+ 	
+✓ manual testing	 	
+✓ automation testing	 	
+✓ knowledge of automated  test tools for online applications including selenium java and 
+cucumber	 	
+✓ able to test, troubleshoot and analyze 
+==============================
+2026-08-06 11:12:40 | Email
+keerthishanmugam@gmail.com
+==============================
+2026-08-06 11:12:40 | name
+Keerthika S
+==============================
+2026-08-06 11:12:40 | mobileno
+9942345878
+==============================
+2026-08-06 11:12:40 | expyrs
+0
+==============================
+2026-08-06 11:12:40 | Input skills
+
+==============================
+2026-08-06 11:12:40 | Skills
+Array
+(
+)
+
+============================
+2026-08-06 11:12:40 | vacancy
+Array
+(
+    [Jid] => 3
+    [JobCode] => #IHRMS-202606-0002
+    [JobTitle] => Frontend Developer
+    [RoleSummary] => Frontend Developer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Remote
+    [EducationRequired] => bca,btech,bsc
+    [ExpMin] => 6
+    [ExpMax] => 13
+    [SalMin] => 12
+    [SalMax] => 25
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => rekha
+    [Responsibilities] => nbheeg
+    [Qualifications] => bca,btech,bsc
+    [JobLocation] => chennai
+    [CommunicationLang] => english
+    [PostedOn] => 2026-06-26 14:53:28
+    [UpdatedOn] => 2026-06-26 15:37:24
+    [ExpiryDate] => 1970-01-01
+    [PostedBy] => 1
+    [SkillScore] => 50
+    [EducationScore] => 15
+    [ExperienceScore] => 10
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-06 11:12:40 | FINAL RESULT RETURN
+Array
+(
+    [score] => 15
+    [status] => Rejected
+    [email] => keerthishanmugam@gmail.com
+    [name] => Keerthika S
+    [mobileNumbers] => 9942345878
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 11:49:17 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '5'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 11:49:17 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND5_20260806114917538.pdf
+    [vacancy] => 5
+)
+
+==============================
+2026-08-06 11:49:17 | PDF_EXCEPTION
+Object list not found. Possible secured file.
+==============================
+2026-08-06 11:49:17 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 11:49:17 | RAW_RESUME_TEXT
+
+==============================
+2026-08-06 11:49:17 | Email
+
+==============================
+2026-08-06 11:49:17 | name
+
+==============================
+2026-08-06 11:49:17 | mobileno
+Array
+(
+)
+
+==============================
+2026-08-06 11:49:17 | expyrs
+0
+==============================
+2026-08-06 11:49:17 | Input skills
+html, javascript
+==============================
+2026-08-06 11:49:17 | Skills
+Array
+(
+    [0] => html
+    [1] =>  javascript
+)
+
+============================
+2026-08-06 11:49:17 | vacancy
+Array
+(
+    [Jid] => 5
+    [JobCode] => #IHRMS-202606-0003
+    [JobTitle] => Backend Developer 
+    [RoleSummary] => Team Lead
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => BCA
+    [ExpMin] => 6
+    [ExpMax] => 15
+    [SalMin] => 16
+    [SalMax] => 28
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => backend roles 
+    [Responsibilities] => eeee
+    [Qualifications] => BCA
+    [JobLocation] => Chennai
+    [CommunicationLang] => English,Hindi,Tamil
+    [PostedOn] => 2026-06-30 15:16:16
+    [UpdatedOn] => 2026-06-30 15:16:16
+    [ExpiryDate] => 2026-06-17
+    [PostedBy] => 1
+    [SkillScore] => 10
+    [EducationScore] => 20
+    [ExperienceScore] => 20
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => html, javascript
+)
+
+============================
+
+============================
+2026-08-06 11:49:17 | FINAL RESULT RETURN
+Array
+(
+    [score] => 0
+    [status] => Rejected
+    [email] => 
+    [name] => 
+    [mobileNumbers] => Array
+        (
+        )
+
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => 
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 0
+            [certifications] => 0
+            [resume_quality] => 0
+            [domain_knowledge] => 0
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 11:49:35 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '5'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 11:49:35 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND5_20260806114935836.pdf
+    [vacancy] => 5
+)
+
+==============================
+2026-08-06 11:49:35 | PDF_EXCEPTION
+Object list not found. Possible secured file.
+==============================
+2026-08-06 11:49:35 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 11:49:35 | RAW_RESUME_TEXT
+
+==============================
+2026-08-06 11:49:35 | Email
+
+==============================
+2026-08-06 11:49:35 | name
+
+==============================
+2026-08-06 11:49:35 | mobileno
+Array
+(
+)
+
+==============================
+2026-08-06 11:49:35 | expyrs
+0
+==============================
+2026-08-06 11:49:35 | Input skills
+html, javascript
+==============================
+2026-08-06 11:49:35 | Skills
+Array
+(
+    [0] => html
+    [1] =>  javascript
+)
+
+============================
+2026-08-06 11:49:35 | vacancy
+Array
+(
+    [Jid] => 5
+    [JobCode] => #IHRMS-202606-0003
+    [JobTitle] => Backend Developer 
+    [RoleSummary] => Team Lead
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => BCA
+    [ExpMin] => 6
+    [ExpMax] => 15
+    [SalMin] => 16
+    [SalMax] => 28
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => backend roles 
+    [Responsibilities] => eeee
+    [Qualifications] => BCA
+    [JobLocation] => Chennai
+    [CommunicationLang] => English,Hindi,Tamil
+    [PostedOn] => 2026-06-30 15:16:16
+    [UpdatedOn] => 2026-06-30 15:16:16
+    [ExpiryDate] => 2026-06-17
+    [PostedBy] => 1
+    [SkillScore] => 10
+    [EducationScore] => 20
+    [ExperienceScore] => 20
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => html, javascript
+)
+
+============================
+
+============================
+2026-08-06 11:49:35 | FINAL RESULT RETURN
+Array
+(
+    [score] => 0
+    [status] => Rejected
+    [email] => 
+    [name] => 
+    [mobileNumbers] => Array
+        (
+        )
+
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => 
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 0
+            [certifications] => 0
+            [resume_quality] => 0
+            [domain_knowledge] => 0
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 12:12:46 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '3'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 12:12:46 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND3_20260806121246456.pdf
+    [vacancy] => 3
+)
+
+==============================
+2026-08-06 12:12:46 | PDF_EXCEPTION
+Object list not found. Possible secured file.
+==============================
+2026-08-06 12:12:46 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 12:12:46 | RAW_RESUME_TEXT
+
+==============================
+2026-08-06 12:12:46 | Email
+
+==============================
+2026-08-06 12:12:46 | name
+
+==============================
+2026-08-06 12:12:46 | mobileno
+Array
+(
+)
+
+==============================
+2026-08-06 12:12:46 | expyrs
+0
+==============================
+2026-08-06 12:12:46 | Input skills
+
+==============================
+2026-08-06 12:12:46 | Skills
+Array
+(
+)
+
+============================
+2026-08-06 12:12:46 | vacancy
+Array
+(
+    [Jid] => 3
+    [JobCode] => #IHRMS-202606-0002
+    [JobTitle] => Frontend Developer
+    [RoleSummary] => Frontend Developer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Remote
+    [EducationRequired] => bca,btech,bsc
+    [ExpMin] => 6
+    [ExpMax] => 13
+    [SalMin] => 12
+    [SalMax] => 25
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => rekha
+    [Responsibilities] => nbheeg
+    [Qualifications] => bca,btech,bsc
+    [JobLocation] => chennai
+    [CommunicationLang] => english
+    [PostedOn] => 2026-06-26 14:53:28
+    [UpdatedOn] => 2026-06-26 15:37:24
+    [ExpiryDate] => 1970-01-01
+    [PostedBy] => 1
+    [SkillScore] => 50
+    [EducationScore] => 15
+    [ExperienceScore] => 10
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-06 12:12:46 | FINAL RESULT RETURN
+Array
+(
+    [score] => 0
+    [status] => Rejected
+    [email] => 
+    [name] => 
+    [mobileNumbers] => Array
+        (
+        )
+
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => 
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 0
+            [certifications] => 0
+            [resume_quality] => 0
+            [domain_knowledge] => 0
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 12:13:04 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '3'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 12:13:04 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND3_20260806121304636.pdf
+    [vacancy] => 3
+)
+
+==============================
+2026-08-06 12:13:04 | PDF_EXTRACT_SUCCESS
+AJAY YOGESH     S                                                                                        
+Email Id : ajayyogesh03@gmail.com   
+Mobile : +91 8667579360       
+OBJECTIVE:   
+     - My goal is to build a successful career as a Soft ware Tester, Which can help my company and    
+me personally.	
+ 	
+    
+SKILL SUMMARY:  
+      - 	
+Good knowledge on  Core java 1.7 concepts.	 	
+- Knowledge on various phases of  SDLC and STLC.	 	
+- Knowledge on various  Test levels.	 	
+- Knowledge on both Manual and Automation testing.	 	
+- Knowledge on various  Testing Techniques.	 	
+- Knowledge on Automation testing using  Selenium & Java.	 
+     EDUCATIONAL QUALIFICATIONS: 	
+   
+ 
+EDUCTIONAL QUALIFICATIONS 
+   PROJECTS:	 	
+-  DME  – Auto centring four jaw chuck 
+-   BE ( mini project)- Design and fabrication of agricultur e multi-sprayer. 
+-   BE (final year project)- Marking and surveying by drone.   	
+DEGREE/COURS
+E 	
+INSTITUTE 	UNIVERSITY/BO
+ARD  	
+Year of 
+Passing 	
+Aggregate 	
+BE( 
+MEC
+==============================
+2026-08-06 12:13:04 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 12:13:04 | RAW_RESUME_TEXT
+ajay yogesh     s                                                                                        
+email id : ajayyogesh03@gmail.com   
+mobile : +91 8667579360       
+objective:   
+     - my goal is to build a successful career as a soft ware tester, which can help my company and    
+me personally.	
+ 	
+    
+skill summary:  
+      - 	
+good knowledge on  core java 1.7 concepts.	 	
+- knowledge on various phases of  sdlc and stlc.	 	
+- knowledge on various  test levels.	 	
+- knowledge on both manual and automation testing.	 	
+- knowledge on various  testing techniques.	 	
+- knowledge on automation testing using  selenium & java.	 
+     educational qualifications: 	
+   
+ 
+eductional qualifications 
+   projects:	 	
+-  dme  – auto centring four jaw chuck 
+-   be ( mini project)- design and fabrication of agricultur e multi-sprayer. 
+-   be (final year project)- marking and surveying by drone.   	
+degree/cours
+e 	
+institute 	university/bo
+ard  	
+year of 
+passing 	
+aggregate 	
+be( 
+mechanical) 	st.joseph’s col lege of 
+engineering and  technology 
+,thanjavur. 	 
+anna 
+university 	 
+2020 	 
+6.91cgpa   	
+dme 	
+ramya sathianathan 
+polytechnic college, 
+pudupatti, thanjavur. 	directorate of 	
+technical education  
+ 	2017 	84.9% 	
+hsc 	kalyanam sundaram 
+hr,sec,school. thanjavur.  	state board 	2015 	73.2%
+
+experience:  
+    - 	
+unitech plasto comp. pvt ltd. – 12months 
+ 	
+   software skills:- 
+ 
+      - operating system      :      windows 7,10  
+      - testing tools         :  selenium   
+      - programming language    :  java  
+      - frameworks         :  data driven, page object model, junit , testng. 
+      - source code management    :  git  
+      - documentation      :  ms office 
+ 
+ 
+    personal strength:  
+    
+        - optimistic  
+        - adaptable  
+        - flexible work ability  
+        - willingness to work as a team 
+    
+   personal information: 
+  
+          name   :    ajay yogesh s 
+           father’s name   :    stanli 
+          la
+==============================
+2026-08-06 12:13:04 | Email
+ajayyogesh03@gmail.com
+==============================
+2026-08-06 12:13:04 | name
+Ajay Yogesh S
+==============================
+2026-08-06 12:13:04 | mobileno
++91 8667579360
+==============================
+2026-08-06 12:13:04 | expyrs
+0
+==============================
+2026-08-06 12:13:04 | Input skills
+
+==============================
+2026-08-06 12:13:04 | Skills
+Array
+(
+)
+
+============================
+2026-08-06 12:13:04 | vacancy
+Array
+(
+    [Jid] => 3
+    [JobCode] => #IHRMS-202606-0002
+    [JobTitle] => Frontend Developer
+    [RoleSummary] => Frontend Developer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Remote
+    [EducationRequired] => bca,btech,bsc
+    [ExpMin] => 6
+    [ExpMax] => 13
+    [SalMin] => 12
+    [SalMax] => 25
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => rekha
+    [Responsibilities] => nbheeg
+    [Qualifications] => bca,btech,bsc
+    [JobLocation] => chennai
+    [CommunicationLang] => english
+    [PostedOn] => 2026-06-26 14:53:28
+    [UpdatedOn] => 2026-06-26 15:37:24
+    [ExpiryDate] => 1970-01-01
+    [PostedBy] => 1
+    [SkillScore] => 50
+    [EducationScore] => 15
+    [ExperienceScore] => 10
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-06 12:13:04 | FINAL RESULT RETURN
+Array
+(
+    [score] => 10
+    [status] => Rejected
+    [email] => ajayyogesh03@gmail.com
+    [name] => Ajay Yogesh S
+    [mobileNumbers] => +91 8667579360
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => 
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 0
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 12:48:48 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '1'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 12:48:48 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND1_20260806124848441.pdf
+    [vacancy] => 1
+)
+
+==============================
+2026-08-06 12:48:48 | PDF_EXTRACT_SUCCESS
+ARUN KUMAR	 R 	+91	 70105	-43627	 	
+arunkumarkumar7222@gmail.com	 	
+ 
+ 	
+Professional	 Summary:	 	
+ 	Having  2.6  years  of  programming  experience  as  an	 Oracle  SQL  &  PL/SQL	 Developer  in  the 	
+Analysis,  Design  and  Implementation	 of  Business  Applications  using  the  Oracle  Relational 	
+Database Management System (RDBMS).	 	
+ 	Experience  in  creating  database  schema  objects  such  as 	Tables,  Views,  Sequences, 	
+Synonyms 	and 	Index	. 	
+ 	Expertise  in  using 	DDL  (Data  Define  Language),  DML  (Data  Manipula	tion  Language),  DCL 	
+(Data Control Language), and TCL (Transaction Control Language) 	commands.	 	
+ 	Strong  knowledge  in  writing  complex  queries  which  include 	Joins,  Sub  query,  Group 	
+Functions, Set Operators, Pseudo Columns and Analytical Functions.	 	
+ 	Having	 knowle	dge of	 creating	 Simple	 Views,	 Complex	 Views	 and	 Materialized	 Views	. 	
+ 	Involved in loading data flat files into Oracle tables using 	SQL Loader.	 
+==============================
+2026-08-06 12:48:48 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-06 12:48:48 | RAW_RESUME_TEXT
+arun kumar	 r 	+91	 70105	-43627	 	
+arunkumarkumar7222@gmail.com	 	
+ 
+ 	
+professional	 summary:	 	
+ 	having  2.6  years  of  programming  experience  as  an	 oracle  sql  &  pl/sql	 developer  in  the 	
+analysis,  design  and  implementation	 of  business  applications  using  the  oracle  relational 	
+database management system (rdbms).	 	
+ 	experience  in  creating  database  schema  objects  such  as 	tables,  views,  sequences, 	
+synonyms 	and 	index	. 	
+ 	expertise  in  using 	ddl  (data  define  language),  dml  (data  manipula	tion  language),  dcl 	
+(data control language), and tcl (transaction control language) 	commands.	 	
+ 	strong  knowledge  in  writing  complex  queries  which  include 	joins,  sub  query,  group 	
+functions, set operators, pseudo columns and analytical functions.	 	
+ 	having	 knowle	dge of	 creating	 simple	 views,	 complex	 views	 and	 materialized	 views	. 	
+ 	involved in loading data flat files into oracle tables using 	sql loader.	 	
+ 	developed	 complex	 database	 objects	 like	 stored	 procedures,	 functions,	 packages	 and	 	
+triggers	 using	 sql	 and	 pl/sql.	 	
+ 	have  good  knowledge  in 	cursor 	implementation  and 	exception  handling 	to  handle  errors	 	
+in pl/sql subprograms.	 	
+ 	involved  in  advance  pl/sql  constructs  like 	collections  (index  by  table,  nested  table  and 	
+varray).	 	
+ 	basic  knowledge  in 	bulk  collect  (forall,  limit,  bu	lk  exception  handling) 	to  improve 	
+the performance of multi	-row queries by reducing the context switching.	 	
+ 	having	 basic	 knowledge	 in performance	 tuning	 by	 analyzing	 explain	 plan.	 	
+ 
+work	 experience	 	
+working	 as a software	 engineer	 at thincle	soft	 technologies	, chennai	 from 	oct	 2019	 to	 	
+till	 date	. 	
+ 
+ 
+tools	 used	 	
+database	 	: oracle 11g, 12c (sql and pl/sql) 	 	
+client	-side tool	 	 : 	sql	 developer	, sql plus, 	and	 pl/sql	 developer 	 	
+ticket tracking	 	: jira	 	
+version	 control	 	: 	svn	 	
+oth
+==============================
+2026-08-06 12:48:48 | Email
+arunkumarkumar7222@gmail.com
+==============================
+2026-08-06 12:48:48 | name
+Arun Kumar R
+==============================
+2026-08-06 12:48:48 | mobileno
+Array
+(
+)
+
+==============================
+2026-08-06 12:48:48 | expyrs
+0
+==============================
+2026-08-06 12:48:48 | Input skills
+
+==============================
+2026-08-06 12:48:48 | Skills
+Array
+(
+)
+
+============================
+2026-08-06 12:48:48 | vacancy
+Array
+(
+    [Jid] => 1
+    [JobCode] => #IHRMS-202606-0001
+    [JobTitle] => Executive
+    [RoleSummary] => HR Generalist
+    [Did] => 3
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Graduate,Certificate
+    [ExpMin] => 2
+    [ExpMax] => 4
+    [SalMin] => 3
+    [SalMax] => 5
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => Candidates Resumes Screening
+Employee Engagement
+BGV
+
+    [Responsibilities] => Screening Candidates
+Interview Sceduling
+Database Management
+Grevience Redressal
+Policy Adherence
+Exit Management
+    [Qualifications] => Graduate,Certificate
+    [JobLocation] => Chennai
+    [CommunicationLang] => English,Hindi,Tamil
+    [PostedOn] => 2026-06-19 16:28:14
+    [UpdatedOn] => 2026-08-06 12:44:42
+    [ExpiryDate] => 2026-06-30
+    [PostedBy] => 1
+    [SkillScore] => 50
+    [EducationScore] => 20
+    [ExperienceScore] => 5
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-06 12:48:48 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => arunkumarkumar7222@gmail.com
+    [name] => Arun Kumar R
+    [mobileNumbers] => Array
+        (
+        )
+
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 10
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-06 17:31:07 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '3'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-06 17:31:07 | START
+Array
+(
+    [resumePath] => /var/www/html/atscheck/modal/CAND3_20260806173107160.pdf
+    [vacancy] => 3
+)
+
+==============================
+2026-08-06 17:31:07 | PDF_EXTRACT_SUCCESS
+Page 	1 of 	3 	
+ 
+DHANASEKAR P	 	
+Email	:  dhana202603@gmail.com	 	
+Mobile	: +91 7010162258	 	
+ 
+                                                                                                                             	                                         	 	
+Objectives & Career 	Goals	 	
+ 
+Having 2+ years of experience as a Software Testing Engineer possessing hands	-on testing in Web Applications, Mobile 	
+Applications & iOS Applications.	 	
+ 
+Technical Skills	 	
+ 
+Operating Systems: 	- Windows,Linux	 	
+Key skills: 	- Manual Testing	 	
+ 
+Professional 	Experience	  	
+ 
+MedPlus Health Services Limited	. (June	 202	2 to 	Till Date	) 	
+Testing Engineer	 	
+ 
+Project Name:	 MedPlusMart	  	
+Role: 	Manual Testing	 	
+Test Environment: 	Web Application,Android	 	
+ 
+Description:	 MedPlus	 Mart App is a comprehensive medical App where you can not only order medicines 	
+but also read important information about the medicines you take, their alternatives or substitutes, 
+precautions and th
+==============================
+2026-08-06 17:31:07 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => august 2021
+                    [to] => may	 2022
+                    [years] => 0
+                    [months] => 9
+                )
+
+            [1] => Array
+                (
+                    [from] => february 2020
+                    [to] => august 2021
+                    [years] => 1
+                    [months] => 6
+                )
+
+        )
+
+    [total] => 2 Years 3 Months
+)
+
+==============================
+2026-08-06 17:31:07 | RAW_RESUME_TEXT
+page 	1 of 	3 	
+ 
+dhanasekar p	 	
+email	:  dhana202603@gmail.com	 	
+mobile	: +91 7010162258	 	
+ 
+                                                                                                                             	                                         	 	
+objectives & career 	goals	 	
+ 
+having 2+ years of experience as a software testing engineer possessing hands	-on testing in web applications, mobile 	
+applications & ios applications.	 	
+ 
+technical skills	 	
+ 
+operating systems: 	- windows,linux	 	
+key skills: 	- manual testing	 	
+ 
+professional 	experience	  	
+ 
+medplus health services limited	. (june	 202	2 to 	till date	) 	
+testing engineer	 	
+ 
+project name:	 medplusmart	  	
+role: 	manual testing	 	
+test environment: 	web application,android	 	
+ 
+description:	 medplus	 mart app is a comprehensive medical app where you can not only order medicines 	
+but also read important information about the medicines you take, their alternatives or substitutes, 
+precautions and their side effects. medicine delivery is restricted to stat	es where medplus operates, but you 	
+can order other otc & health products, nutrition, baby care, diabetes care and personal care products from 
+across many regions & cities in india.	 	
+ 
+responsibilities:	 	
+ preparing test case, test scenario based on the requirem	ent document.	 	
+ logging the defects on 	bugzilla	, assigning the defects to concerned developer.	 	
+ involved in functionality testing, performance testing, regression testing, smoke test.	 	
+ retesting production defects, closing of defects & preparing daily and 	weekly reports.	 	
+ 
+ 
+kalyani meditimes pvt ltd. 	(august 2021 to 	may	 2022)	 	
+testing engineer	 	
+ 
+project name:	 hospital rx 	 	
+role: 	manual testing	 	
+test environment: 	web application, ios, android.	  	
+ 
+description:	 	
+meditimes	 hospital rx application provides an easy	-to-use interface that gives the 	doctors	 the 	ability to prescribe a 	
+prescription to a patient and it can 	
+==============================
+2026-08-06 17:31:07 | Email
+dhana202603@gmail.com
+==============================
+2026-08-06 17:31:07 | name
+Page
+==============================
+2026-08-06 17:31:07 | mobileno
++91 7010162258
+==============================
+2026-08-06 17:31:07 | expyrs
+2
+==============================
+2026-08-06 17:31:07 | Input skills
+
+==============================
+2026-08-06 17:31:07 | Skills
+Array
+(
+)
+
+============================
+2026-08-06 17:31:07 | vacancy
+Array
+(
+    [Jid] => 3
+    [JobCode] => #IHRMS-202606-0002
+    [JobTitle] => Frontend Developer
+    [RoleSummary] => Frontend Developer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Remote
+    [EducationRequired] => bca,btech,bsc
+    [ExpMin] => 6
+    [ExpMax] => 13
+    [SalMin] => 12
+    [SalMax] => 25
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => rekha
+    [Responsibilities] => nbheeg
+    [Qualifications] => bca,btech,bsc
+    [JobLocation] => chennai
+    [CommunicationLang] => english
+    [PostedOn] => 2026-06-26 14:53:28
+    [UpdatedOn] => 2026-06-26 15:37:24
+    [ExpiryDate] => 1970-01-01
+    [PostedBy] => 1
+    [SkillScore] => 50
+    [EducationScore] => 15
+    [ExperienceScore] => 10
+    [ProjectScore] => 5
+    [CertificationScore] => 10
+    [ResumeQualityScore] => 5
+    [DomainKnowledgeScore] => 5
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-06 17:31:07 | FINAL RESULT RETURN
+Array
+(
+    [score] => 15
+    [status] => Rejected
+    [email] => dhana202603@gmail.com
+    [name] => Page
+    [mobileNumbers] => +91 7010162258
+    [expyrs] => 2
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => august 2021
+                            [to] => may	 2022
+                            [years] => 0
+                            [months] => 9
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => february 2020
+                            [to] => august 2021
+                            [years] => 1
+                            [months] => 6
+                        )
+
+                )
+
+            [total] => 2 Years 3 Months
+        )
+
+    [domain] => Healthcare
+    [matched_skills] => 
+    [education_match] => No
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 0
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================

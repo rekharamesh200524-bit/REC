@@ -1,0 +1,18 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2026-03-09 14:54:16 --> Severity: error --> Exception: Too few arguments to function Admin::viewResume(), 0 passed in C:\xampp\htdocs\ihrms\system\core\CodeIgniter.php on line 532 and exactly 1 expected C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 2221
+ERROR - 2026-03-09 14:54:52 --> Severity: error --> Exception: Too few arguments to function Admin::viewResume(), 0 passed in C:\xampp\htdocs\ihrms\system\core\CodeIgniter.php on line 532 and exactly 1 expected C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 2221
+ERROR - 2026-03-09 14:56:44 --> Severity: error --> Exception: Too few arguments to function Admin::viewResume(), 0 passed in C:\xampp\htdocs\ihrms\system\core\CodeIgniter.php on line 532 and exactly 1 expected C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 2221
+ERROR - 2026-03-09 10:55:44 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:55:45 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:55:45 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:55:45 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:57:02 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:57:03 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:57:04 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:57:05 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:57:05 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 10:57:06 --> Severity: error --> Exception: syntax error, unexpected '$data' (T_VARIABLE), expecting function (T_FUNCTION) or const (T_CONST) C:\xampp\htdocs\ihrms\application\modules\admin\controllers\Admin.php 1701
+ERROR - 2026-03-09 14:22:01 --> Severity: Warning --> mysqli::real_connect(): (HY000/2002): No connection could be made because the target machine actively refused it.
+ C:\xampp\htdocs\ihrms\system\database\drivers\mysqli\mysqli_driver.php 203
+ERROR - 2026-03-09 14:22:01 --> Unable to connect to the database
