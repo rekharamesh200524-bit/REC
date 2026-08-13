@@ -113,17 +113,20 @@ if(!empty($Candidatelist)) {
                             } elseif($result == 'on hold') {
                                 $badge_class = 'badge-warning';
                                 $left_border_color = 'border-warning';
+                            } elseif($result == 'rescheduled') {
+                                $badge_class = 'badge-warning text-dark';
+                                $left_border_color = 'border-warning';
                             }
                         ?>
-                            <a href="javascript:void(0)" class="list-group-item list-group-item-action border-left border-right-0 border-top-0 border-bottom-0 py-3" style="border-left-width: 4px !important; border-left-style: solid !important; border-bottom: 1px solid #e9ecef !important;" onclick="openInterviewDetail('<?= addslashes($iv['Fullname']) ?>', '<?= addslashes($iv['Email']) ?>', '<?= addslashes($iv['PhoneNo']) ?>', '<?= addslashes($iv['JobTitle']) ?>', '<?= $iv['ScheduledAt'] ?>', '<?= $iv['InterviewRound'] ?>', '<?= addslashes($iv['Result'] ?? 'Assigned') ?>')">
+                            <a href="javascript:void(0)" class="list-group-item list-group-item-action border-left border-right-0 border-top-0 border-bottom-0 py-3" style="border-left-width: 4px !important; border-left-style: solid !important; border-bottom: 1px solid #e9ecef !important; <?= $result === 'rescheduled' ? 'background-color: #fff9e6;' : '' ?>" onclick="openInterviewDetail('<?= addslashes($iv['Fullname']) ?>', '<?= addslashes($iv['Email']) ?>', '<?= addslashes($iv['PhoneNo']) ?>', '<?= addslashes($iv['JobTitle']) ?>', '<?= $iv['ScheduledAt'] ?>', '<?= $iv['InterviewRound'] ?>', '<?= addslashes($iv['Result'] ?? 'Assigned') ?>')">
                                 <div class="d-flex w-100 justify-content-between align-items-center mb-1">
                                     <h5 class="mb-0 font-weight-bold text-dark" style="font-size: 14px;"><?= htmlspecialchars($iv['Fullname']) ?></h5>
-                                    <span class="badge <?= $badge_class ?>"><?= htmlspecialchars($iv['Result'] ?? 'Assigned') ?></span>
+                                    <span class="badge <?= $badge_class ?>"><?= htmlspecialchars(!empty($iv['Result']) ? $iv['Result'] : 'Assigned') ?></span>
                                 </div>
                                 <p class="mb-2 text-muted small"><i class="fas fa-briefcase mr-1"></i> <?= htmlspecialchars($iv['JobTitle']) ?></p>
                                 <div class="d-flex w-100 justify-content-between align-items-center small">
-                                    <span class="text-primary font-weight-bold">
-                                        <i class="far fa-calendar-alt mr-1"></i> <?= $date_str ?> at <?= $time_str ?>
+                                    <span class="<?= $result === 'rescheduled' ? 'text-warning' : 'text-primary' ?> font-weight-bold">
+                                        <i class="far fa-calendar-alt mr-1"></i> <?= $result === 'rescheduled' ? '<del class="text-muted">' . $date_str . ' at ' . $time_str . '</del>' : ($date_str . ' at ' . $time_str) ?>
                                     </span>
                                     <span class="text-muted">Round <?= $iv['InterviewRound'] ?? 1 ?></span>
                                 </div>
@@ -174,10 +177,11 @@ if(!empty($Candidatelist)) {
 function openInterviewDetail(candidateName, email, phone, jobTitle, scheduledAtStr, round, result) {
     var resultBadge = '';
     var r = (result || 'Assigned').toLowerCase();
-    if(r === 'selected')    resultBadge = '<span class="badge badge-success">'  + result + '</span>';
-    else if(r === 'rejected') resultBadge = '<span class="badge badge-danger">' + result + '</span>';
-    else if(r === 'on hold')  resultBadge = '<span class="badge badge-warning">'+ result + '</span>';
-    else                      resultBadge = '<span class="badge badge-primary">Assigned</span>';
+    if(r === 'selected')          resultBadge = '<span class="badge badge-success">' + result + '</span>';
+    else if(r === 'rejected')     resultBadge = '<span class="badge badge-danger">'  + result + '</span>';
+    else if(r === 'on hold')      resultBadge = '<span class="badge badge-warning">' + result + '</span>';
+    else if(r === 'rescheduled')   resultBadge = '<span class="badge badge-warning text-dark"><i class="fas fa-history mr-1"></i>Rescheduled</span>';
+    else                          resultBadge = '<span class="badge badge-primary">Assigned</span>';
 
     var timeStr = 'Not Scheduled';
     if(scheduledAtStr) {

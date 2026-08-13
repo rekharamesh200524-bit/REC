@@ -193,12 +193,23 @@
                                     if ($parentIcon === 'fa-dashboard') {
                                         $parentIcon = 'fa-tachometer-alt';
                                     }
-                                    if (!empty($parentIcon)) {
+                                    if (empty($parentIcon)) {
+                                        $pNameLower = strtolower($parent['MenuName'] ?? '');
+                                        if (strpos($pNameLower, 'vaccancy') !== false || strpos($pNameLower, 'vacancy') !== false || strpos($pNameLower, 'resource') !== false) {
+                                            $parentIcon = 'fas fa-briefcase';
+                                        } elseif (strpos($pNameLower, 'administration') !== false || strpos($pNameLower, 'admin') !== false) {
+                                            $parentIcon = 'fas fa-cogs';
+                                        } elseif (strpos($pNameLower, 'interview') !== false) {
+                                            $parentIcon = 'fas fa-calendar-alt';
+                                        } elseif (strpos($pNameLower, 'dashboard') !== false) {
+                                            $parentIcon = 'fas fa-tachometer-alt';
+                                        } else {
+                                            $parentIcon = 'fas fa-folder';
+                                        }
+                                    } else {
                                         if (strpos($parentIcon, ' ') === false) {
                                             $parentIcon = 'fas ' . $parentIcon;
                                         }
-                                    } else {
-                                        $parentIcon = 'fas fa-folder';
                                     }
                                     ?>
                                     <i class="nav-icon <?= $parentIcon; ?>"></i>
@@ -220,12 +231,34 @@
                                                 if ($childIcon === 'fa-dashboard') {
                                                     $childIcon = 'fa-tachometer-alt';
                                                 }
-                                                if (!empty($childIcon)) {
+                                                if (empty($childIcon) || $childIcon === 'far fa-circle') {
+                                                    $urlLower  = strtolower($child['Menuurl'] ?? '');
+                                                    $nameLower = strtolower($child['MenuName'] ?? '');
+                                                    if (strpos($urlLower, 'approvedresources') !== false || strpos($nameLower, 'approved resource') !== false) {
+                                                        $childIcon = 'fas fa-check-circle';
+                                                    } elseif (strpos($urlLower, 'requestedresources') !== false || strpos($nameLower, 'requested resource') !== false) {
+                                                        $childIcon = 'fas fa-clipboard-list';
+                                                    } elseif (strpos($urlLower, 'vaccancylist') !== false || strpos($nameLower, 'vacancy') !== false) {
+                                                        $childIcon = 'fas fa-list-alt';
+                                                    } elseif (strpos($urlLower, 'candidatelist') !== false || strpos($nameLower, 'candidate') !== false) {
+                                                        $childIcon = 'fas fa-users';
+                                                    } elseif (strpos($urlLower, 'manageusers') !== false || strpos($nameLower, 'user') !== false) {
+                                                        $childIcon = 'fas fa-user-cog';
+                                                    } elseif (strpos($urlLower, 'managedepartments') !== false || strpos($nameLower, 'department') !== false) {
+                                                        $childIcon = 'fas fa-building';
+                                                    } elseif (strpos($urlLower, 'recruitmentstages') !== false || strpos($nameLower, 'stage') !== false) {
+                                                        $childIcon = 'fas fa-layer-group';
+                                                    } elseif (strpos($urlLower, 'my_interviews') !== false || strpos($nameLower, 'my interview') !== false) {
+                                                        $childIcon = 'fas fa-calendar-check';
+                                                    } elseif (strpos($urlLower, 'interview_calendar') !== false || strpos($nameLower, 'calendar') !== false) {
+                                                        $childIcon = 'fas fa-calendar-alt';
+                                                    } else {
+                                                        $childIcon = 'far fa-circle';
+                                                    }
+                                                } else {
                                                     if (strpos($childIcon, ' ') === false) {
                                                         $childIcon = 'fas ' . $childIcon;
                                                     }
-                                                } else {
-                                                    $childIcon = 'far fa-circle';
                                                 }
                                                 ?>
                                                 <i class="<?= $childIcon; ?> nav-icon"></i>
@@ -249,12 +282,22 @@
                                     if ($parentIcon === 'fa-dashboard') {
                                         $parentIcon = 'fa-tachometer-alt';
                                     }
-                                    if (!empty($parentIcon)) {
+                                    if (empty($parentIcon)) {
+                                        $urlLower  = strtolower($parent['Menuurl'] ?? '');
+                                        $nameLower = strtolower($parent['MenuName'] ?? '');
+                                        if (strpos($urlLower, 'approvedresources') !== false || strpos($nameLower, 'approved resource') !== false) {
+                                            $parentIcon = 'fas fa-check-circle';
+                                        } elseif (strpos($urlLower, 'requestedresources') !== false || strpos($nameLower, 'requested resource') !== false) {
+                                            $parentIcon = 'fas fa-clipboard-list';
+                                        } elseif (strpos($nameLower, 'dashboard') !== false) {
+                                            $parentIcon = 'fas fa-tachometer-alt';
+                                        } else {
+                                            $parentIcon = 'fas fa-th';
+                                        }
+                                    } else {
                                         if (strpos($parentIcon, ' ') === false) {
                                             $parentIcon = 'fas ' . $parentIcon;
                                         }
-                                    } else {
-                                        $parentIcon = 'fas fa-th';
                                     }
                                     ?>
                                     <i class="nav-icon <?= $parentIcon; ?>"></i>
@@ -282,12 +325,36 @@
 
             <!-- Page Title -->
             <div class="col-sm-6">
-              <h1 class="m-0">
-                <?= !empty($currentUrlArray['child'])
-                    ? $currentUrlArray['child']['MenuName']
-                    : (!empty($currentUrlArray['parent'])
-                        ? $currentUrlArray['parent']['MenuName']
-                        : 'Dashboard'); ?>
+              <h1 class="m-0 font-weight-bold text-dark">
+                <?php 
+                $hdrIcon = '';
+                if (!empty($currentUrlArray['child'])) {
+                    $titleText = $currentUrlArray['child']['MenuName'];
+                    $iconClass = !empty($currentUrlArray['child']['MenuIcon']) ? trim($currentUrlArray['child']['MenuIcon']) : '';
+                    if (empty($iconClass) || $iconClass === 'far fa-circle') {
+                        $uLow = strtolower($currentUrlArray['child']['Menuurl'] ?? '');
+                        $nLow = strtolower($titleText);
+                        if (strpos($uLow, 'approvedresources') !== false || strpos($nLow, 'approved resource') !== false) {
+                            $iconClass = 'fas fa-check-circle text-success';
+                        } elseif (strpos($uLow, 'requestedresources') !== false || strpos($nLow, 'requested resource') !== false) {
+                            $iconClass = 'fas fa-clipboard-list text-primary';
+                        } elseif (strpos($uLow, 'vaccancylist') !== false || strpos($nLow, 'vacancy') !== false) {
+                            $iconClass = 'fas fa-list-alt text-info';
+                        }
+                    }
+                    if (!empty($iconClass)) {
+                        if (strpos($iconClass, ' ') === false) {
+                            $iconClass = 'fas ' . $iconClass;
+                        }
+                        $hdrIcon = '<i class="' . $iconClass . ' mr-2"></i>';
+                    }
+                } elseif (!empty($currentUrlArray['parent'])) {
+                    $titleText = $currentUrlArray['parent']['MenuName'];
+                } else {
+                    $titleText = 'Dashboard';
+                }
+                echo $hdrIcon . htmlspecialchars($titleText);
+                ?>
               </h1>
             </div>
 
@@ -302,9 +369,10 @@
 
                 <!-- Parent -->
                 <?php if (!empty($currentUrlArray['parent'])): ?>
+                  <?php $pUrl = !empty($currentUrlArray['parent']['Menuurl']) ? $currentUrlArray['parent']['Menuurl'] : ($currentUrlArray['parent']['MenuUrl'] ?? '#'); ?>
                   <li class="breadcrumb-item">
-                    <?php if ($currentUrlArray['parent']['MenuUrl'] !== '#'): ?>
-                      <a href="<?= base_url($currentUrlArray['parent']['MenuUrl']); ?>">
+                    <?php if ($pUrl !== '#'): ?>
+                      <a href="<?= base_url($pUrl); ?>">
                         <?= $currentUrlArray['parent']['MenuName']; ?>
                       </a>
                     <?php else: ?>
@@ -498,6 +566,66 @@ $(document).ready(function() {
     });
   });
 });
+</script>
+
+<!-- ===== GLOBAL CUSTOM ALERT MODAL ===== -->
+<div class="modal fade" id="globalAlertModal" tabindex="-1" role="dialog" aria-labelledby="globalAlertModalLabel" aria-modal="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+    <div class="modal-content shadow-lg" style="border-radius:10px; overflow:hidden; border:none;">
+
+      <div class="modal-header py-2 px-3" id="globalAlertHeader" style="border-bottom:none;">
+        <div class="d-flex align-items-center">
+          <span id="globalAlertIcon" class="mr-2" style="font-size:1.3rem;"></span>
+          <h6 class="modal-title font-weight-bold mb-0" id="globalAlertTitle"></h6>
+        </div>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity:0.8;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body py-3 px-4 text-center">
+        <p id="globalAlertMessage" class="mb-0" style="font-size:0.95rem; line-height:1.5;"></p>
+      </div>
+
+      <div class="modal-footer justify-content-center py-2" style="border-top:none;">
+        <button type="button" class="btn btn-sm px-4" id="globalAlertOkBtn" data-dismiss="modal" style="border-radius:20px; font-weight:600; min-width:90px;">OK</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * showAlert(message, type, title)
+ * Replaces native browser alert() with a styled Bootstrap modal.
+ * @param {string} message  - The message to display
+ * @param {string} type     - 'success' | 'danger' | 'warning' | 'info' | 'primary' (default: 'info')
+ * @param {string} title    - Optional title (auto-derived from type if not given)
+ */
+function showAlert(message, type, title) {
+    type = type || 'info';
+
+    var configs = {
+        success: { bg: '#28a745', icon: 'fas fa-check-circle', label: 'Success',  btn: '#1e7e34' },
+        danger:  { bg: '#dc3545', icon: 'fas fa-times-circle',  label: 'Error',    btn: '#bd2130' },
+        error:   { bg: '#dc3545', icon: 'fas fa-times-circle',  label: 'Error',    btn: '#bd2130' },
+        warning: { bg: '#ffc107', icon: 'fas fa-exclamation-triangle', label: 'Warning', btn: '#d39e00' },
+        info:    { bg: '#17a2b8', icon: 'fas fa-info-circle',   label: 'Info',     btn: '#117a8b' },
+        primary: { bg: '#007bff', icon: 'fas fa-bell',          label: 'Notice',   btn: '#0062cc' }
+    };
+
+    var cfg = configs[type] || configs['info'];
+    var displayTitle = title || cfg.label;
+
+    $('#globalAlertHeader').css('background-color', cfg.bg);
+    $('#globalAlertTitle').text(displayTitle).css('color', '#fff');
+    $('#globalAlertIcon').html('<i class="' + cfg.icon + ' text-white"></i>');
+    $('#globalAlertMessage').text(message);
+    $('#globalAlertOkBtn').css({ 'background-color': cfg.bg, 'border-color': cfg.bg, 'color': '#fff' });
+
+    $('#globalAlertModal').modal('show');
+}
 </script>
 
 </html>

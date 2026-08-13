@@ -191,19 +191,23 @@ public function analyzeResumeModal()
                     'Email'           => $result['email'],
                     'PhoneNo'         => $result['mobileNumbers'],
                     'ExpYrs'          => $result['expyrs'],
-                     'ExperienceDetails' => json_encode($result['experience_details']),
-                     'DomainBreakdown' => $result['domain'] ?? 'General',
+                    'ExperienceDetails' => json_encode($result['experience_details']),
+                    'DomainBreakdown' => $result['domain'] ?? 'General',
                     'ResumePath'      => 'atscheck/modal/' . $uploadData['file_name'],
                     'Source'          => 'Upload',
-                    'ProfileMatchPer' => $result['score'],
+                    'ProfileMatchPer' => $result['recommendation'],
                     'ATS_Status'      => 'CV Uploaded',
                     'ATS_Stage'       => 1,
                     'MatchedSkills'   => $result['matched_skills'] ?? '',
                     'EducationMatch'  => $result['education_match'],
                     'ExperienceMatch' => $result['experience'],
-                    'ScoreBreakdown'  => json_encode($result['score_breakdown']),
+                    'ScoreBreakdown'  => json_encode([
+                        'recommendation'        => $result['recommendation'],
+                        'recommendation_reason' => $result['recommendation_reason'],
+                        'relevant_evidence'     => $result['relevant_evidence'],
+                        'missing_requirements'  => $result['missing_requirements']
+                    ]),
                     'VerifiedBy'      => $Hrms_Session['IUid'],
-                   
                     'VerifiedAt'      => date('Y-m-d H:i:s')
                 ]);
  
@@ -227,7 +231,7 @@ public function analyzeResumeModal()
                     'StageId'       => $appStage['StageId'],
                     'Action'        => 'Created',
                     'ActionBy'      => $Hrms_Session['IUid'],
-                    'Remarks'       => 'Resume uploaded & ATS auto screening completed'
+                    'Remarks'       => 'Resume uploaded & ATS recommendation evaluation completed'
                 ]);
  
               
@@ -248,9 +252,9 @@ public function analyzeResumeModal()
                 echo json_encode([
                     'status' => 'success',
                     'data'   => [
-                        'name'   => $candidateName,
-                        'score'  => $result['score'],
-                        'status' => 'CV Uploaded'
+                        'name'           => $candidateName,
+                        'recommendation' => $result['recommendation'],
+                        'status'         => 'CV Uploaded'
                     ],
                     'redirect' => base_url('admin/CandidateList/' . $vacancy['Jid'])
                 ]);  

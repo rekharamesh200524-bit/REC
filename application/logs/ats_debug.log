@@ -3115,3 +3115,2359 @@ Array
 )
 
 ============================
+
+============================
+2026-08-12 11:26:10 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '19'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 11:26:10 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND19_20260812112610521.pdf
+    [vacancy] => 19
+)
+
+==============================
+2026-08-12 11:26:11 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 11:26:11 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 11:26:11 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 11:26:11 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 11:26:11 | name
+Mohamed Fazil
+==============================
+2026-08-12 11:26:11 | mobileno
++91 7200110489
+==============================
+2026-08-12 11:26:11 | expyrs
+0
+==============================
+2026-08-12 11:26:11 | Input skills
+
+==============================
+2026-08-12 11:26:11 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 11:26:11 | vacancy
+Array
+(
+    [Jid] => 19
+    [JobCode] => JOB-2026-0010
+    [JobTitle] => frontend developer
+    [RoleSummary] => 
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 2
+    [ExpMax] => 3
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    [Responsibilities] => dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-12 11:25:52
+    [UpdatedOn] => 2026-08-12 11:25:52
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 11:26:11 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-12 14:08:35 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '6'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 14:08:35 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND6_20260812140835575.pdf
+    [vacancy] => 6
+)
+
+==============================
+2026-08-12 14:08:35 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 14:08:35 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 14:08:35 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 14:08:35 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 14:08:35 | name
+Mohamed Fazil
+==============================
+2026-08-12 14:08:35 | mobileno
++91 7200110489
+==============================
+2026-08-12 14:08:35 | expyrs
+0
+==============================
+2026-08-12 14:08:35 | Input skills
+
+==============================
+2026-08-12 14:08:35 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 14:08:35 | vacancy
+Array
+(
+    [Jid] => 6
+    [JobCode] => JOB-2026-0005
+    [JobTitle] => dii
+    [RoleSummary] => dii
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 1
+    [ExpMax] => 2
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => sss
+    [Responsibilities] => ssss
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 15:50:10
+    [UpdatedOn] => 2026-08-12 11:00:44
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-09-05
+    [Salary] => 0 - 0 LPA
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 14:08:35 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-12 14:37:38 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '19'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 14:37:38 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND19_20260812143738227.pdf
+    [vacancy] => 19
+)
+
+==============================
+2026-08-12 14:37:38 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 14:37:38 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 14:37:38 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 14:37:38 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 14:37:38 | name
+Mohamed Fazil
+==============================
+2026-08-12 14:37:38 | mobileno
++91 7200110489
+==============================
+2026-08-12 14:37:38 | expyrs
+0
+==============================
+2026-08-12 14:37:38 | Input skills
+
+==============================
+2026-08-12 14:37:38 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 14:37:38 | vacancy
+Array
+(
+    [Jid] => 19
+    [JobCode] => JOB-2026-0010
+    [JobTitle] => frontend developer
+    [RoleSummary] => 
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 2
+    [ExpMax] => 3
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    [Responsibilities] => dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-12 11:25:52
+    [UpdatedOn] => 2026-08-12 12:52:30
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 14:37:38 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-12 14:38:01 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '6'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 14:38:01 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND6_20260812143801813.pdf
+    [vacancy] => 6
+)
+
+==============================
+2026-08-12 14:38:01 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 14:38:01 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 14:38:01 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 14:38:01 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 14:38:01 | name
+Mohamed Fazil
+==============================
+2026-08-12 14:38:01 | mobileno
++91 7200110489
+==============================
+2026-08-12 14:38:01 | expyrs
+0
+==============================
+2026-08-12 14:38:01 | Input skills
+
+==============================
+2026-08-12 14:38:01 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 14:38:01 | vacancy
+Array
+(
+    [Jid] => 6
+    [JobCode] => JOB-2026-0005
+    [JobTitle] => dii
+    [RoleSummary] => dii
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 1
+    [ExpMax] => 2
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => sss
+    [Responsibilities] => ssss
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 15:50:10
+    [UpdatedOn] => 2026-08-12 11:00:44
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-09-05
+    [Salary] => 0 - 0 LPA
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 14:38:01 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-12 14:38:21 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '21'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 14:38:21 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND21_20260812143821715.pdf
+    [vacancy] => 21
+)
+
+==============================
+2026-08-12 14:38:21 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 14:38:21 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 14:38:21 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 14:38:21 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 14:38:21 | name
+Mohamed Fazil
+==============================
+2026-08-12 14:38:21 | mobileno
++91 7200110489
+==============================
+2026-08-12 14:38:21 | expyrs
+0
+==============================
+2026-08-12 14:38:21 | Input skills
+
+==============================
+2026-08-12 14:38:21 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 14:38:21 | vacancy
+Array
+(
+    [Jid] => 21
+    [JobCode] => JOB-2026-0011
+    [JobTitle] => Backend Developer
+    [RoleSummary] => 
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 2
+    [ExpMax] => 3
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
+    [Responsibilities] => ddddddddddddddddddddddd
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-12 12:55:39
+    [UpdatedOn] => 2026-08-12 13:08:01
+    [ExpiryDate] => 1970-01-01
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 19
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 14:38:21 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-12 15:43:12 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '28'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 15:43:12 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND28_20260812154312250.pdf
+    [vacancy] => 28
+)
+
+==============================
+2026-08-12 15:43:12 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 15:43:12 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 15:43:12 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 15:43:12 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 15:43:12 | name
+Mohamed Fazil
+==============================
+2026-08-12 15:43:12 | mobileno
++91 7200110489
+==============================
+2026-08-12 15:43:12 | expyrs
+0
+==============================
+2026-08-12 15:43:12 | Input skills
+
+==============================
+2026-08-12 15:43:12 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 15:43:12 | vacancy
+Array
+(
+    [Jid] => 28
+    [JobCode] => JOB-2026-0007
+    [JobTitle] => ww
+    [RoleSummary] => 
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 0.00
+    [ExpMax] => 0.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => wwwww
+    [Responsibilities] => wwwwwwwww
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-12 15:41:40
+    [UpdatedOn] => 2026-08-12 15:42:01
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-26
+    [Salary] => 
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 15:43:12 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-12 18:13:59 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '10'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-12 18:13:59 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND10_20260812181359262.pdf
+    [vacancy] => 10
+)
+
+==============================
+2026-08-12 18:13:59 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-12 18:13:59 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-12 18:13:59 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-12 18:13:59 | Email
+fazil721655@gmail.com
+==============================
+2026-08-12 18:13:59 | name
+Mohamed Fazil
+==============================
+2026-08-12 18:13:59 | mobileno
++91 7200110489
+==============================
+2026-08-12 18:13:59 | expyrs
+0
+==============================
+2026-08-12 18:13:59 | Input skills
+
+==============================
+2026-08-12 18:13:59 | Skills
+Array
+(
+)
+
+============================
+2026-08-12 18:13:59 | vacancy
+Array
+(
+    [Jid] => 10
+    [JobCode] => JOB-2026-0008
+    [JobTitle] => du
+    [RoleSummary] => du
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 0.00
+    [ExpMax] => 0.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => d
+    [Responsibilities] => d
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 18:14:52
+    [UpdatedOn] => 2026-08-11 13:33:30
+    [ExpiryDate] => 1970-01-01
+    [TargetOnboardingDate] => 
+    [Salary] => 
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 17
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-12 18:13:59 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-13 12:35:32 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-13 12:35:32 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260813123532464.pdf
+    [vacancy] => 30
+)
+
+==============================
+2026-08-13 12:35:32 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-13 12:35:32 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-13 12:35:32 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-13 12:35:32 | Email
+fazil721655@gmail.com
+==============================
+2026-08-13 12:35:32 | name
+Mohamed Fazil
+==============================
+2026-08-13 12:35:32 | mobileno
++91 7200110489
+==============================
+2026-08-13 12:35:32 | expyrs
+0
+==============================
+2026-08-13 12:35:32 | Input skills
+excel, powerbi
+==============================
+2026-08-13 12:35:32 | Skills
+Array
+(
+    [0] => excel
+    [1] =>  powerbi
+)
+
+============================
+2026-08-13 12:35:33 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-13 12:34:51
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => 
+    [NiceToHaveSkills] => 
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-13 12:35:33 | FINAL RESULT RETURN
+Array
+(
+    [score] => 25
+    [status] => Rejected
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Ecommerce
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => No
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 0
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+==============================
+2026-08-13 09:21:09 | START
+Array
+(
+    [resumePath] => d:/xampp/htdocs/REC/atscheck/modal/CAND10_20260811102838262.pdf
+    [vacancyId] => 1
+    [jobTitle] => HR Recruiter
+)
+
+==============================
+2026-08-13 09:21:09 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-13 09:21:09 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-13 09:21:09 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-13 09:21:09 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-13 09:21:09 | Name
+Shiji M K
+==============================
+2026-08-13 09:21:09 | Mobile
+7550080350
+==============================
+2026-08-13 09:21:09 | ExperienceYears
+10
+==============================
+2026-08-13 09:21:09 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 3
+    [requiredSkillsCount] => 4
+    [candidateExp] => 10
+    [minExpRequired] => 2
+    [eduMatch] => 1
+)
+
+==============================
+2026-08-13 09:21:09 | RECOMMENDATION
+Recommended
+==============================
+2026-08-13 09:21:09 | RECOMMENDATION_REASON
+The candidate's profile aligns well with the requirements of HR Recruiter. They possess 10 years of relevant experience and demonstrate key skills in Recruitment, Talent Acquisition, Interviewing. Their background provides concrete evidence for strong candidate suitability.
+==============================
+2026-08-13 09:21:09 | START
+Array
+(
+    [resumePath] => d:/xampp/htdocs/REC/atscheck/modal/CAND10_20260811102838262.pdf
+    [vacancyId] => 2
+    [jobTitle] => PHP Developer
+)
+
+==============================
+2026-08-13 09:21:09 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-13 09:21:09 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-13 09:21:09 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-13 09:21:09 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-13 09:21:09 | Name
+Shiji M K
+==============================
+2026-08-13 09:21:09 | Mobile
+7550080350
+==============================
+2026-08-13 09:21:09 | ExperienceYears
+10
+==============================
+2026-08-13 09:21:09 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 0
+    [requiredSkillsCount] => 5
+    [candidateExp] => 10
+    [minExpRequired] => 3
+    [eduMatch] => 
+)
+
+==============================
+2026-08-13 09:21:09 | RECOMMENDATION
+Review Required
+==============================
+2026-08-13 09:21:09 | RECOMMENDATION_REASON
+The candidate has a relevant background for PHP Developer, but specific requirements need verification during screening. Skill(s) like Php, Codeigniter, Mysql were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-13 12:53:23 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-13 12:53:23 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260813125323986.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-13 12:53:23 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-13 12:53:23 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-13 12:53:23 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-13 12:53:23 | Email
+fazil721655@gmail.com
+==============================
+2026-08-13 12:53:23 | Name
+Mohamed Fazil
+==============================
+2026-08-13 12:53:23 | Mobile
++91 7200110489
+==============================
+2026-08-13 12:53:23 | ExperienceYears
+0
+==============================
+2026-08-13 12:53:23 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 0
+    [requiredSkillsCount] => 2
+    [candidateExp] => 0
+    [minExpRequired] => 1
+    [eduMatch] => 1
+)
+
+==============================
+2026-08-13 12:53:23 | RECOMMENDATION
+Not Recommended
+==============================
+2026-08-13 12:53:23 | RECOMMENDATION_REASON
+The candidate's resume does not provide sufficient evidence of meeting core requirements for executive. Key required skills (Excel, Powerbi) are missing. Work experience (0 Yrs) falls substantially below the minimum required (1 Yrs). The profile is substantially unrelated or does not meet minimum thresholds.
+============================
+2026-08-13 12:53:23 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-13 12:34:51
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => 
+    [NiceToHaveSkills] => 
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-13 12:53:23 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Not Recommended
+    [recommendation_reason] => The candidate's resume does not provide sufficient evidence of meeting core requirements for executive. Key required skills (Excel, Powerbi) are missing. Work experience (0 Yrs) falls substantially below the minimum required (1 Yrs). The profile is substantially unrelated or does not meet minimum thresholds.
+    [relevant_evidence] => Array
+        (
+            [0] => Education: Matches required level (BCA)
+            [1] => Domain Fit: Background in Software & IT
+            [2] => Extracted Resume Skills: Php, Javascript, Html, Css, Bootstrap, Tailwind, React, Angular
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Excel, Powerbi
+            [1] => Experience Shortfall: Candidate has 0 Years (Required: Min 1 Years)
+        )
+
+    [status] => Not Recommended
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Software & IT
+    [matched_skills] => 
+    [missing_skills] => Excel, Powerbi
+    [all_extracted_skills] => Php, Javascript, Html, Css, Bootstrap, Tailwind, React, Angular, Nextjs, Nodejs, Express, Rest Api, Mysql, Mongodb, Docker, Git, Communication
+    [education_match] => Yes
+    [experience] => No
+    [detected_degree] => BCA
+)
+
+============================
+
+============================
+2026-08-13 12:53:54 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-13 12:53:54 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260813125354768.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-13 12:53:54 | PDF_EXTRACT_SUCCESS
+EVLYN JANET
+
+ People Operations Lead | HR Operations | Employee Lifecycle & JML Excellence
+Phone: 7022384920 | Email: evjane@myyahoo.com
+
+ PROFESSIONAL SUMMARY
+
+ Experienced People Operations and HR professional with 5+ years of progressive experience across global
+organisations, specialising in HR Operations, Employee Lifecycle Management, Joiners-Movers-Leavers (JML),
+Talent Acquisition support, and HR service delivery. Proven expertise in Leave of Absence (LOA), Absence
+Management, Attendance Management, Timesheet Management and HR Case Management within fast-paced,
+high-volume environments. Skilled in handling escalations, streamlining HR processes, improving SLA adherence and
+partnering with cross-functional stakeholders to deliver seamless employee experiences. Strong background in HR
+analytics, compliance, process optimisation, onboarding, workforce coordination and operational governance.
+
+ SKILLS
+ 
+ End-to-end HR Operations
+ 
+ Employee Lifecycle Management
+ 
+ Leave of Absen
+==============================
+2026-08-13 12:53:54 | RAW_RESUME_TEXT
+evlyn janet
+
+ people operations lead | hr operations | employee lifecycle & jml excellence
+phone: 7022384920 | email: evjane@myyahoo.com
+
+ professional summary
+
+ experienced people operations and hr professional with 5+ years of progressive experience across global
+organisations, specialising in hr operations, employee lifecycle management, joiners-movers-leavers (jml),
+talent acquisition support, and hr service delivery. proven expertise in leave of absence (loa), absence
+management, attendance management, timesheet management and hr case management within fast-paced,
+high-volume environments. skilled in handling escalations, streamlining hr processes, improving sla adherence and
+partnering with cross-functional stakeholders to deliver seamless employee experiences. strong background in hr
+analytics, compliance, process optimisation, onboarding, workforce coordination and operational governance.
+
+ skills
+ 
+ end-to-end hr operations
+ 
+ employee lifecycle management
+ 
+ leave of absence (loa)
+ 
+ absence management
+ 
+ attendance management
+ 
+ timesheet management
+ 
+ hr case management
+ 
+ onboarding & offboarding
+ 
+ ticketing process handling
+ 
+ hris tools – workday, greyhr, keka, servicenow
+ 
+ sop documentation & process improvement
+ 
+ stakeholder & escalation management
+ 
+ hr reporting & analytics
+ professional experience
+ smith and howard – senior talent & operations specialist | march 2025 – october 2025
+ 
+
+ managed end-to-end employee lifecycle operations including onboarding, internal transfers, promotions,
+compensation revisions, leave administration, exits and hr documentation while ensuring complete compliance
+and process accuracy.
+ 
+
+ handled leave of absence (loa), attendance management and timesheet management activities for employees
+across multiple business functions while maintaining sla adherence and operational efficiency.
+ 
+ acted as the primary escalation point for complex hr operational issues, hr case management queries and
+emp
+==============================
+2026-08-13 12:53:54 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => aug 2024
+                    [to] => feb 2025
+                    [years] => 0
+                    [months] => 6
+                )
+
+            [1] => Array
+                (
+                    [from] => april 2022
+                    [to] => june 2024
+                    [years] => 2
+                    [months] => 2
+                )
+
+            [2] => Array
+                (
+                    [from] => march 2021
+                    [to] => april 2022
+                    [years] => 1
+                    [months] => 1
+                )
+
+        )
+
+    [total] => 3 Years 9 Months
+)
+
+==============================
+2026-08-13 12:53:54 | Email
+evjane@myyahoo.com
+==============================
+2026-08-13 12:53:54 | Name
+Evlyn Janet
+==============================
+2026-08-13 12:53:54 | Mobile
+7022384920
+==============================
+2026-08-13 12:53:54 | ExperienceYears
+3.8
+==============================
+2026-08-13 12:53:55 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 0
+    [requiredSkillsCount] => 2
+    [candidateExp] => 3.8
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-13 12:53:55 | RECOMMENDATION
+Review Required
+==============================
+2026-08-13 12:53:55 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-13 12:53:55 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-13 12:34:51
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => 
+    [NiceToHaveSkills] => 
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-13 12:53:55 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 3.8 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Domain Fit: Background in Human Resources
+            [2] => Extracted Resume Skills: Recruitment, Payroll, Onboarding, Attendance, Exit Process, Audit, Communication, Leadership
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Excel, Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => evjane@myyahoo.com
+    [name] => Evlyn Janet
+    [mobileNumbers] => 7022384920
+    [expyrs] => 3.8
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => aug 2024
+                            [to] => feb 2025
+                            [years] => 0
+                            [months] => 6
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => april 2022
+                            [to] => june 2024
+                            [years] => 2
+                            [months] => 2
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => march 2021
+                            [to] => april 2022
+                            [years] => 1
+                            [months] => 1
+                        )
+
+                )
+
+            [total] => 3 Years 9 Months
+        )
+
+    [domain] => Human Resources
+    [matched_skills] => 
+    [missing_skills] => Excel, Powerbi
+    [all_extracted_skills] => Recruitment, Payroll, Onboarding, Attendance, Exit Process, Audit, Communication, Leadership, Documentation
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BA
+)
+
+============================

@@ -7,7 +7,8 @@ $today_start    = strtotime('today');
 
 if(!empty($Candidatelist)) {
     foreach($Candidatelist as $cl) {
-        if(!empty($cl['ScheduledAt']) && $cl['ScheduledAt'] !== '0000-00-00 00:00:00') {
+        $resultLower = strtolower(trim($cl['Result'] ?? ''));
+        if(($resultLower === 'assigned' || $resultLower === '') && !empty($cl['ScheduledAt']) && $cl['ScheduledAt'] !== '0000-00-00 00:00:00') {
             $scheduled_time = strtotime($cl['ScheduledAt']);
 
             // Only include interviews from today onwards (not past ones)
@@ -71,11 +72,32 @@ Assigned Interview
                     <span class="label">Interview Date:</span>
                     <span class="value"><?= date('l, d F Y - h:i A', $interview_ts) ?></span>
                 </div>
+                <div class="interview-summary-item mt-1">
+                    <span class="label">Interview Mode:</span>
+                    <?php
+                    $nextMode = !empty($next_interview['InterviewType']) ? trim($next_interview['InterviewType']) : 'N/A';
+                    $nextLink = !empty($next_interview['MeetLink']) ? trim($next_interview['MeetLink']) : '';
+                    if (strtolower($nextMode) === 'online'):
+                    ?>
+                        <span class="badge badge-primary"><i class="fas fa-video mr-1"></i>Online</span>
+                        <?php if (!empty($nextLink)): ?>
+                            <a href="<?= htmlspecialchars($nextLink) ?>" target="_blank" class="btn btn-sm btn-success ml-2 font-weight-bold"><i class="fas fa-video mr-1"></i>Join Video Meeting</a>
+                        <?php endif; ?>
+                    <?php elseif (strtolower($nextMode) === 'offline'): ?>
+                        <span class="badge badge-secondary"><i class="fas fa-building mr-1"></i>Offline (In-Person)</span>
+                    <?php else: ?>
+                        <span class="badge badge-light"><?= htmlspecialchars($nextMode) ?></span>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="col-md-4 text-md-right mt-3 mt-md-0">
-                <span class="badge badge-info interview-remaining-badge">
+                <span class="badge badge-info interview-remaining-badge mb-2">
                     <i class="fas fa-hourglass-half mr-1"></i><?= $remaining_text ?>
                 </span>
+                <br>
+                <button type="button" class="btn btn-sm btn-info viewCandidateDetails font-weight-bold mt-1" data-id="<?= $next_interview['CandidateId'] ?>">
+                    <i class="fas fa-road mr-1"></i>View Total Track
+                </button>
             </div>
         </div>
     </div>
@@ -130,6 +152,7 @@ Rejected
 <th>Mobile No</th>
 <th>Email</th>
 <th>Score</th>
+<th>Mode</th>
 <th>Scheduled Time</th>
 <th>Current Status</th>
 <th>Verified On</th>
@@ -139,9 +162,14 @@ Rejected
 
 <tbody>
 
-<?php if(!empty($Candidatelist)){ $i=1; foreach($Candidatelist as $cl){ ?>
+<?php if(!empty($Candidatelist)){ $i=1; foreach($Candidatelist as $cl){ 
+    $resultVal   = !empty($cl['Result']) ? trim($cl['Result']) : 'Assigned';
+    $resultLower = strtolower($resultVal);
+    $isRescheduledRow = ($resultLower === 'rescheduled');
+    $trClass = $isRescheduledRow ? 'style="background-color: #fff9e6;"' : '';
+?>
 
-<tr>
+<tr <?= $trClass ?>>
 <td><?= $i++; ?></td>
 <td>
 <a href="<?= base_url('admin/viewResume/'.$cl['CandidateId']); ?>"
@@ -161,34 +189,81 @@ data-id="<?= $cl['CandidateId']; ?>">
 
 <td><?= $cl['PhoneNo']; ?></td>
 <td><?= $cl['Email']; ?></td>
-<td><?= $cl['ProfileMatchPer']; ?></td>
+<td>
+    <?php 
+    $recVal = !empty($cl['ProfileMatchPer']) ? $cl['ProfileMatchPer'] : 'Review Required';
+    $badgeClass = (stripos($recVal, 'Recommended') !== false && stripos($recVal, 'Not') === false) ? 'badge-success' : (stripos($recVal, 'Not') !== false ? 'badge-danger' : 'badge-warning');
+    ?>
+    <span class="badge <?= $badgeClass ?> font-weight-bold p-1"><?= htmlspecialchars($recVal) ?></span>
+</td>
+
+<td>
+    <?php
+    $mode = !empty($cl['InterviewType']) ? trim($cl['InterviewType']) : '';
+    $meetLink = !empty($cl['MeetLink']) ? trim($cl['MeetLink']) : '';
+    if (strtolower($mode) === 'online'):
+    ?>
+        <span class="badge badge-primary"><i class="fas fa-video mr-1"></i>Online</span>
+        <?php if (!empty($meetLink) && !$isRescheduledRow): ?>
+            <br><a href="<?= htmlspecialchars($meetLink) ?>" target="_blank" class="btn btn-xs btn-outline-primary mt-1"><i class="fas fa-video mr-1"></i>Join Meet</a>
+        <?php endif; ?>
+    <?php elseif (strtolower($mode) === 'offline'): ?>
+        <span class="badge badge-secondary"><i class="fas fa-building mr-1"></i>Offline</span>
+    <?php else: ?>
+        <span class="badge badge-light"><?= !empty($mode) ? htmlspecialchars($mode) : 'N/A' ?></span>
+    <?php endif; ?>
+</td>
 
 <td>
     <?php
     $scheduledAt = $cl['ScheduledAt'] ?? '';
     if (!empty($scheduledAt) && $scheduledAt !== '0000-00-00 00:00:00') {
         $ts = strtotime($scheduledAt);
-        echo ($ts && $ts > 0) ? date('d M Y, h:i A', $ts) : '-';
+        $dateFormatted = ($ts && $ts > 0) ? date('d M Y, h:i A', $ts) : '-';
+        if ($isRescheduledRow) {
+            echo '<del class="text-muted">' . $dateFormatted . '</del> <span class="badge badge-warning text-dark ml-1"><i class="fas fa-history mr-1"></i>Rescheduled</span>';
+        } else {
+            echo $dateFormatted;
+        }
     } else {
         echo 'Not Scheduled';
     }
     ?>
 </td>
 
-<td><?= !empty($cl['Result']) ? trim($cl['Result']) : 'Assigned'; ?></td>
+<td>
+    <?php
+    if ($isRescheduledRow) {
+        echo '<span class="badge badge-warning text-dark px-2 py-1"><i class="fas fa-history mr-1"></i>Rescheduled</span>';
+    } elseif ($resultLower === 'selected') {
+        echo '<span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i>Selected</span>';
+    } elseif ($resultLower === 'rejected') {
+        echo '<span class="badge badge-danger px-2 py-1"><i class="fas fa-times-circle mr-1"></i>Rejected</span>';
+    } elseif ($resultLower === 'on hold') {
+        echo '<span class="badge badge-warning px-2 py-1"><i class="fas fa-pause-circle mr-1"></i>On Hold</span>';
+    } else {
+        echo '<span class="badge badge-primary px-2 py-1"><i class="fas fa-clock mr-1"></i>' . htmlspecialchars($resultVal) . '</span>';
+    }
+    ?>
+</td>
 
 <td><?= $cl['AppliedOn']; ?></td>
 
 <td>
 
-<?php
-$result = strtolower(trim($cl['Result'] ?? ''));
+<button type="button"
+class="btn btn-sm btn-info viewCandidateDetails mr-1 mb-1"
+data-id="<?= $cl['CandidateId']; ?>"
+title="View Candidate Total Track">
+<i class="fas fa-eye"></i> View Track
+</button>
 
-if($result == '' || $result == 'assigned' || $result == 'on hold'){
+<?php
+if(($resultLower == '' || $resultLower == 'assigned' || $resultLower == 'on hold') && !$isRescheduledRow){
 ?>
 
 <button type="button"
-class="btn btn-sm btn-warning openInterviewUpdate"
+class="btn btn-sm btn-warning openInterviewUpdate mb-1"
 data-interview="<?= $cl['InterviewId']; ?>">
 <i class="fas fa-edit"></i> Update Status
 </button>
@@ -272,9 +347,9 @@ Save
 
 <div class="modal-content">
 
-<div class="modal-header">
-<h5 class="modal-title">Candidate Details</h5>
-<button type="button" class="close" data-dismiss="modal">&times;</button>
+<div class="modal-header bg-info text-white">
+<h5 class="modal-title"><i class="fas fa-route mr-2"></i>Candidate Total Journey Track</h5>
+<button type="button" class="close text-white" data-dismiss="modal">&times;</button>
 </div>
 
 <div class="modal-body" id="candidateDetailsBody">
@@ -372,7 +447,7 @@ success: function (res) {
         $('#interviewPanel').hide();
     });
 
-    /* ===== View Candidate Details ===== */
+    /* ===== View Candidate Details & Total Track ===== */
     $(document).on('click', '.viewCandidateDetails', function () {
 
         let candidateId = $(this).data('id');
@@ -390,62 +465,94 @@ success: function (res) {
             success: function (res) {
 
                 if (res.status !== 'success') {
-                    $('#candidateDetailsBody').html('<div class="alert alert-danger">No data found</div>');
+                    $('#candidateDetailsBody').html('<div class="alert alert-danger">No candidate data found</div>');
                     return;
                 }
 
                 let c = res.data.candidate;
-                let stages = res.data.stages;
+                let stages = res.data.stages || [];
+                let interviews = res.data.interviews || [];
 
                 let html = `<div class="container-fluid">`;
 
                 html += `
-                <div class="card card-primary">
-                    <div class="card-header">
-                        <h3 class="card-title">Basic Information</h3>
+                <div class="card card-primary card-outline mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0"><i class="fas fa-id-card mr-2"></i>Candidate Profile & Position Info</h3>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Name:</strong> ${c.Fullname ?? '-'}</p>
-                                <p><strong>Email:</strong> ${c.Email ?? '-'}</p>
-                                <p><strong>Phone:</strong> ${c.PhoneNo ?? '-'}</p>
+                                <p class="mb-1"><strong>Name:</strong> ${c.Fullname ?? '-'}</p>
+                                <p class="mb-1"><strong>Candidate Code:</strong> <span class="badge badge-secondary">${c.CandidateCode ?? '-'}</span></p>
+                                <p class="mb-1"><strong>Applied Position:</strong> ${c.JobTitle ?? '-'}</p>
+                                <p class="mb-1"><strong>Email:</strong> ${c.Email ?? '-'}</p>
+                                <p class="mb-1"><strong>Phone:</strong> ${c.PhoneNo ?? '-'}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Experience:</strong> ${c.ExpYrs ?? 0} Years</p>
-                                <p><strong>ATS Score:</strong> ${c.ProfileMatchPer ?? 0}%</p>
+                                <p class="mb-1"><strong>Experience:</strong> ${c.ExpYrs ?? 0} Years</p>
+                                <p class="mb-1"><strong>ATS Recommendation:</strong> <span class="badge ${ (c.ProfileMatchPer && c.ProfileMatchPer.includes('Recommended') && !c.ProfileMatchPer.includes('Not')) ? 'badge-success' : ((c.ProfileMatchPer && c.ProfileMatchPer.includes('Not')) ? 'badge-danger' : 'badge-warning') }">${c.ProfileMatchPer ?? 'Review Required'}</span></p>
+                                <p class="mb-1"><strong>Current Status:</strong> <span class="badge badge-info">${c.CurrentStatus ?? '-'}</span></p>
+                                <p class="mb-1"><strong>Applied Date:</strong> ${c.AppliedOn ?? '-'}</p>
                             </div>
                         </div>
                     </div>
                 </div>`;
 
+                html += `<h4 class="mb-3 font-weight-bold text-dark"><i class="fas fa-route mr-2 text-warning"></i>Candidate Total Journey Track</h4>`;
                 html += `<div class="timeline timeline-inverse">`;
 
                 if (stages.length > 0) {
                     stages.forEach(function (s) {
-
                         let badgeColor = 'bg-info';
-                        if (s.Action && s.Action.toLowerCase().includes('rejected'))         badgeColor = 'bg-danger';
-                        else if (s.Action && s.Action.toLowerCase().includes('shortlisted')) badgeColor = 'bg-success';
-                        else if (s.Action && s.Action.toLowerCase().includes('hold'))        badgeColor = 'bg-warning';
+                        let act = (s.Action || '').toLowerCase();
+                        if (act.includes('rejected')) badgeColor = 'bg-danger';
+                        else if (act.includes('shortlisted')) badgeColor = 'bg-success';
+                        else if (act.includes('hold')) badgeColor = 'bg-warning';
 
                         html += `
                         <div>
-                            <i class="fas fa-user ${badgeColor}"></i>
+                            <i class="fas fa-user-tag ${badgeColor}"></i>
                             <div class="timeline-item">
-                                <span class="time">
-                                    <i class="far fa-clock"></i> ${s.ActionAt}
-                                </span>
-                                <h3 class="timeline-header">${s.StageName}</h3>
+                                <span class="time"><i class="far fa-clock"></i> ${s.ActionAt ?? '-'}</span>
+                                <h3 class="timeline-header font-weight-bold text-primary">${s.StageName ?? 'Stage Update'}</h3>
                                 <div class="timeline-body">
-                                    <strong>Action:</strong> ${s.Action ?? '-'}<br>
-                                    <strong>Remarks:</strong> ${s.Remarks ?? '-'}
+                                    <p class="mb-1"><strong>Action:</strong> <span class="badge ${badgeColor.replace('bg-', 'badge-')}">${s.Action ?? '-'}</span></p>
+                                    <p class="mb-1"><strong>Updated By:</strong> ${s.ActionByName ?? 'HR Admin'}</p>
+                                    <p class="mb-0"><strong>Remarks:</strong> ${s.Remarks ?? 'No remarks provided'}</p>
                                 </div>
                             </div>
                         </div>`;
                     });
-                } else {
-                    html += `<p class="text-muted p-2">No stage tracking found</p>`;
+                }
+
+                if (interviews.length > 0) {
+                    interviews.forEach(function(iv) {
+                        let ivMode = (iv.InterviewType || 'N/A');
+                        let isOnline = ivMode.toLowerCase() === 'online';
+                        let meetBtn = (isOnline && iv.MeetLink) 
+                            ? `<br><a href="${iv.MeetLink}" target="_blank" class="btn btn-xs btn-primary mt-2"><i class="fas fa-video mr-1"></i>Join Video Meeting</a>` 
+                            : '';
+
+                        html += `
+                        <div>
+                            <i class="fas fa-calendar-check bg-warning"></i>
+                            <div class="timeline-item">
+                                <span class="time"><i class="far fa-clock"></i> ${iv.ScheduledAt ?? '-'}</span>
+                                <h3 class="timeline-header font-weight-bold text-dark">Interview Round ${iv.InterviewRound ?? 1} (${ivMode})</h3>
+                                <div class="timeline-body">
+                                    <p class="mb-1"><strong>Mode:</strong> ${ivMode}</p>
+                                    <p class="mb-1"><strong>Scheduled Time:</strong> ${iv.ScheduledAt ?? '-'}</p>
+                                    <p class="mb-1"><strong>Result / Status:</strong> <span class="badge badge-warning">${iv.Result || 'Assigned'}</span></p>
+                                    ${meetBtn}
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                }
+
+                if (stages.length === 0 && interviews.length === 0) {
+                    html += `<p class="text-muted p-2">No stage tracking or interview history found for this candidate.</p>`;
                 }
 
                 html += `<div><i class="far fa-clock bg-gray"></i></div></div></div>`;
@@ -455,21 +562,5 @@ success: function (res) {
         });
     });
 
-});
-</script>
-
-<script>
-$(document).ready(function() {
-    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#example1')) {
-        $('#example1').DataTable({
-            "responsive": true,
-            "autoWidth": false
-        });
-    }
-    $(window).on('resize orientationchange', function() {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
-            $('#example1').DataTable().columns.adjust().responsive.recalc();
-        }
-    });
 });
 </script>

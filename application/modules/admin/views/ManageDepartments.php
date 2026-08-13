@@ -251,21 +251,18 @@ $(document).ready(function () {
         $('#rightFormOverlay').removeClass('show');
     });
 
-});
-</script>
-        
-<script>
-$(document).ready(function() {
     if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#example1')) {
         $('#example1').DataTable({
             "responsive": true,
             "autoWidth": false
         });
     }
+
     $(window).on('resize orientationchange', function() {
         if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
             $('#example1').DataTable().columns.adjust().responsive.recalc();
         }
     });
+
 });
 </script>

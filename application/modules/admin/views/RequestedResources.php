@@ -5,29 +5,91 @@
     right: -100% !important;
     width: 620px !important;
     max-width: 90vw !important;
-    transition: right 0.3s ease !important;
+    height: 100vh !important;
+    background: #ffffff !important;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.18) !important;
+    transition: right 0.3s ease-in-out !important;
+    z-index: 1055 !important;
+    display: flex !important;
+    flex-direction: column !important;
 }
 .right-form.open {
     right: 0 !important;
 }
+.right-form-header {
+    padding: 16px 20px !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid #e9ecef !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+}
+.right-form-body {
+    padding: 20px !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+    background: #ffffff !important;
+}
+/* STRICT STEPPER DISPLAY RULES */
+#requestResourcePanel .bs-stepper-content .content {
+    display: none !important;
+}
+#requestResourcePanel .bs-stepper-content .content.active {
+    display: block !important;
+}
+#requestResourcePanel .bs-stepper-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    background: #f8f9fa !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    border: 1px solid #e9ecef !important;
+    margin-bottom: 15px !important;
+}
+#requestResourcePanel .bs-stepper-header .step-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 4px 6px !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+}
+#requestResourcePanel .bs-stepper-header .bs-stepper-circle {
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 50% !important;
+    background: #dee2e6 !important;
+    color: #495057 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-weight: 700 !important;
+    font-size: 12px !important;
+}
+#requestResourcePanel .bs-stepper-header .step.active .bs-stepper-circle {
+    background: #007bff !important;
+    color: #ffffff !important;
+}
+#requestResourcePanel .bs-stepper-header .bs-stepper-label {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #6c757d !important;
+}
+#requestResourcePanel .bs-stepper-header .step.active .bs-stepper-label {
+    color: #007bff !important;
+    font-weight: 700 !important;
+}
+#requestResourcePanel .bs-stepper-header .line {
+    flex: 1 !important;
+    height: 2px !important;
+    background: #e9ecef !important;
+    margin: 0 6px !important;
+}
 </style>
-<!-- Content Header (Page header) -->
-<div class="content-header">
-  <div class="container-fluid">
-    <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0 text-dark">Requested Resources</h1>
-      </div>
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard'); ?>">Home</a></li>
-          <li class="breadcrumb-item active">Requested Resources</li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- /.content-header -->
 
 <section class="content">
   <div class="container-fluid">
@@ -131,14 +193,6 @@
                         <?php endif; ?>
 
                       <?php endif; ?>
-
-                      <!-- Vacancy status convert (ACCEPTED requests) -->
-                      <?php if ($req['Status'] === 'ACCEPTED' && empty($req['ConvertedJid']) && !$isHiringManager): ?>
-                        <a href="<?= base_url('admin/convertRequestToVacancy/' . $req['RequestId']); ?>" class="btn btn-sm btn-primary" title="Publish Vacancy"
-                          onclick="return confirm('Publish this approved request as an active vacancy?');">
-                          <i class="fas fa-plus"></i>
-                        </a>
-                      <?php endif; ?>
                     </div>
                   </td>
                 </tr>
@@ -163,22 +217,19 @@
      SLIDING PANEL: REQUEST RESOURCE PANEL (RIGHT FORM)
      ========================================== -->
 <div id="requestResourcePanel" class="right-form">
-  <div class="right-form-header">
-    <h5 class="mb-0 font-weight-bold" id="panelHeaderTitle"><i class="fas fa-user-plus mr-2"></i>Request Resource</h5>
-    <button type="button" class="close-btn" id="closeRequestResourcePanel">&times;</button>
-  </div>
+  <form action="<?= base_url('admin/saveResourceRequest'); ?>" method="post" id="resourceRequestForm" style="display:flex; flex-direction:column; height:100%;">
+    <input type="hidden" name="RequestId" id="res_RequestId" value="0">
+    
+    <div class="right-form-header">
+      <h5 class="mb-0 font-weight-bold" id="panelHeaderTitle"><i class="fas fa-user-plus mr-2"></i>Request Resource</h5>
+      <button type="button" class="close-btn" id="closeRequestResourcePanel">&times;</button>
+    </div>
 
-  <div class="right-form-body">
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card card-default shadow-none border-0">
-          <form action="<?= base_url('admin/saveResourceRequest'); ?>" method="post" id="resourceRequestForm">
-            <input type="hidden" name="RequestId" id="res_RequestId" value="0">
-            <div class="card-body p-0">
-              <div class="bs-stepper">
+    <div class="right-form-body">
+      <div class="bs-stepper">
                 
                 <div class="bs-stepper-header" role="tablist">
-                  <div class="step" data-target="#res-job-part">
+                  <div class="step active" data-target="#res-job-part">
                     <button type="button" class="step-trigger" role="tab" aria-controls="res-job-part" id="res-job-part-trigger">
                       <span class="bs-stepper-circle">1</span>
                       <span class="bs-stepper-label">JOB INFO</span>
@@ -203,14 +254,17 @@
                 <div class="bs-stepper-content mt-3">
                   
                   <!-- STEP 1: JOB INFO -->
-                  <div id="res-job-part" class="content" role="tabpanel" aria-labelledby="res-job-part-trigger">
+                  <div id="res-job-part" class="content active" role="tabpanel" aria-labelledby="res-job-part-trigger">
                     
                     <div class="form-group">
                       <label class="text-label font-weight-bold">Job Title / Designation <span class="text-danger">*</span></label>
                       <input type="text" name="JobTitle" class="form-control" placeholder="e.g. Senior Software Engineer" required>
                     </div>
 
-                    
+                    <div class="form-group">
+                      <label class="text-label font-weight-bold">Functional Role / Role <span class="text-danger">*</span></label>
+                      <input type="text" name="FunctionalRole" class="form-control" placeholder="e.g. Frontend Developer / Team Lead" required>
+                    </div>
 
                     <div class="form-group">
                       <label class="text-label font-weight-bold">Department <span class="text-danger">*</span></label>
@@ -222,6 +276,26 @@
                           <?php endforeach; ?>
                         <?php endif; ?>
                       </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="text-label font-weight-bold"><i class="fas fa-map-marker-alt text-danger mr-1"></i> Job Location</label>
+                      <div class="position-relative">
+                        <input type="text" id="resLocationInput" class="form-control search-input" placeholder="Type location (e.g. Chennai, Bangalore)..." autocomplete="off">
+                        <input type="hidden" name="JobLocation" id="resJobLocation">
+                        <div class="dropdown-menu w-100" id="resLocationDropdown"></div>
+                      </div>
+                      <div class="chip-container mt-2" id="resLocationChips"></div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="text-label font-weight-bold"><i class="fas fa-graduation-cap text-info mr-1"></i> Education Required</label>
+                      <div class="position-relative">
+                        <input type="text" id="resEducationInput" class="form-control search-input" placeholder="Type education (e.g. B.E, B.Tech, MBA)..." autocomplete="off">
+                        <input type="hidden" name="EducationRequired" id="resEducationRequired">
+                        <div class="dropdown-menu w-100" id="resEducationDropdown"></div>
+                      </div>
+                      <div class="chip-container mt-2" id="resEducationChips"></div>
                     </div>
 
                     <div class="form-group">
@@ -261,11 +335,11 @@
                       <div class="row">
                         <div class="col-md-6">
                           <label class="text-label font-weight-bold">Min Experience (Years)</label>
-                          <input type="number" name="ExpMin" class="form-control" value="0" min="0">
+                          <input type="number" step="any" min="0" name="ExpMin" id="res_ExpMin" class="form-control" value="0" placeholder="e.g. 1.5">
                         </div>
                         <div class="col-md-6">
                           <label class="text-label font-weight-bold">Max Experience (Years)</label>
-                          <input type="number" name="ExpMax" class="form-control" value="0" min="0">
+                          <input type="number" step="any" min="0" name="ExpMax" id="res_ExpMax" class="form-control" value="0" placeholder="e.g. 5.5">
                         </div>
                       </div>
                     </div>
@@ -297,6 +371,43 @@
                     </div>
 
                     <div class="form-group">
+                      <label class="text-label font-weight-bold"><i class="fas fa-check-circle text-success mr-1"></i> Must-Have Skills <span class="text-danger">*</span></label>
+                      <div class="position-relative">
+                        <input type="text" id="resMustHaveSkillsInput" class="form-control search-input" placeholder="Type mandatory skill..." autocomplete="off">
+                        <input type="hidden" name="MustHaveSkills" id="resMustHaveSkills">
+                        <div class="dropdown-menu w-100" id="resMustHaveSkillsDropdown"></div>
+                      </div>
+                      <div class="chip-container mt-2" id="resMustHaveSkillsChips"></div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="text-label font-weight-bold"><i class="fas fa-star text-info mr-1"></i> Nice-to-Have Skills</label>
+                      <div class="position-relative">
+                        <input type="text" id="resNiceToHaveSkillsInput" class="form-control search-input" placeholder="Type optional skill..." autocomplete="off">
+                        <input type="hidden" name="NiceToHaveSkills" id="resNiceToHaveSkills">
+                        <div class="dropdown-menu w-100" id="resNiceToHaveSkillsDropdown"></div>
+                      </div>
+                      <div class="chip-container mt-2" id="resNiceToHaveSkillsChips"></div>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="text-label font-weight-bold"><i class="fas fa-language text-secondary mr-1"></i> Communication Languages <span class="text-danger">*</span></label>
+                      <div class="position-relative">
+                        <input type="text" id="resLanguageInput" class="form-control search-input" placeholder="Type language..." autocomplete="off">
+                        <input type="hidden" name="CommunicationLang" id="resCommunicationLang">
+                        <div class="dropdown-menu w-100" id="resLanguageDropdown"></div>
+                      </div>
+                      <div class="chip-container mt-2" id="resLanguageChips"></div>
+                    </div>
+
+                    <div class="mb-3">
+                      <button type="button" class="btn btn-outline-primary font-weight-bold" id="btnGenerateJobContent">
+                        <i class="fas fa-magic mr-1"></i> Generate Job Description & Responsibilities
+                      </button>
+                      <small class="form-text text-muted">Auto-generates professional Job Description and Roles & Responsibilities based on vacancy details.</small>
+                    </div>
+
+                    <div class="form-group">
                       <label class="text-label font-weight-bold">Job Description <span class="text-danger">*</span></label>
                       <textarea name="JobDescription" class="form-control" rows="4" placeholder="Enter job description manually..." required></textarea>
                     </div>
@@ -313,11 +424,7 @@
                 </div>
               </div>
             </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+  </form>
 </div>
 
 <!-- ==========================================
@@ -405,20 +512,158 @@ $(document).ready(function() {
   // Initialize Stepper
   var stepperEl = document.querySelector('#requestResourcePanel .bs-stepper');
   if (stepperEl && typeof Stepper !== 'undefined') {
-    resStepperObj = new Stepper(stepperEl);
+    try {
+      window.resStepperObj = new Stepper(stepperEl);
+    } catch (e) {}
   }
+
+  // Handle direct tab header clicks
+  $(document).on('click', '#requestResourcePanel .bs-stepper-header .step', function(e) {
+    e.preventDefault();
+    var target = $(this).data('target');
+    if (target === '#res-job-part') goToResStep(1);
+    else if (target === '#res-salary-part') goToResStep(2);
+    else if (target === '#res-desc-part') goToResStep(3);
+  });
+
+  initResChipAutocomplete({
+      inputId: 'resLocationInput',
+      dropdownId: 'resLocationDropdown',
+      chipsId: 'resLocationChips',
+      hiddenId: 'resJobLocation',
+      url: '<?= base_url("admin/searchLocation") ?>',
+      key: 'JobLocation'
+  });
+  initResChipAutocomplete({
+      inputId: 'resEducationInput',
+      dropdownId: 'resEducationDropdown',
+      chipsId: 'resEducationChips',
+      hiddenId: 'resEducationRequired',
+      url: '<?= base_url("admin/searchEducation") ?>',
+      key: 'EducationRequired'
+  });
+  initResChipAutocomplete({
+      inputId: 'resMustHaveSkillsInput',
+      dropdownId: 'resMustHaveSkillsDropdown',
+      chipsId: 'resMustHaveSkillsChips',
+      hiddenId: 'resMustHaveSkills',
+      url: '<?= base_url("admin/searchSkills") ?>',
+      key: 'SkillName'
+  });
+  initResChipAutocomplete({
+      inputId: 'resNiceToHaveSkillsInput',
+      dropdownId: 'resNiceToHaveSkillsDropdown',
+      chipsId: 'resNiceToHaveSkillsChips',
+      hiddenId: 'resNiceToHaveSkills',
+      url: '<?= base_url("admin/searchSkills") ?>',
+      key: 'SkillName'
+  });
+  initResChipAutocomplete({
+      inputId: 'resLanguageInput',
+      dropdownId: 'resLanguageDropdown',
+      chipsId: 'resLanguageChips',
+      hiddenId: 'resCommunicationLang',
+      url: '<?= base_url("admin/searchLanguage") ?>',
+      key: 'CommunicationLang'
+  });
+
+  $('#resourceRequestForm').on('submit', function(e) {
+      e.preventDefault();
+
+      var jobTitle = $('input[name="JobTitle"]').val().trim();
+      var did = $('select[name="Did"]').val();
+      var approverId = $('select[name="ApproverId"]').val();
+      var mustHave = $('#resMustHaveSkills').val().trim();
+      var commLang = $('#resCommunicationLang').val().trim();
+      var jd = $('textarea[name="JobDescription"]').val().trim();
+      var rr = $('textarea[name="Responsibilities"]').val().trim();
+
+      if (!jobTitle || !did || !approverId) {
+          goToResStep(1);
+          toastr.warning('Please complete Job Title, Department, and Approver Name in Step 1.');
+          return false;
+      }
+
+      if (!mustHave) {
+          goToResStep(3);
+          toastr.warning('Please add at least one Must-Have Skill.');
+          return false;
+      }
+
+      if (!commLang) {
+          goToResStep(3);
+          toastr.warning('Please add at least one Communication Language.');
+          return false;
+      }
+
+      if (!jd || !rr) {
+          goToResStep(3);
+          toastr.warning('Please provide Job Description and Roles & Responsibilities.');
+          return false;
+      }
+
+      var $btn = $('#resSubmitBtn');
+      $btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Submitting...');
+
+      $.ajax({
+          url: $(this).attr('action'),
+          type: 'POST',
+          data: $(this).serialize(),
+          dataType: 'json',
+          success: function(res) {
+              if (res.status === 'success') {
+                  toastr.success(res.message || 'Resource Request submitted successfully.');
+                  setTimeout(function() {
+                      location.reload();
+                  }, 1000);
+              } else {
+                  $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Submit Request');
+                  toastr.error(res.message || 'Failed to submit request.');
+              }
+          },
+          error: function() {
+              $btn.prop('disabled', false).html('<i class="fas fa-paper-plane mr-1"></i> Submit Request');
+              toastr.error('Server or network error occurred.');
+          }
+      });
+  });
 });
 
-function resStepperNext() {
-  if (resStepperObj) {
-    resStepperObj.next();
+var currentResStep = 1;
+
+function goToResStep(stepNum) {
+  stepNum = parseInt(stepNum) || 1;
+  if (stepNum < 1) stepNum = 1;
+  if (stepNum > 3) stepNum = 3;
+  currentResStep = stepNum;
+
+  var targets = {
+    1: '#res-job-part',
+    2: '#res-salary-part',
+    3: '#res-desc-part'
+  };
+  var targetId = targets[stepNum];
+
+  // 1. Update Header Tabs
+  $('#requestResourcePanel .bs-stepper-header .step').removeClass('active');
+  $('#requestResourcePanel .bs-stepper-header .step[data-target="' + targetId + '"]').addClass('active');
+
+  // 2. Update Content Panels
+  $('#requestResourcePanel .bs-stepper-content .content').removeClass('active').hide();
+  $(targetId).addClass('active').fadeIn(150);
+
+  // 3. Keep Stepper JS Object in sync
+  if (window.resStepperObj) {
+    try { window.resStepperObj.to(stepNum); } catch (e) {}
   }
 }
 
+function resStepperNext() {
+  goToResStep(currentResStep + 1);
+}
+
 function resStepperPrev() {
-  if (resStepperObj) {
-    resStepperObj.previous();
-  }
+  goToResStep(currentResStep - 1);
 }
 
 function viewRequestDetails(req) {
@@ -427,13 +672,18 @@ function viewRequestDetails(req) {
     '<tr><th>Job Title / Designation</th><td>' + (req.JobTitle || '') + '</td></tr>' +
     '<tr><th>Functional Role</th><td>' + (req.FunctionalRole || '-') + '</td></tr>' +
     '<tr><th>Department</th><td>' + (req.Departmentname || '-') + '</td></tr>' +
+    '<tr><th>Job Location</th><td>' + (req.JobLocation || '-') + '</td></tr>' +
+    '<tr><th>Education Required</th><td>' + (req.EducationRequired || '-') + '</td></tr>' +
     '<tr><th>Number of Positions</th><td>' + (req.NoofOpenings || 1) + '</td></tr>' +
     '<tr><th>Position Type</th><td>' + (req.PositionType || 'New Position') + '</td></tr>' +
     '<tr><th>Experience</th><td>' + (req.ExpMin || 0) + ' - ' + (req.ExpMax || 0) + ' Years</td></tr>' +
-    '<tr><th>Salary Range</th><td>₹ ' + (req.SalMin || 0) + ' - ₹ ' + (req.SalMax || 0) + '</td></tr>' +
+    '<tr><th>Salary Range</th><td>' + (req.Salary || '-') + '</td></tr>' +
     '<tr><th>Start Date</th><td>' + (req.RecruitmentStartDate || '-') + '</td></tr>' +
     '<tr><th>Target Onboarding Date</th><td>' + (req.TargetOnboardingDate || '-') + '</td></tr>' +
     '<tr><th>Reason for Requirement</th><td>' + (req.ReasonForRequirement || '-') + '</td></tr>' +
+    '<tr><th>Must-Have Skills</th><td>' + (req.MustHaveSkills || '-') + '</td></tr>' +
+    '<tr><th>Nice-to-Have Skills</th><td>' + (req.NiceToHaveSkills || '-') + '</td></tr>' +
+    '<tr><th>Communication Languages</th><td>' + (req.CommunicationLang || '-') + '</td></tr>' +
     '<tr><th>Job Description</th><td><pre style="white-space:pre-wrap; font-family:inherit;">' + (req.JobDescription || '') + '</pre></td></tr>' +
     '<tr><th>Roles & Responsibilities</th><td><pre style="white-space:pre-wrap; font-family:inherit;">' + (req.Responsibilities || '') + '</pre></td></tr>' +
     '<tr><th>Requested By</th><td>' + (req.RequestedByName || '-') + '</td></tr>' +
@@ -478,7 +728,7 @@ function submitApproval(e) {
   e.preventDefault();
   var comment = $('#approvalComment').val().trim();
   if (!comment) {
-    alert('Approval Comments are mandatory.');
+    showAlert('Approval Comments are mandatory.', 'warning');
     return;
   }
 
@@ -492,11 +742,16 @@ function submitApproval(e) {
         $('#approvalModal').modal('hide');
         location.reload();
       } else {
-        alert(res.message || 'Error updating status');
+        showAlert(res.message || 'Error updating status', 'danger');
       }
     },
-    error: function() {
-      alert('Network or server error.');
+    error: function(xhr) {
+      var msg = 'Network or server error.';
+      try {
+        var errRes = JSON.parse(xhr.responseText);
+        if (errRes.message) msg = errRes.message;
+      } catch (e) {}
+      showAlert(msg, 'danger');
     }
   });
 }
@@ -508,9 +763,12 @@ function openCreateRequestModal() {
   if ($("#resourceRequestForm").length) {
     $("#resourceRequestForm")[0].reset();
   }
-  if (resStepperObj) {
-    resStepperObj.to(1);
-  }
+  preloadResChips('', 'resLocationChips', 'resJobLocation');
+  preloadResChips('', 'resEducationChips', 'resEducationRequired');
+  preloadResChips('', 'resMustHaveSkillsChips', 'resMustHaveSkills');
+  preloadResChips('', 'resNiceToHaveSkillsChips', 'resNiceToHaveSkills');
+  preloadResChips('', 'resLanguageChips', 'resCommunicationLang');
+  goToResStep(1);
   $("#requestResourcePanel").addClass("open");
 }
 
@@ -521,6 +779,7 @@ function openEditRequestModal(req) {
 
   // Populate form fields
   $('input[name="JobTitle"]').val(req.JobTitle || "");
+  $('input[name="FunctionalRole"]').val(req.FunctionalRole || "");
   $('select[name="Did"]').val(req.Did || "");
   $('select[name="PositionType"]').val(req.PositionType || "New Position");
   $('select[name="ApproverId"]').val(req.ApproverId || "");
@@ -535,10 +794,281 @@ function openEditRequestModal(req) {
   $('textarea[name="JobDescription"]').val(req.JobDescription || "");
   $('textarea[name="Responsibilities"]').val(req.Responsibilities || "");
 
-  if (resStepperObj) {
-    resStepperObj.to(1);
-  }
+  preloadResChips(req.JobLocation || '', 'resLocationChips', 'resJobLocation');
+  preloadResChips(req.EducationRequired || '', 'resEducationChips', 'resEducationRequired');
+  preloadResChips(req.MustHaveSkills || '', 'resMustHaveSkillsChips', 'resMustHaveSkills');
+  preloadResChips(req.NiceToHaveSkills || '', 'resNiceToHaveSkillsChips', 'resNiceToHaveSkills');
+  preloadResChips(req.CommunicationLang || '', 'resLanguageChips', 'resCommunicationLang');
+  goToResStep(1);
   $("#requestResourcePanel").addClass("open");
 }
+
+function addResChipDirect(value, inputId, chipsId, hiddenId) {
+    value = (value || '').replace(/,/g, '').trim();
+    if (!value) return;
+    const chipsContainer = document.getElementById(chipsId);
+    const hiddenInput = hiddenId ? document.getElementById(hiddenId) : null;
+    const input = document.getElementById(inputId);
+    if (!chipsContainer) return;
+
+    function syncHidden() {
+        if (!hiddenInput) return;
+        hiddenInput.value = [...chipsContainer.querySelectorAll('.badge')].map(x => x.textContent.replace('×', '').trim()).join(',');
+    }
+
+    const existing = [...chipsContainer.querySelectorAll('.badge')]
+        .map(x => x.textContent.replace('×', '').trim());
+    if (existing.includes(value)) {
+        if (input) input.value = '';
+        return;
+    }
+
+    const chip = document.createElement('span');
+    chip.className = inputId.toLowerCase().includes('musthave') ? 'badge badge-pill badge-success mr-2 mb-2' : (inputId.toLowerCase().includes('nicetohave') ? 'badge badge-pill badge-info mr-2 mb-2' : 'badge badge-pill badge-primary mr-2 mb-2');
+    chip.style.fontSize = '13px';
+    chip.style.padding = '6px 12px';
+    chip.style.display = 'inline-flex';
+    chip.style.alignItems = 'center';
+    chip.innerHTML = `${value} <span style="cursor:pointer; margin-left:6px; font-weight:bold; font-size:14px;">×</span>`;
+
+    chip.querySelector('span').onclick = (e) => {
+        e.stopPropagation();
+        chip.remove();
+        syncHidden();
+    };
+    chipsContainer.appendChild(chip);
+    if (input) input.value = '';
+    const dropdownId = inputId.replace('Input', 'Dropdown');
+    const dropdown = document.getElementById(dropdownId);
+    if (dropdown) dropdown.style.display = 'none';
+    syncHidden();
+}
+
+// Global jQuery event delegation for chip inputs to capture Enter, Comma, and Blur reliably
+$(document).on('keydown', '#resLocationInput, #resEducationInput, #resMustHaveSkillsInput, #resNiceToHaveSkillsInput, #resLanguageInput', function(e) {
+    if (e.which === 13 || e.keyCode === 13 || e.key === 'Enter' || e.which === 188 || e.keyCode === 188 || e.key === ',') {
+        e.preventDefault();
+        e.stopPropagation();
+        var $input = $(this);
+        var val = $input.val().replace(/,/g, '').trim();
+        if (val.length >= 1) {
+            var inputId = $input.attr('id');
+            if (inputId === 'resLocationInput') {
+                addResChipDirect(val, 'resLocationInput', 'resLocationChips', 'resJobLocation');
+            } else if (inputId === 'resEducationInput') {
+                addResChipDirect(val, 'resEducationInput', 'resEducationChips', 'resEducationRequired');
+            } else if (inputId === 'resMustHaveSkillsInput') {
+                addResChipDirect(val, 'resMustHaveSkillsInput', 'resMustHaveSkillsChips', 'resMustHaveSkills');
+            } else if (inputId === 'resNiceToHaveSkillsInput') {
+                addResChipDirect(val, 'resNiceToHaveSkillsInput', 'resNiceToHaveSkillsChips', 'resNiceToHaveSkills');
+            } else if (inputId === 'resLanguageInput') {
+                addResChipDirect(val, 'resLanguageInput', 'resLanguageChips', 'resCommunicationLang');
+            }
+        }
+        return false;
+    }
+});
+
+$(document).on('blur', '#resLocationInput, #resEducationInput, #resMustHaveSkillsInput, #resNiceToHaveSkillsInput, #resLanguageInput', function() {
+    var $input = $(this);
+    setTimeout(function() {
+        var val = $input.val().replace(/,/g, '').trim();
+        if (val.length >= 1) {
+            var inputId = $input.attr('id');
+            if (inputId === 'resLocationInput') {
+                addResChipDirect(val, 'resLocationInput', 'resLocationChips', 'resJobLocation');
+            } else if (inputId === 'resEducationInput') {
+                addResChipDirect(val, 'resEducationInput', 'resEducationChips', 'resEducationRequired');
+            } else if (inputId === 'resMustHaveSkillsInput') {
+                addResChipDirect(val, 'resMustHaveSkillsInput', 'resMustHaveSkillsChips', 'resMustHaveSkills');
+            } else if (inputId === 'resNiceToHaveSkillsInput') {
+                addResChipDirect(val, 'resNiceToHaveSkillsInput', 'resNiceToHaveSkillsChips', 'resNiceToHaveSkills');
+            } else if (inputId === 'resLanguageInput') {
+                addResChipDirect(val, 'resLanguageInput', 'resLanguageChips', 'resCommunicationLang');
+            }
+        }
+    }, 200);
+});
+
+function preloadResChips(values, chipsId, hiddenId) {
+    const chips = document.getElementById(chipsId);
+    const hidden = hiddenId ? document.getElementById(hiddenId) : null;
+    if (!chips) return;
+    chips.innerHTML = '';
+    if (!values) {
+        if (hidden) hidden.value = '';
+        return;
+    }
+    const arr = values.split(',');
+    arr.forEach(v => {
+        v = v.trim();
+        if (!v) return;
+        const chip = document.createElement('span');
+        chip.className = chipsId.toLowerCase().includes('musthave') ? 'badge badge-pill badge-success mr-2 mb-2' : (chipsId.toLowerCase().includes('nicetohave') ? 'badge badge-pill badge-info mr-2 mb-2' : 'badge badge-pill badge-primary mr-2 mb-2');
+        chip.style.fontSize = '13px';
+        chip.style.padding = '6px 12px';
+        chip.style.display = 'inline-flex';
+        chip.style.alignItems = 'center';
+        chip.innerHTML = `${v} <span style="cursor:pointer; margin-left:6px; font-weight:bold; font-size:14px;">×</span>`;
+        chip.querySelector('span').onclick = (e) => {
+            e.stopPropagation();
+            chip.remove();
+            if (hidden) {
+                hidden.value = [...chips.querySelectorAll('.badge')].map(x => x.textContent.replace('×', '').trim()).join(',');
+            }
+        };
+        chips.appendChild(chip);
+    });
+    if (hidden) {
+        hidden.value = arr.join(',');
+    }
+}
+
+function initResChipAutocomplete(config) {
+    const input = document.getElementById(config.inputId);
+    const dropdown = document.getElementById(config.dropdownId);
+    const chipsContainer = document.getElementById(config.chipsId);
+    const hiddenInput = config.hiddenId ? document.getElementById(config.hiddenId) : null;
+    if (!input || !dropdown || !chipsContainer) return;
+
+    function syncHidden() {
+        if (!hiddenInput) return;
+        hiddenInput.value = [...chipsContainer.querySelectorAll('.badge')].map(x => x.textContent.replace('×', '').trim()).join(',');
+    }
+
+    input.addEventListener('keyup', function(e) {
+        if (e.key === ',' || e.keyCode === 188) {
+            e.preventDefault();
+            const value = this.value.replace(/,/g, '').trim();
+            if (value.length >= 1) {
+                addResChipDirect(value, config.inputId, config.chipsId, config.hiddenId);
+            }
+            return;
+        }
+        const q = this.value.trim();
+        if (q.length < 2) {
+            dropdown.style.display = 'none';
+            dropdown.innerHTML = '';
+            return;
+        }
+        fetch(`${config.url}?q=${encodeURIComponent(q)}`)
+            .then(res => res.json())
+            .then(data => {
+                dropdown.innerHTML = '';
+                if (!data || !data.length) {
+                    dropdown.innerHTML = '<span class="dropdown-item disabled">No results</span>';
+                } else {
+                    data.forEach(item => {
+                        const value = item[config.key];
+                        const el = document.createElement('a');
+                        el.className = 'dropdown-item';
+                        el.style.cursor = 'pointer';
+                        el.textContent = value;
+                        el.onclick = (evt) => {
+                            evt.preventDefault();
+                            evt.stopPropagation();
+                            addResChipDirect(value, config.inputId, config.chipsId, config.hiddenId);
+                        };
+                        dropdown.appendChild(el);
+                    });
+                }
+                dropdown.style.display = 'block';
+            })
+            .catch(() => {
+                dropdown.style.display = 'none';
+            });
+    });
+
+    document.addEventListener('click', e => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
+$(document).ready(function() {
+    $('#btnGenerateJobContent').on('click', function(e) {
+        e.preventDefault();
+
+        // Trigger blur on active inputs to sync any typed chip values
+        $('#resLocationInput, #resEducationInput, #resMustHaveSkillsInput, #resNiceToHaveSkillsInput, #resLanguageInput').trigger('blur');
+
+        setTimeout(function() {
+            const jobTitle       = $('input[name="JobTitle"]').val().trim();
+            const functionalRole = $('input[name="FunctionalRole"]').val().trim();
+            const deptSelect     = $('select[name="Did"] option:selected');
+            const deptText       = deptSelect.length ? deptSelect.text().trim() : '';
+            const department     = (deptText && !deptText.toLowerCase().includes('select')) ? deptText : '';
+            const expMin         = $('#res_ExpMin').val() || 0;
+            const expMax         = $('#res_ExpMax').val() || 0;
+
+            const mustSkills     = $('#resMustHaveSkills').val() || $('#resMustHaveSkillsInput').val() || '';
+            const niceSkills     = $('#resNiceToHaveSkills').val() || $('#resNiceToHaveSkillsInput').val() || '';
+            const location       = $('#resJobLocation').val() || $('#resLocationInput').val() || '';
+            const commLang       = $('#resCommunicationLang').val() || $('#resLanguageInput').val() || '';
+
+            if (!jobTitle && !functionalRole) {
+                if (typeof toastr !== 'undefined') {
+                    toastr.error('Please enter a Job Title or Functional Role before generating.');
+                } else {
+                    alert('Please enter a Job Title or Functional Role before generating.');
+                }
+                return;
+            }
+
+            const btn = $('#btnGenerateJobContent');
+            const origHtml = btn.html();
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Generating...');
+
+            $.ajax({
+                url: base_url + 'admin/generateJobContent',
+                type: 'POST',
+                data: {
+                    JobTitle: jobTitle,
+                    FunctionalRole: functionalRole,
+                    Department: department,
+                    ExpMin: expMin,
+                    ExpMax: expMax,
+                    MustHaveSkills: mustSkills,
+                    NiceToHaveSkills: niceSkills,
+                    JobLocation: location,
+                    CommunicationLang: commLang
+                },
+                dataType: 'json',
+                success: function(res) {
+                    btn.prop('disabled', false).html(origHtml);
+                    if (res && res.status === 'success') {
+                        if (res.job_description) {
+                            $('textarea[name="JobDescription"]').val(res.job_description);
+                        }
+                        if (res.responsibilities) {
+                            $('textarea[name="Responsibilities"]').val(res.responsibilities);
+                        }
+                        if (typeof toastr !== 'undefined') {
+                            toastr.success('Job Description & Responsibilities auto-generated successfully!');
+                        }
+                    } else {
+                        const errorMsg = (res && res.message) ? res.message : 'Unable to generate job content. Please enter the details manually.';
+                        if (typeof toastr !== 'undefined') {
+                            toastr.error(errorMsg);
+                        } else {
+                            alert(errorMsg);
+                        }
+                    }
+                },
+                error: function(xhr, status, error) {
+                    btn.prop('disabled', false).html(origHtml);
+                    console.error('Job content generation error:', xhr.responseText);
+                    if (typeof toastr !== 'undefined') {
+                        toastr.error('Unable to generate job content. Please enter the details manually.');
+                    } else {
+                        alert('Unable to generate job content. Please enter the details manually.');
+                    }
+                }
+            });
+        }, 250);
+    });
+});
 
 </script>

@@ -109,7 +109,7 @@
                     <th>Name</th>
                     <th>Mobile No</th>
                     <th>Email</th>
-                    <th>Score</th> 
+                    <th>ATS Recommendation</th> 
                     <th>Current Status</th>
                     <th>Verified On</th>
                     <th>Action</th>
@@ -148,22 +148,81 @@
 </td>
 
                                     <td><?= $cl['PhoneNo'] ?></td>
-                                    <td><?= $cl['Email'] ?></td> 
-                                          <td>
-                                         <?= $cl['ProfileMatchPer'] ?? 0 ?>%
-                                         <button type="button"
-                                             class="btn btn-xs btn-outline-info btnScoreHelp d-block mt-1"
-                                             title="View Score Breakdown"
-                                             data-score="<?= htmlspecialchars($cl['ProfileMatchPer'] ?? 0) ?>"
-                                             data-breakdown='<?= htmlspecialchars(json_encode(is_string($cl['ScoreBreakdown'] ?? null) ? json_decode($cl['ScoreBreakdown'] ?? '{}', true) : ($cl['ScoreBreakdown'] ?? []))) ?>'
-                                             data-skills="<?= htmlspecialchars($cl['MatchedSkills'] ?? '') ?>"
-                                             data-edu="<?= htmlspecialchars($cl['EducationMatch'] ?? 'No') ?>"
-                                             data-exp="<?= htmlspecialchars($cl['ExperienceMatch'] ?? 'No') ?>"
-                                             data-jobskills="<?= htmlspecialchars($cl['JobSkills'] ?? '') ?>">
-                                             <i class="fas fa-question-circle"></i> Help
-                                         </button>
-                                     </td>
-                                    <td><?= $cl['CurrentStatus'] ?></td>
+                                    <td><?= $cl['Email'] ?></td>
+                                    <td>
+<?php
+    $recommendation = trim($cl['ProfileMatchPer'] ?? '');
+
+    if ($recommendation === 'Recommended') {
+        $badgeClass = 'badge-success';
+    } elseif ($recommendation === 'Review Required') {
+        $badgeClass = 'badge-warning';
+    } elseif ($recommendation === 'Not Recommended') {
+        $badgeClass = 'badge-danger';
+    } else {
+        $badgeClass = 'badge-secondary';
+        $recommendation = $recommendation !== '' ? $recommendation : 'Review Required';
+    }
+
+    $analysisData = [];
+
+    if (!empty($cl['ScoreBreakdown'])) {
+        if (is_string($cl['ScoreBreakdown'])) {
+            $decoded = json_decode($cl['ScoreBreakdown'], true);
+            if (is_array($decoded)) {
+                $analysisData = $decoded;
+            }
+        } elseif (is_array($cl['ScoreBreakdown'])) {
+            $analysisData = $cl['ScoreBreakdown'];
+        }
+    }
+
+    $analysisData['recommendation'] =
+        $analysisData['recommendation'] ?? $recommendation;
+
+    $analysisData['recommendation_reason'] =
+        $analysisData['recommendation_reason'] ?? '';
+
+    $analysisData['relevant_evidence'] =
+        $analysisData['relevant_evidence'] ?? [];
+
+    $analysisData['missing_requirements'] =
+        $analysisData['missing_requirements'] ?? [];
+
+    $analysisData['domain'] =
+        $analysisData['domain'] ?? '';
+
+    $analysisData['matched_skills'] =
+        $analysisData['matched_skills'] ?? ($cl['MatchedSkills'] ?? '');
+
+    $analysisData['missing_skills'] =
+        $analysisData['missing_skills'] ?? '';
+
+    $analysisData['detected_degree'] =
+        $analysisData['detected_degree'] ?? '';
+
+    $analysisData['experience'] =
+        $analysisData['experience'] ?? ($cl['ExperienceMatch'] ?? '');
+
+    $analysisJson = htmlspecialchars(
+        json_encode($analysisData, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+        ENT_QUOTES,
+        'UTF-8'
+    );
+?>
+
+    <span class="badge <?= $badgeClass ?> p-2">
+        <?= htmlspecialchars($recommendation, ENT_QUOTES, 'UTF-8') ?>
+    </span>
+
+    <button type="button"
+            class="btn btn-xs btn-outline-info btnScoreHelp d-block mt-1"
+            title="View ATS Recommendation Analysis"
+            data-analysis="<?= $analysisJson ?>">
+        <i class="fas fa-search"></i> View Analysis
+    </button>
+</td>
+                                    <td><?= $cl['CurrentStatus'] ?> ?></td>
                                     <td><?= $cl['AppliedOn'] ?></td>  
                                     <td>
 
@@ -615,24 +674,21 @@ Save
 
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title">
-                    ATS Score Breakdown
+                    <i class="fas fa-user-check mr-2"></i>
+                    ATS Recommendation Analysis
                 </h5>
 
                 <button type="button"
                         class="close text-white"
                         data-dismiss="modal">
-
                     &times;
-
                 </button>
             </div>
 
             <div class="modal-body" id="scoreBreakdownModalBody">
-
                 <div class="text-center p-5">
                     <i class="fa fa-spinner fa-spin fa-2x"></i>
                 </div>
-
             </div>
 
         </div>
@@ -709,9 +765,17 @@ $(document).on('click','.openCandidateStage',function(){
    if (status === 'cv uploaded' || status === 'uploaded') {
        $('#stageGroup').show();
        $('#actionGroup').hide();
+       $('#stageAction option[value="Screened"]').show();
    } else {
        $('#stageGroup').hide();
        $('#actionGroup').show();
+
+       // Hide Screened option if candidate is already screened or moved beyond screening
+       if (status.includes('screen') || (status !== 'cv uploaded' && status !== 'uploaded' && status !== '')) {
+           $('#stageAction option[value="Screened"]').hide();
+       } else {
+           $('#stageAction option[value="Screened"]').show();
+       }
    }
 
    $('#candidateStagePanel').addClass('open');
@@ -1286,7 +1350,15 @@ $(document).on('click', '.viewCandidateDetails', function () {
                         </div>
                         <div class="col-md-6">
                             <p><strong>Experience:</strong> ${c.ExpYrs ?? 0} Years</p>
-                            <p><strong>ATS Score:</strong> ${c.ProfileMatchPer ?? 0}%</p>
+                            <p><strong>ATS Recommendation:</strong>
+                                <span class="badge ${
+                                    c.ProfileMatchPer === 'Recommended' ? 'badge-success' :
+                                    c.ProfileMatchPer === 'Not Recommended' ? 'badge-danger' :
+                                    c.ProfileMatchPer === 'Review Required' ? 'badge-warning' :
+                                    'badge-secondary'}">
+                                    ${c.ProfileMatchPer ?? 'Review Required'}
+                                </span>
+                            </p>
                             <p><strong>Status:</strong>
                                 <span class="badge ${
                                     c.ATS_Status && c.ATS_Status.toLowerCase().includes('shortlisted') ? 'badge-success' :
@@ -1594,195 +1666,197 @@ $(document).on('click', '.viewCandidateSimple', function () {
     });
 });
 $(document).on('click', '.btnScoreHelp', function () {
+
     let btn = $(this);
+    let raw = btn.attr('data-analysis') || '{}';
+    let analysis = {};
 
-   
-    let score        = btn.data('score')    ?? 0;
-    let matchedSkills = btn.data('skills') ?? '';
-    let eduMatch     = btn.data('edu')      ?? 'No';
-    let expMatch     = btn.data('exp')      ?? 'No';
-    let jobSkillsStr = btn.data('jobskills') ?? '';
-
-    let breakdown = {};
     try {
-        let raw = btn.data('breakdown');
-        if (raw) {
-            breakdown = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+        analysis = JSON.parse(raw);
+    } catch (e) {
+        console.error('ATS analysis parse error:', e);
+        analysis = {};
+    }
+
+    let recommendation = analysis.recommendation || 'Review Required';
+    let reason = analysis.recommendation_reason || 'No recommendation reason is available.';
+    let evidence = analysis.relevant_evidence || [];
+    let missing = analysis.missing_requirements || [];
+    let domain = analysis.domain || 'Not identified';
+    let matchedSkills = analysis.matched_skills || 'Not identified';
+    let missingSkills = analysis.missing_skills || 'None identified';
+    let detectedDegree = analysis.detected_degree || 'Not identified';
+    let experience = analysis.experience || 'Not verified';
+
+    if (!Array.isArray(evidence)) {
+        evidence = [evidence];
+    }
+
+    if (!Array.isArray(missing)) {
+        missing = [missing];
+    }
+
+    let badgeClass = 'badge-secondary';
+
+    if (recommendation === 'Recommended') {
+        badgeClass = 'badge-success';
+    } else if (recommendation === 'Review Required') {
+        badgeClass = 'badge-warning';
+    } else if (recommendation === 'Not Recommended') {
+        badgeClass = 'badge-danger';
+    }
+
+    let evidenceHtml = '';
+
+    evidence.forEach(function (item) {
+        if (item && item.toString().trim() !== '') {
+            evidenceHtml += `
+                <li class="mb-2">
+                    <i class="fas fa-check-circle text-success mr-2"></i>
+                    ${item}
+                </li>
+            `;
         }
-    } catch(e) { console.error('ScoreBreakdown parse error', e); }
+    });
 
-    let hasBreakdown = Object.keys(breakdown).length > 0;
-
-    let skillsScore   = parseInt(breakdown.skills)           || 0;
-    let eduScore      = parseInt(breakdown.education)        || 0;
-    let expScore      = parseInt(breakdown.experience)       || 0;
-    let projectsScore = parseInt(breakdown.projects)         || 0;
-    let certScore     = parseInt(breakdown.certifications)   || 0;
-    let qualityScore  = parseInt(breakdown.resume_quality)   || 0;
-    let domainScore   = parseInt(breakdown.domain_knowledge) || 0;
-
-    
-    let skillsArr = jobSkillsStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
-    let totalSkills = skillsArr.length;
-
-    
-    let maxSkillsScore   = parseInt(breakdown.skills_max)           || (totalSkills > 0 ? totalSkills * 5 : 50);
-    let maxEduScore      = parseInt(breakdown.education_max)        || 20;
-    let maxExpScore      = parseInt(breakdown.experience_max)       || 20;
-    let maxProjectsScore = parseInt(breakdown.project_max)          || 5;
-    let maxCertScore     = parseInt(breakdown.certification_max)    || 10;
-    let maxQualityScore  = parseInt(breakdown.resume_quality_max)   || 5;
-    let maxDomainScore   = parseInt(breakdown.domain_max)           || 5;
-
-   
-    if (skillsScore > maxSkillsScore) skillsScore = maxSkillsScore;
-    if (eduScore > maxEduScore) eduScore = maxEduScore;
-    if (expScore > maxExpScore) expScore = maxExpScore;
-    if (projectsScore > maxProjectsScore) projectsScore = maxProjectsScore;
-    if (certScore > maxCertScore) certScore = maxCertScore;
-    if (qualityScore > maxQualityScore) qualityScore = maxQualityScore;
-    if (domainScore > maxDomainScore) domainScore = maxDomainScore;
-
-    
-    if (skillsScore < 0) skillsScore = 0;
-    if (eduScore < 0) eduScore = 0;
-    if (expScore < 0) expScore = 0;
-    if (projectsScore < 0) projectsScore = 0;
-    if (certScore < 0) certScore = 0;
-    if (qualityScore < 0) qualityScore = 0;
-    if (domainScore < 0) domainScore = 0;
-
-    
-    let gainedScore = skillsScore + eduScore + expScore + projectsScore + certScore + qualityScore + domainScore;
-    let maxScore = maxSkillsScore + maxEduScore + maxExpScore + maxProjectsScore + maxCertScore + maxQualityScore + maxDomainScore;
-
-   
-    let matchPercentage = maxScore > 0 ? parseFloat(((gainedScore / maxScore) * 100).toFixed(2)) : 0;
-    if (matchPercentage > 100) matchPercentage = 100;
-
-    let breakdownHtml = '';
-
-    if (hasBreakdown) {
-        breakdownHtml = `
-            <h6 class="text-primary font-weight-bold mb-3">
-                <i class="fas fa-chart-bar mr-2"></i>ATS Score Breakdown Analysis
-            </h6>
-            <div class="row text-center mb-3">
-                <div class="col-12">
-                    <div class="h4 font-weight-bold text-navy mb-1">
-                        Total Score: <span class="text-success">${gainedScore}</span> / <span class="text-secondary">${maxScore}</span> Marks
-                    </div>
-                    <div class="small text-muted font-weight-bold">
-                        (Match Percentage: ${matchPercentage}%)
-                    </div>
-                </div>
-            </div>
-
-            <table class="table table-sm table-bordered table-striped mt-2">
-                <thead class="bg-success text-white">
-                    <tr>
-                        <th>Assessment Criteria</th>
-                        <th class="text-center" style="width: 120px;">Score Gained</th>
-                        <th class="text-center" style="width: 120px;">Max Points</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <strong>Skills Match</strong>
-                            <div class="small text-muted text-truncate" style="max-width: 320px;" title="${matchedSkills}">
-                                ${matchedSkills ? '<strong>Matched:</strong> ' + matchedSkills : 'No skills matched'}
-                            </div>
-                        </td>
-                        <td class="text-center font-weight-bold ${skillsScore > 0 ? 'text-success' : 'text-danger'}">${skillsScore}</td>
-                        <td class="text-center text-muted">${maxSkillsScore}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Education Match</strong>
-                            <div class="small text-muted">Required Match: ${eduMatch}</div>
-                        </td>
-                        <td class="text-center font-weight-bold ${eduMatch === 'Yes' ? 'text-success' : 'text-danger'}">${eduScore}</td>
-                        <td class="text-center text-muted">${maxEduScore}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <strong>Experience Match</strong>
-                            <div class="small text-muted">Required Match: ${expMatch}</div>
-                        </td>
-                        <td class="text-center font-weight-bold ${expMatch === 'Yes' ? 'text-success' : 'text-danger'}">${expScore}</td>
-                        <td class="text-center text-muted">${maxExpScore}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Projects & Achievements</strong></td>
-                        <td class="text-center font-weight-bold ${projectsScore > 0 ? 'text-success' : 'text-muted'}">${projectsScore}</td>
-                        <td class="text-center text-muted">${maxProjectsScore}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Certifications</strong></td>
-                        <td class="text-center font-weight-bold ${certScore > 0 ? 'text-success' : 'text-muted'}">${certScore}</td>
-                        <td class="text-center text-muted">${maxCertScore}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Resume Quality</strong></td>
-                        <td class="text-center font-weight-bold ${qualityScore > 0 ? 'text-success' : 'text-muted'}">${qualityScore}</td>
-                        <td class="text-center text-muted">${maxQualityScore}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Role Fit / Domain Knowledge</strong></td>
-                        <td class="text-center font-weight-bold ${domainScore > 0 ? 'text-success' : 'text-muted'}">${domainScore}</td>
-                        <td class="text-center text-muted">${maxDomainScore}</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="bg-light p-2 rounded border mt-3">
-                <div class="d-flex justify-content-between font-weight-bold text-dark small">
-                    <span>Overall Resume Fit Match Percentage:</span>
-                    <span class="text-primary">${matchPercentage}%</span>
-                </div>
-                <div class="progress mt-1" style="height: 6px; background: #e9ecef; border-radius: 3px;">
-                    <div class="progress-bar bg-primary" style="width: ${matchPercentage}%;"></div>
-                </div>
-            </div>
-        `;
-    } else {
-        breakdownHtml = `
-            <h6 class="text-primary font-weight-bold mb-3">
-                <i class="fas fa-chart-bar mr-2"></i>ATS Score Analysis
-            </h6>
-            <div class="alert alert-warning">
-                Detailed breakdown is not available for this legacy record.
-            </div>
-            <div class="bg-light p-3 rounded border">
-                <div class="d-flex justify-content-between font-weight-bold text-dark small">
-                    <span>Overall Resume Fit Match Percentage:</span>
-                    <span class="text-primary">${score}%</span>
-                </div>
-                <div class="progress mt-1" style="height: 6px; background: #e9ecef; border-radius: 3px;">
-                    <div class="progress-bar bg-primary" style="width: ${score}%;"></div>
-                </div>
-            </div>
+    if (evidenceHtml === '') {
+        evidenceHtml = `
+            <li class="text-muted">
+                No specific supporting evidence was recorded.
+            </li>
         `;
     }
 
-    $('#scoreBreakdownModalBody').html(breakdownHtml);
+    let missingHtml = '';
+
+    missing.forEach(function (item) {
+        if (item && item.toString().trim() !== '') {
+            missingHtml += `
+                <li class="mb-2">
+                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>
+                    ${item}
+                </li>
+            `;
+        }
+    });
+
+    if (missingHtml === '') {
+        missingHtml = `
+            <li class="text-success">
+                <i class="fas fa-check-circle mr-2"></i>
+                No major missing requirements were identified.
+            </li>
+        `;
+    }
+
+    let html = `
+        <div class="container-fluid">
+
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Recommendation</h3>
+                </div>
+
+                <div class="card-body text-center">
+                    <span class="badge ${badgeClass} p-2" style="font-size: 15px;">
+                        ${recommendation}
+                    </span>
+
+                    <p class="mt-3 mb-0">
+                        ${reason}
+                    </p>
+                </div>
+            </div>
+
+            <div class="card card-info collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">Candidate Profile Evaluation</h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Domain:</strong> ${domain}</p>
+                            <p><strong>Experience Match:</strong> ${experience}</p>
+                            <p><strong>Education:</strong> ${detectedDegree}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p><strong>Matched Skills:</strong> ${matchedSkills || 'None identified'}</p>
+                            <p><strong>Missing Skills:</strong> ${missingSkills || 'None identified'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card-success collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-check-circle mr-2"></i>
+                        Relevant Evidence
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        ${evidenceHtml}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card card-warning collapsed-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                        Missing / Unclear Requirements
+                    </h3>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        ${missingHtml}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    $('#scoreBreakdownModalBody').html(html);
     $('#scoreBreakdownModal').modal('show');
 });
 </script>
  
 <script>
 $(document).ready(function() {
-    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#example1')) {
+    setTimeout(function() {
+        if ($.fn.DataTable.isDataTable('#example1')) {
+            $('#example1').DataTable().destroy();
+        }
         $('#example1').DataTable({
             "responsive": true,
             "autoWidth": false
         });
-    }
-    $(window).on('resize orientationchange', function() {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
-            $('#example1').DataTable().columns.adjust().responsive.recalc();
-        }
-    });
+        $(window).on('resize orientationchange', function() {
+            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
+                $('#example1').DataTable().columns.adjust().responsive.recalc();
+            }
+        });
+    }, 100);
 });
 </script>

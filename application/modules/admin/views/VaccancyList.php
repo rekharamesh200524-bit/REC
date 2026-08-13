@@ -19,9 +19,9 @@
                   <div class="d-flex justify-content-between align-items-center">
                       <h3 class="card-title mb-0"></h3>
 
-                      <a class="btn btn-sm btn-warning" id="openVacancyPanel">
+                      <!-- <a class="btn btn-sm btn-warning" id="openVacancyPanel">
                           <i class="fas fa-plus-circle"></i> Request Resource
-                      </a>
+                      </a> -->
                   </div>
               </div>
               <div class="">
@@ -71,7 +71,7 @@
                                           <select name="status" class="form-control" onchange="this.form.submit()">
                                               <option value="">All Status</option>
                                               <option value="Open" <?= (($this->input->post('status', TRUE) ?: $this->input->get('status', TRUE)) == 'Open') ? 'selected' : '' ?>>Open</option>
-                                              <option value="Closed" <?= (($this->input->post('status', TRUE) ?: $this->input->get('status', TRUE)) == 'Closed') ? 'selected' : '' ?>>Closed</option>
+                                              <option value="Dropped" <?= (($this->input->post('status', TRUE) ?: $this->input->get('status', TRUE)) == 'Dropped' || ($this->input->post('status', TRUE) ?: $this->input->get('status', TRUE)) == 'Closed') ? 'selected' : '' ?>>Dropped</option>
                                               <option value="On-Hold" <?= (($this->input->post('status', TRUE) ?: $this->input->get('status', TRUE)) == 'On-Hold') ? 'selected' : '' ?>>On-Hold</option>
                                               <option value="Draft" <?= (($this->input->post('status', TRUE) ?: $this->input->get('status', TRUE)) == 'Draft') ? 'selected' : '' ?>>Draft</option>
                                           </select>
@@ -106,7 +106,7 @@
                                   <th>Work Mode</th>
                                   <!-- <th>Education</th> -->
                                   <th>No of Openings</th>
-                                  <th>Expiry Date</th>
+                                  <th>Candidates</th>
                                   <th>Job Status</th>
                                   <th>Posted On</th>
                                   <th>Action</th>
@@ -129,8 +129,17 @@
                                           <td><?= $vl['EmploymentType'] ?></td>
                                           <td><?= $vl['WorkMode'] ?></td>
                                           <td><?= $vl['NoofOpenings'] ?></td>
-                                          <td><?= $vl['ExpiryDate'] ?></td>
-                                          <td><?= $vl['JobStatus'] ?></td>
+                                          <td class="text-center">
+                                              <?php $cnt = isset($vl['CandidateCount']) ? (int)$vl['CandidateCount'] : 0; ?>
+                                              <span class="badge badge-pill <?= $cnt > 0 ? 'badge-info' : 'badge-secondary'; ?>">
+                                                  <i class="fas fa-users mr-1"></i><?= $cnt; ?>
+                                              </span>
+                                          </td>
+                                          <td>
+                                              <span class="badge badge-pill <?= ($vl['JobStatus'] == 'Closed' || $vl['JobStatus'] == 'Dropped') ? 'badge-danger' : ($vl['JobStatus'] == 'Open' ? 'badge-success' : ($vl['JobStatus'] == 'On-Hold' ? 'badge-warning' : 'badge-secondary')) ?>">
+                                                  <?= ($vl['JobStatus'] == 'Closed' || $vl['JobStatus'] == 'Dropped') ? 'Dropped' : htmlspecialchars($vl['JobStatus']); ?>
+                                              </span>
+                                          </td>
                                           <td><?= $vl['PostedOn'] ?></td>
                                           <td class="text-center">
 
@@ -151,6 +160,13 @@
                                                       <i class="fas fa-eye"></i>
                                                   </button>
 
+                                                  <button type="button"
+                                                      class="btn btn-sm btn-info viewJobHistoryBtn"
+                                                      title="View Job Life-Cycle History"
+                                                      data-id="<?= $vl['Jid']; ?>">
+                                                      <i class="fas fa-history"></i>
+                                                  </button>
+
                                                   <?php if ($vl['JobStatus'] == 'Open') { ?>
 
                                                       <!-- <input type="hidden" name="job_id" id="jobId"> -->
@@ -164,12 +180,12 @@
                                                           <i class="fas fa-pause-circle"></i>
                                                       </button>
 
-                                                      <!-- Close Job -->
+                                                      <!-- Drop Job -->
                                                       <button type="button"
                                                           class="btn btn-sm btn-danger jobStatusBtn"
                                                           data-id="<?= $vl['Jid']; ?>"
-                                                          data-status="Closed"
-                                                          title="Close Job">
+                                                          data-status="Dropped"
+                                                          title="Drop Job">
                                                           <i class="fas fa-times-circle"></i>
                                                       </button>
                                                       <!-- Upload Resumes -->
@@ -198,7 +214,7 @@
                                                           <i class="fas fa-play-circle"></i>
                                                       </button>
 
-                                                  <?php } elseif ($vl['JobStatus'] == 'Closed') { ?>
+                                                  <?php } elseif ($vl['JobStatus'] == 'Closed' || $vl['JobStatus'] == 'Dropped') { ?>
 
                                                       <button type="button"
                                                           class="btn btn-sm btn-info jobStatusBtn"
@@ -218,12 +234,12 @@
                                                           <i class="fas fa-check-circle"></i>
                                                       </button>
 
-                                                      <!-- Close Job -->
+                                                      <!-- Drop Job -->
                                                       <button type="button"
                                                             class="btn btn-sm btn-danger jobStatusBtn"
                                                             data-id="<?= $vl['Jid']; ?>"
-                                                            data-status="Closed"
-                                                            title="Close Job">
+                                                            data-status="Dropped"
+                                                            title="Drop Job">
                                                             <i class="fas fa-times-circle"></i>
                                                         </button>
 
@@ -492,14 +508,25 @@
                                           </div>
 
                                           <div class="form-group">
-                                              <label>Skills*</label>
+                                              <label class="font-weight-bold"><i class="fas fa-check-circle text-success mr-1"></i> Must-Have Skills <span class="text-danger">*</span></label>
                                               <div class="position-relative">
-                                                  <input type="text" id="skillsInput" class="form-control search-input"
-                                                      placeholder="Type skill..." autocomplete="off">
-                                                  <input type="hidden" name="skills" id="skills">
-                                                  <div class="dropdown-menu w-100" id="skillsDropdown"></div>
+                                                  <input type="text" id="mustHaveSkillsInput" class="form-control search-input"
+                                                      placeholder="Type mandatory skill..." autocomplete="off">
+                                                  <input type="hidden" name="mustHaveSkills" id="mustHaveSkills">
+                                                  <div class="dropdown-menu w-100" id="mustHaveSkillsDropdown"></div>
                                               </div>
-                                              <div class="chip-container mt-2" id="skillsChips"></div>
+                                              <div class="chip-container mt-2" id="mustHaveSkillsChips"></div>
+                                          </div>
+
+                                          <div class="form-group">
+                                              <label class="font-weight-bold"><i class="fas fa-star text-info mr-1"></i> Nice-to-Have Skills</label>
+                                              <div class="position-relative">
+                                                  <input type="text" id="niceToHaveSkillsInput" class="form-control search-input"
+                                                      placeholder="Type optional skill..." autocomplete="off">
+                                                  <input type="hidden" name="niceToHaveSkills" id="niceToHaveSkills">
+                                                  <div class="dropdown-menu w-100" id="niceToHaveSkillsDropdown"></div>
+                                              </div>
+                                              <div class="chip-container mt-2" id="niceToHaveSkillsChips"></div>
                                           </div>
 
                                           <div class="form-group">
@@ -653,10 +680,6 @@
                               </div>
                           </div>
 
-                          <div class="form-group">
-                              <label>Expiry Date*</label>
-                              <input type="date" name="ExpiryDate" id="edit_expiryDate" class="form-control">
-                          </div>
 
                           <button type="button" class="btn btn-primary" onclick="editStepper.next()">Next</button>
                       </div>
@@ -667,21 +690,13 @@
                           <div class="form-group">
                               <div class="row">
                                   <div class="col-md-6">
-                                      <label>Min Salary*</label>
-                                      <!-- <input type="number"name="salaryMin" id="edit_salaryMin" class="form-control"> -->
-
-
-                                      <select id="edit_salaryMin" name="salaryMin" class="form-control">
-                                          <option value="">Min Salary</option>
-                                      </select>
+                                      <label>Min Salary (LPA)*</label>
+                                      <input type="text" name="salaryMin" id="edit_salaryMin" class="form-control" placeholder="Min Salary (LPA)">
                                   </div>
 
                                   <div class="col-md-6">
-                                      <label>Max Salary*</label>
-                                      <select id="edit_salaryMax" name="salaryMax" class="form-control">
-                                          <option value="">Max Salary</option>
-                                      </select>
-
+                                      <label>Max Salary (LPA)*</label>
+                                      <input type="text" name="salaryMax" id="edit_salaryMax" class="form-control" placeholder="Max Salary (LPA)">
                                   </div>
                               </div>
                           </div>
@@ -747,12 +762,23 @@
                           </div>
 
                           <div class="form-group">
-                              <label>Skills*</label>
+                              <label class="font-weight-bold"><i class="fas fa-check-circle text-success mr-1"></i> Must-Have Skills <span class="text-danger">*</span></label>
                               <div class="position-relative">
-                                  <input type="text" id="edit_skillsInput" class="form-control">
-                                  <div class="dropdown-menu w-100" id="edit_skillsDropdown"></div>
+                                  <input type="text" id="edit_mustHaveSkillsInput" class="form-control">
+                                  <div class="dropdown-menu w-100" id="edit_mustHaveSkillsDropdown"></div>
                               </div>
-                              <div class="chip-container mt-2" id="edit_skillsChips"></div>
+                              <input type="hidden" name="mustHaveSkills" id="edit_mustHaveSkills">
+                              <div class="chip-container mt-2" id="edit_mustHaveSkillsChips"></div>
+                          </div>
+
+                          <div class="form-group">
+                              <label class="font-weight-bold"><i class="fas fa-star text-info mr-1"></i> Nice-to-Have Skills</label>
+                              <div class="position-relative">
+                                  <input type="text" id="edit_niceToHaveSkillsInput" class="form-control">
+                                  <div class="dropdown-menu w-100" id="edit_niceToHaveSkillsDropdown"></div>
+                              </div>
+                              <input type="hidden" name="niceToHaveSkills" id="edit_niceToHaveSkills">
+                              <div class="chip-container mt-2" id="edit_niceToHaveSkillsChips"></div>
                           </div>
 
                           <div class="form-group">
@@ -781,16 +807,22 @@
 
                       <!-- STEP 4: CTC -->
                       <div id="edit-ctc-part" class="content">
+
+                          <!-- CTC Approver (readonly display) -->
                           <div class="form-group">
-                              <label class="font-weight-bold">CTC Approver</label>
-                              <select name="CtcApproverId" id="edit_CtcApproverId" class="form-control">
-                                  <option value="">Select CTC Approver</option>
-                                  <?php if (!empty($ctc_approvers)): ?>
-                                      <?php foreach ($ctc_approvers as $ca): ?>
-                                          <option value="<?= $ca['IUid']; ?>"><?= htmlspecialchars($ca['EmpName']); ?> (<?= htmlspecialchars($ca['RoleName'] ? $ca['RoleName'] : 'Employee'); ?>)</option>
-                                      <?php endforeach; ?>
-                                  <?php endif; ?>
-                              </select>
+                              <label class="font-weight-bold"><i class="fas fa-user-check text-primary mr-1"></i> CTC Approver</label>
+                              <input type="text" id="edit_CtcApproverName" class="form-control" readonly placeholder="Not assigned" style="background:#f8f9fa;">
+                              <input type="hidden" name="CtcApproverId" id="edit_CtcApproverId">
+                              <small class="text-muted">Set via the CTC approval workflow</small>
+                          </div>
+
+                          <!-- Interviewer Panel (readonly display) -->
+                          <div class="form-group">
+                              <label class="font-weight-bold"><i class="fas fa-users text-success mr-1"></i> Interview Panel</label>
+                              <div id="edit_interviewPanelDisplay" class="border rounded p-2" style="background:#f8f9fa; min-height:50px;">
+                                  <span class="text-muted small">No interview panel assigned</span>
+                              </div>
+                              <small class="text-muted">Interviewers are assigned via the Shortlisted candidates section</small>
                           </div>
 
                           <button type="button" class="btn btn-secondary mr-1" onclick="editStepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
@@ -850,6 +882,50 @@
       <div class="modal-footer justify-content-center">
         <button class="btn btn-secondary" data-dismiss="modal">Cancel</button>
         <button class="btn btn-danger" id="confirmJobStatus">Yes Continue</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Hold Date Modal -->
+<div class="modal fade" id="holdDateModal" tabindex="-1" role="dialog" aria-labelledby="holdDateModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="border-radius:12px; border:none; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+
+      <div class="modal-header" style="background: linear-gradient(135deg, #f6a623 0%, #e67e22 100%); border-radius:12px 12px 0 0;">
+        <h5 class="modal-title text-white font-weight-bold" id="holdDateModalLabel">
+          <i class="fas fa-pause-circle mr-2"></i>Put Job On Hold
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="text-center mb-3">
+          <div style="width:60px;height:60px;background:linear-gradient(135deg,#f6a623,#e67e22);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;">
+            <i class="fas fa-calendar-alt text-white fa-lg"></i>
+          </div>
+        </div>
+        <p class="text-center text-muted mb-3">Select the date until which this job should be held. A reminder email will be sent to the <strong>Recruiter Manager</strong> and the <strong>Assigned Recruiter</strong> 3 days before the hold date.</p>
+
+        <div class="form-group">
+          <label class="font-weight-bold"><i class="fas fa-calendar-check text-warning mr-1"></i>Hold Until Date <span class="text-danger">*</span></label>
+          <input type="date" id="holdUntilDateInput" class="form-control form-control-lg"
+            style="border-radius:8px; border:2px solid #f6a623;"
+            required>
+          <small class="text-muted">Choose a future date for the hold period.</small>
+        </div>
+      </div>
+
+      <div class="modal-footer justify-content-center" style="border-top:1px solid #eee;">
+        <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">
+          <i class="fas fa-times mr-1"></i>Cancel
+        </button>
+        <button type="button" class="btn btn-warning px-4 font-weight-bold" id="confirmHoldDate">
+          <i class="fas fa-pause-circle mr-1"></i>Confirm Hold
+        </button>
       </div>
 
     </div>
@@ -960,32 +1036,9 @@
           el.add(new Option('20+ Years', '20+'));
       }
 
-      function populateEditSalMin() {
-          const el = document.getElementById('edit_salaryMin');
-          el.innerHTML = '<option value="">Min Salary</option>';
-          for (let i = 1; i <= 50; i++) {
-              el.add(new Option(i + ' LPA', i));
-          }
-          el.add(new Option('50+ LPA', '50+'));
-      }
-      $('#edit_salaryMin').on('change', function() {
-
-          const min = parseInt(this.value);
-          const maxEl = document.getElementById('edit_salaryMax');
-
-          maxEl.innerHTML = '<option value="">Max Salary</option>';
-
-          if (this.value === '50+') {
-              maxEl.add(new Option('100+ LPA', '100+'));
-              return;
-          }
-
-          for (let i = min + 1; i <= 80; i++) {
-              maxEl.add(new Option(i + ' LPA', i));
-          }
-
-          maxEl.add(new Option('100+ LPA', '100+'));
-      });
+       function populateEditSalMin() {
+           // Text input field used instead of select dropdown
+       }
 
 
       $('#edit_expMin').on('change', function() {
@@ -1054,10 +1107,18 @@
           key: 'EducationRequired'
       });
       initChipAutocomplete({
-          inputId: 'skillsInput',
-          dropdownId: 'skillsDropdown',
-          chipsId: 'skillsChips',
-          hiddenId: 'skills',
+          inputId: 'mustHaveSkillsInput',
+          dropdownId: 'mustHaveSkillsDropdown',
+          chipsId: 'mustHaveSkillsChips',
+          hiddenId: 'mustHaveSkills',
+          url: '<?= base_url("admin/searchSkills") ?>',
+          key: 'SkillName'
+      });
+      initChipAutocomplete({
+          inputId: 'niceToHaveSkillsInput',
+          dropdownId: 'niceToHaveSkillsDropdown',
+          chipsId: 'niceToHaveSkillsChips',
+          hiddenId: 'niceToHaveSkills',
           url: '<?= base_url("admin/searchSkills") ?>',
           key: 'SkillName'
       });
@@ -1087,9 +1148,18 @@
           key: 'EducationRequired'
       });
       initChipAutocomplete({
-          inputId: 'edit_skillsInput',
-          dropdownId: 'edit_skillsDropdown',
-          chipsId: 'edit_skillsChips',
+          inputId: 'edit_mustHaveSkillsInput',
+          dropdownId: 'edit_mustHaveSkillsDropdown',
+          chipsId: 'edit_mustHaveSkillsChips',
+          hiddenId: 'edit_mustHaveSkills',
+          url: '<?= base_url("admin/searchSkills") ?>',
+          key: 'SkillName'
+      });
+      initChipAutocomplete({
+          inputId: 'edit_niceToHaveSkillsInput',
+          dropdownId: 'edit_niceToHaveSkillsDropdown',
+          chipsId: 'edit_niceToHaveSkillsChips',
+          hiddenId: 'edit_niceToHaveSkills',
           url: '<?= base_url("admin/searchSkills") ?>',
           key: 'SkillName'
       });
@@ -1138,34 +1208,28 @@
               $('#edit_role').val(d.RoleSummary ?? '');
 
               $('#edit_positions').val(d.NoofOpenings ?? '');
-              $('#edit_expiryDate').val((d.ExpiryDate || '').split(' ')[0]);
               $('#edit_JD').val(d.JobDescription ?? '');
               $('#edit_RR').val(d.Responsibilities ?? '');
 
+              $('#edit_salaryMin').val(d.SalMin ?? '');
+              $('#edit_salaryMax').val(d.SalMax ?? '');
+
               populateEditExpMin();
-              populateEditSalMin();
+              const cleanMin = (d.ExpMin !== null && d.ExpMin !== undefined) ? (parseFloat(d.ExpMin) % 1 === 0 ? parseInt(d.ExpMin) : parseFloat(d.ExpMin)) : '';
+              const cleanMax = (d.ExpMax !== null && d.ExpMax !== undefined) ? (parseFloat(d.ExpMax) % 1 === 0 ? parseInt(d.ExpMax) : parseFloat(d.ExpMax)) : '';
 
-              $('#edit_salaryMin').val(d.SalMin);
-              $('#edit_expMin').val(d.ExpMin);
-
-              const salMinVal = parseInt(d.SalMin) || 0;
-              const salMaxEl = document.getElementById('edit_salaryMax');
-              salMaxEl.innerHTML = '<option value="">Max Salary</option>';
-
-              for (let i = salMinVal + 1; i <= 80; i++) {
-                  salMaxEl.add(new Option(i + ' LPA', i));
-              }
-              salMaxEl.add(new Option('100+ LPA', '100+'));
-              $('#edit_salaryMax').val(d.SalMax);
+              $('#edit_expMin').val(cleanMin);
 
               const expMinVal = parseInt(d.ExpMin) || 0;
               const expMaxEl = document.getElementById('edit_expMax');
-              expMaxEl.innerHTML = '<option value="">Max</option>';
-              for (let i = expMinVal + 1; i <= 30; i++) {
-                  expMaxEl.add(new Option(i + ' Year' + (i > 1 ? 's' : ''), i));
+              if (expMaxEl) {
+                  expMaxEl.innerHTML = '<option value="">Max</option>';
+                  for (let i = expMinVal; i <= 30; i++) {
+                      expMaxEl.add(new Option(i + ' Year' + (i > 1 ? 's' : ''), i));
+                  }
+                  expMaxEl.add(new Option('30+ Years', '30+'));
+                  $('#edit_expMax').val(cleanMax);
               }
-              expMaxEl.add(new Option('30+ Years', '30+'));
-              $('#edit_expMax').val(d.ExpMax);
 
               console.log('SalMin:', d.SalMin, '| SalMax:', $('#edit_salaryMax').val());
               console.log('ExpMin:', d.ExpMin, '| ExpMax:', $('#edit_expMax').val());
@@ -1192,11 +1256,32 @@
 
               preloadChips(d.JobLocation, 'edit_jobLocationChips', 'edit_jobLocation');
               preloadChips(d.EducationRequired, 'edit_educationChips', 'edit_education');
-              preloadChips(d.Skills, 'edit_skillsChips', 'edit_skills');
+              preloadChips(d.MustHaveSkills || d.Skills, 'edit_mustHaveSkillsChips', 'edit_mustHaveSkills');
+              preloadChips(d.NiceToHaveSkills, 'edit_niceToHaveSkillsChips', 'edit_niceToHaveSkills');
               preloadChips(d.CommunicationLang, 'edit_languageChips', 'edit_comLanguage');
+
+              // Populate readonly CTC Approver
+              $('#edit_CtcApproverName').val(d.CtcApproverName || '');
+              $('#edit_CtcApproverId').val(d.CtcApproverId || '');
+
+              // Populate readonly Interview Panel display
+              const panels = d.interviewPanels || [];
+              if (panels.length > 0) {
+                  let panelHtml = '';
+                  panels.forEach(function(p) {
+                      panelHtml += `<div class="d-flex align-items-center mb-1">
+                          <span class="badge badge-pill badge-primary mr-2">Level ${p.LevelOrder}</span>
+                          <span><i class="fas fa-user-tie mr-1 text-secondary"></i>${p.InterviewerName || 'Unknown'}</span>
+                      </div>`;
+                  });
+                  $('#edit_interviewPanelDisplay').html(panelHtml);
+              } else {
+                  $('#edit_interviewPanelDisplay').html('<span class="text-muted small"><i class="fas fa-info-circle mr-1"></i>No interview panel assigned yet</span>');
+              }
 
               $('#editVacancyPanel').addClass('open');
               $('#vacancyOverlay').addClass('show');
+
           });
       });
 
@@ -1208,31 +1293,74 @@ $(document).on('click', '.jobStatusBtn', function () {
     selectedJobId = $(this).data('id');
     selectedStatus = $(this).data('status');
 
-    let message = '';
+    // If putting on hold, show dedicated date picker modal
+    if (selectedStatus === 'On-Hold') {
+        // Set minimum date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const minDate = tomorrow.toISOString().split('T')[0];
+        $('#holdUntilDateInput').attr('min', minDate).val('');
+        $('#holdDateModal').modal('show');
+        return;
+    }
 
-    if (selectedStatus === 'Closed') {
-        message = "Are you sure you want to close this job?";
-    }
-    else if (selectedStatus === 'On-Hold') {
-        message = "Are you sure you want to put this job on hold?";
-    }
-    else if (selectedStatus === 'Open') {
+    let message = '';
+    if (selectedStatus === 'Closed' || selectedStatus === 'Dropped') {
+        message = "Are you sure you want to drop this job?";
+    } else if (selectedStatus === 'Open') {
         message = "Are you sure you want to reopen this job?";
-    }
-    else if (selectedStatus === 'Re-Open') {
+    } else if (selectedStatus === 'Re-Open') {
         message = "Are you sure you want to reopen this job?";
-    }
-    // Note: 'Re-Open' status is kept for backward compatibility only
-    else {
+    } else {
         message = "Are you sure you want to change this job status?";
     }
 
     $('#jobStatusMessage').text(message);
-
     $('#jobStatusModal').modal('show');
 
 });
 
+// Confirm Hold Date
+$('#confirmHoldDate').on('click', function () {
+    const holdDate = $('#holdUntilDateInput').val();
+    if (!holdDate) {
+        toastr.warning('Please select a hold-until date.');
+        return;
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    if (holdDate <= today) {
+        toastr.warning('Hold date must be a future date.');
+        return;
+    }
+
+    $('#confirmHoldDate').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i>Processing...');
+
+    $.ajax({
+        url: '<?= base_url("admin/updateJobStatus") ?>',
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            jid: selectedJobId,
+            status: 'On-Hold',
+            holdUntilDate: holdDate
+        },
+        success: function(res) {
+            $('#holdDateModal').modal('hide');
+            $('#confirmHoldDate').prop('disabled', false).html('<i class="fas fa-pause-circle mr-1"></i>Confirm Hold');
+            if (res.status === 'success') {
+                toastr.success(res.message);
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                toastr.error(res.message || 'Something went wrong');
+            }
+        },
+        error: function() {
+            $('#confirmHoldDate').prop('disabled', false).html('<i class="fas fa-pause-circle mr-1"></i>Confirm Hold');
+            toastr.error('Server error occurred');
+        }
+    });
+});
 
       $('#confirmJobStatus').click(function () {
 
@@ -1292,36 +1420,20 @@ $(document).on('click', '.jobStatusBtn', function () {
               html += `<div class="card card-primary"><div class="card-header bg-primary"><h3 class="card-title">Basic Information</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button></div></div><div class="card-body"><div class="row"><div class="col-md-6"><p><b>Job Code:</b> ${d.JobCode}</p><p><b>Job Title:</b> ${d.JobTitle}</p><p><b>Department:</b> ${d.Departmentname}</p><p><b>Role:</b> ${d.RoleSummary}</p><p><b>Status:</b>
 <span class="badge badge-pill
 ${d.JobStatus === 'Open' || d.JobStatus === 'Re-Open' ? 'badge-success' :
-  d.JobStatus === 'Closed' ? 'badge-danger' :
+  (d.JobStatus === 'Closed' || d.JobStatus === 'Dropped') ? 'badge-danger' :
   d.JobStatus === 'On-Hold' ? 'badge-warning' :
   d.JobStatus === 'Draft' ? 'badge-secondary' :
   d.JobStatus === 'Not Required' ? 'badge-dark' :
   'badge-primary'}">
-${d.JobStatus}
+${(d.JobStatus === 'Closed' || d.JobStatus === 'Dropped') ? 'Dropped' : d.JobStatus}
 </span>
 </p></div><div class="col-md-6"><p><b>Posted By:</b> ${d.PostedByName}</p><p><b>Posted On:</b> ${d.PostedOn}</p><p><b>Expiry Date:</b> ${d.ExpiryDate}</p><p><b>Work Mode:</b> ${d.WorkMode}</p><p><b>Employment:</b> ${d.EmploymentType}</p><p><b>Language:</b> ${d.CommunicationLang}</p></div></div></div></div>`;
               html += `<div class="card card-info collapsed-card"><div class="card-header bg-info"><h3 class="card-title">Salary & Experience</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div><div class="card-body"><div class="row"><div class="col-md-6"><p><b>Experience Required:</b> ${d.ExpMin ?? 0} - ${d.ExpMax ?? 0} Years</p></div><div class="col-md-6"><p><b>Salary:</b> ${d.SalMin ?? 0} - ${d.SalMax ?? 0} LPA</p></div></div></div></div>`;
               html += `<div class="card card-secondary collapsed-card"><div class="card-header bg-secondary"><h3 class="card-title">Location & Education</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div><div class="card-body"><p><b>Job Location:</b> ${d.JobLocation}</p><p><b>Education Required:</b> ${d.EducationRequired}</p></div></div>`;
-              html += `<div class="card card-warning collapsed-card"><div class="card-header bg-warning"><h3 class="card-title">Skills</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div><div class="card-body"><p>${d.Skills}</p></div></div>`;
+              html += `<div class="card card-warning collapsed-card"><div class="card-header bg-warning"><h3 class="card-title">Skills</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div><div class="card-body"><p><b>Must-Have Skills:</b> ${d.MustHaveSkills || d.Skills || '-'}</p><p><b>Nice-to-Have Skills:</b> ${d.NiceToHaveSkills || '-'}</p></div></div>`;
               html += `<div class="card card-dark collapsed-card"><div class="card-header bg-dark"><h3 class="card-title">Roles & Responsibilities</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div><div class="card-body">${d.Responsibilities}</div></div>`;
               html += `<div class="card card-success collapsed-card"><div class="card-header bg-success"><h3 class="card-title">Job Description</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div><div class="card-body">${d.JobDescription}</div></div>`;
               
-              let totalAts = (parseInt(d.SkillScore ?? 50) +
-                              parseInt(d.EducationScore ?? 20) +
-                              parseInt(d.ExperienceScore ?? 20) +
-                              parseInt(d.ProjectScore ?? 5) +
-                              parseInt(d.CertificationScore ?? 10) +
-                              parseInt(d.ResumeQualityScore ?? 5) +
-                              parseInt(d.DomainKnowledgeScore ?? 5));
-              
-              html += `<div class="card card-info collapsed-card">` +
-                  `<div class="card-header bg-info"><h3 class="card-title">ATS Score Breakdown</h3><div class="card-tools"><button class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button></div></div>` +
-                  `<div class="card-body">` +
-                  `<div class="row">` +
-                  `<div class="col-md-6"><p><b>Skills Match:</b> ${d.SkillScore ?? 50}</p><p><b>Education Match:</b> ${d.EducationScore ?? 20}</p><p><b>Experience Match:</b> ${d.ExperienceScore ?? 20}</p><p><b>Projects & Achievements:</b> ${d.ProjectScore ?? 5}</p></div>` +
-                  `<div class="col-md-6"><p><b>Certifications:</b> ${d.CertificationScore ?? 10}</p><p><b>Resume Quality:</b> ${d.ResumeQualityScore ?? 5}</p><p><b>Role Fit / Domain Knowledge:</b> ${d.DomainKnowledgeScore ?? 5}</p><hr class="my-1"><p class="font-weight-bold text-success"><b>Total ATS Marks:</b> ${totalAts}</p></div>` +
-                  `</div></div></div>`;
-
               html += `</div>`;
               $('#vacancyDetailsBody').html(html);
           });
@@ -1335,16 +1447,22 @@ ${d.JobStatus}
           chips.innerHTML = '';
           arr.forEach(v => {
               v = v.trim();
-              if (chipsId === 'edit_skillsChips') {
-                  $('<input>').attr('type', 'hidden').attr('name', 'skills[]').val(v).appendTo('#editVacancyForm');
+              if (chipsId === 'edit_mustHaveSkillsChips') {
+                  $('<input>').attr('type', 'hidden').attr('name', 'mustHaveSkills[]').val(v).appendTo('#editVacancyForm');
+              }
+              if (chipsId === 'edit_niceToHaveSkillsChips') {
+                  $('<input>').attr('type', 'hidden').attr('name', 'niceToHaveSkills[]').val(v).appendTo('#editVacancyForm');
               }
               const chip = document.createElement('span');
-              chip.className = 'badge badge-pill badge-primary mr-2 mb-2';
+              chip.className = chipsId.includes('mustHave') ? 'badge badge-pill badge-success mr-2 mb-2' : (chipsId.includes('niceToHave') ? 'badge badge-pill badge-info mr-2 mb-2' : 'badge badge-pill badge-primary mr-2 mb-2');
               chip.innerHTML = `${v} <span class="cursor-pointer">×</span>`;
               chip.querySelector('span').onclick = () => {
                   chip.remove();
-                  if (chipsId === 'edit_skillsChips') {
-                      $('#editVacancyForm input[name="skills[]"][value="' + v + '"]').remove();
+                  if (chipsId === 'edit_mustHaveSkillsChips') {
+                      $('#editVacancyForm input[name="mustHaveSkills[]"][value="' + v + '"]').remove();
+                  }
+                  if (chipsId === 'edit_niceToHaveSkillsChips') {
+                      $('#editVacancyForm input[name="niceToHaveSkills[]"][value="' + v + '"]').remove();
                   }
                   if (hidden) {
                       hidden.value = [...chips.querySelectorAll('.badge')].map(x => x.textContent.replace('×', '').trim()).join(',');
@@ -1407,27 +1525,34 @@ ${d.JobStatus}
           function addChip(value) {
               if (!value) return;
 
-              if (config.inputId === 'edit_skillsInput') {
-
-                  if ($('input[name="skills[]"][value="' + value + '"]').length) return;
-                  $('<input>').attr('type', 'hidden').attr('name', 'skills[]').val(value)
+              if (config.inputId === 'edit_mustHaveSkillsInput') {
+                  if ($('input[name="mustHaveSkills[]"][value="' + value + '"]').length) return;
+                  $('<input>').attr('type', 'hidden').attr('name', 'mustHaveSkills[]').val(value)
                       .appendTo(input.closest('form'));
               }
 
-              if (config.inputId === 'skillsInput') {
+              if (config.inputId === 'edit_niceToHaveSkillsInput') {
+                  if ($('input[name="niceToHaveSkills[]"][value="' + value + '"]').length) return;
+                  $('<input>').attr('type', 'hidden').attr('name', 'niceToHaveSkills[]').val(value)
+                      .appendTo(input.closest('form'));
+              }
 
+              if (config.inputId === 'mustHaveSkillsInput' || config.inputId === 'niceToHaveSkillsInput') {
                   const existing = [...chipsContainer.querySelectorAll('.badge')]
                       .map(x => x.textContent.replace('×', '').trim());
                   if (existing.includes(value)) return;
               }
               const chip = document.createElement('span');
-              chip.className = 'badge badge-pill badge-primary mr-2 mb-2';
+              chip.className = config.inputId.includes('mustHave') ? 'badge badge-pill badge-success mr-2 mb-2' : (config.inputId.includes('niceToHave') ? 'badge badge-pill badge-info mr-2 mb-2' : 'badge badge-pill badge-primary mr-2 mb-2');
               chip.innerHTML = `${value} <span class="cursor-pointer">×</span>`;
 
               chip.querySelector('span').onclick = () => {
                   chip.remove();
-                  if (config.inputId === 'edit_skillsInput') {
-                      $('input[name="skills[]"][value="' + value + '"]').remove();
+                  if (config.inputId === 'edit_mustHaveSkillsInput') {
+                      $('input[name="mustHaveSkills[]"][value="' + value + '"]').remove();
+                  }
+                  if (config.inputId === 'edit_niceToHaveSkillsInput') {
+                      $('input[name="niceToHaveSkills[]"][value="' + value + '"]').remove();
                   }
                   syncHidden();
               };
@@ -1621,4 +1746,174 @@ $(document).on('input change keyup', '.ats-score-input', function() {
         calculateTotalAtsMarks('#editVacancyPanel');
     }
 });
+
+/* ===== View Job Life-Cycle History ===== */
+$(document).on('click', '.viewJobHistoryBtn', function () {
+    let jid = $(this).data('id');
+    $('#jobHistoryModal').modal('show');
+    $('#jobHistoryModalBody').html('<div class="text-center p-5"><i class="fas fa-spinner fa-spin fa-2x text-info"></i><p class="mt-2 text-muted">Loading job life-cycle history...</p></div>');
+
+    $.ajax({
+        url: '<?= base_url("admin/getJobHistoryDetails") ?>',
+        type: 'POST',
+        data: { jid: jid },
+        dataType: 'json',
+        success: function(res) {
+            if (res.status !== 'success') {
+                $('#jobHistoryModalBody').html('<div class="alert alert-danger">Unable to load job history details.</div>');
+                return;
+            }
+
+            let job = res.job;
+            let rr  = res.resource_request;
+            let timeline = res.timeline || [];
+
+            let html = `<div class="container-fluid p-0">`;
+
+            let m = res.milestones || {};
+            let posFilledText = m.position_filled 
+                ? `<span class="text-success font-weight-bold"><i class="fas fa-check-circle mr-1"></i>${m.position_filled.candidate_name} (${m.position_filled.candidate_code}) on ${m.position_filled.filled_at}</span>`
+                : `<span class="text-muted"><i class="fas fa-hourglass-half mr-1"></i>Not Filled Yet (${res.candidate_count} Applications)</span>`;
+
+            // Job Summary & Milestone Card
+            html += `
+            <div class="card card-outline card-info mb-4" style="border-radius:8px;">
+                <div class="card-header bg-light">
+                    <h5 class="card-title text-info font-weight-bold mb-0">
+                        <i class="fas fa-briefcase mr-2"></i>${job.JobTitle} (${job.JobCode})
+                    </h5>
+                    <span class="badge ${job.JobStatus === 'Open' ? 'badge-success' : (job.JobStatus === 'On-Hold' ? 'badge-warning' : 'badge-secondary')} float-right px-3 py-1 font-weight-bold">
+                        Status: ${job.JobStatus}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <!-- 1. People & Roles Grid -->
+                    <div class="row text-sm mb-3">
+                        <div class="col-md-3">
+                            <div class="p-2 rounded bg-light border h-100">
+                                <span class="text-muted d-block text-xs text-uppercase font-weight-bold"><i class="fas fa-user-edit text-info mr-1"></i> 1. Requested By</span>
+                                <strong class="text-dark d-block mt-1">${m.requested_by ?? '-'}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-2 rounded bg-light border h-100">
+                                <span class="text-muted d-block text-xs text-uppercase font-weight-bold"><i class="fas fa-user-shield text-primary mr-1"></i> 2. Approved By</span>
+                                <strong class="text-dark d-block mt-1">${m.approved_by ?? '-'}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-2 rounded bg-light border h-100">
+                                <span class="text-muted d-block text-xs text-uppercase font-weight-bold"><i class="fas fa-user-tag text-success mr-1"></i> 3. Assigned Recruiter</span>
+                                <strong class="text-dark d-block mt-1">${m.assigned_to ?? 'Unassigned'}</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-2 rounded bg-light border h-100">
+                                <span class="text-muted d-block text-xs text-uppercase font-weight-bold"><i class="fas fa-file-signature text-warning mr-1"></i> 4. CTC Approver</span>
+                                <strong class="text-dark d-block mt-1">${m.ctc_approver ?? 'Not Assigned'}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Job Life-Cycle Dates Grid -->
+                    <div class="row text-sm pt-2 border-top">
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong><i class="fas fa-pause-circle text-warning mr-1"></i>Got Hold Date:</strong> <br>${m.hold_at ?? '<span class="text-muted">N/A</span>'}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong><i class="fas fa-calendar-day text-danger mr-1"></i>Hold-Until Date:</strong> <br>${m.hold_until ?? '<span class="text-muted">N/A</span>'}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong><i class="fas fa-play-circle text-success mr-1"></i>Got Unhold Date:</strong> <br>${m.unhold_at ?? '<span class="text-muted">N/A (Active)</span>'}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong><i class="fas fa-times-circle text-dark mr-1"></i>Dropped Date:</strong> <br>${m.dropped_at ?? m.closed_at ?? '<span class="text-muted">N/A</span>'}</p>
+                        </div>
+                    </div>
+
+                    <!-- 3. Position Filled Status -->
+                    <div class="pt-2 mt-2 border-top text-sm">
+                        <strong><i class="fas fa-trophy text-warning mr-1"></i>Position Filled Status:</strong> ${posFilledText}
+                    </div>
+                </div>
+            </div>`;
+
+            // Linked Resource Request Box
+            if (rr) {
+                html += `
+                <div class="card bg-light mb-4" style="border-left:4px solid #17a2b8; border-radius:8px;">
+                    <div class="card-body p-3">
+                        <h6 class="font-weight-bold text-info mb-2"><i class="fas fa-file-alt mr-2"></i>Linked Resource Request (${rr.RequestCode ?? 'N/A'})</h6>
+                        <div class="row text-sm">
+                            <div class="col-md-4">
+                                <p class="mb-1"><strong>Requested By:</strong> ${rr.RequestedByName ?? 'Hiring Manager'}</p>
+                                <p class="mb-1"><strong>Requested On:</strong> ${rr.RequestedOn ?? '-'}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1"><strong>Assigned Recruiter:</strong> ${rr.AssignedManagerName ?? 'Unassigned'}</p>
+                                <p class="mb-1"><strong>Target Onboarding:</strong> ${rr.TargetOnboardingDate ?? 'N/A'}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1"><strong>CTC Approver:</strong> ${rr.CtcApproverName ?? 'Not Assigned'}</p>
+                                <p class="mb-1"><strong>Request Status:</strong> <span class="badge badge-success">${rr.Status ?? 'ACCEPTED'}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            // Life-Cycle Audit Timeline
+            html += `<h5 class="font-weight-bold text-dark mb-3"><i class="fas fa-stream mr-2 text-info"></i>Full Life-Cycle Audit Trail</h5>`;
+            html += `<div class="timeline timeline-inverse">`;
+
+            if (timeline.length > 0) {
+                timeline.forEach(function(item) {
+                    html += `
+                    <div>
+                        <i class="${item.icon}"></i>
+                        <div class="timeline-item">
+                            <span class="time"><i class="far fa-clock mr-1"></i>${item.timestamp}</span>
+                            <h3 class="timeline-header font-weight-bold text-dark">${item.title}</h3>
+                            <div class="timeline-body text-sm">
+                                <p class="mb-1"><strong>User / Actor:</strong> ${item.user}</p>
+                                <p class="mb-0 text-muted">${item.description}</p>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+            } else {
+                html += `<p class="text-muted p-2">No timeline events recorded for this job.</p>`;
+            }
+
+            html += `<div><i class="far fa-clock bg-gray"></i></div></div></div>`;
+
+            $('#jobHistoryModalBody').html(html);
+        },
+        error: function() {
+            $('#jobHistoryModalBody').html('<div class="alert alert-danger">Error loading history details.</div>');
+        }
+    });
+});
   </script>
+
+<!-- Job Life-Cycle History Modal -->
+<div class="modal fade" id="jobHistoryModal" tabindex="-1" role="dialog" aria-labelledby="jobHistoryModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content" style="border-radius:12px; border:none; box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+      <div class="modal-header bg-info text-white" style="border-radius:12px 12px 0 0;">
+        <h5 class="modal-title font-weight-bold" id="jobHistoryModalLabel">
+          <i class="fas fa-history mr-2"></i>Job Life-Cycle & Audit History
+        </h5>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-4" id="jobHistoryModalBody">
+        <div class="text-center p-5">
+          <i class="fas fa-spinner fa-spin fa-2x text-info"></i>
+          <p class="mt-2 text-muted">Loading job life-cycle history...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

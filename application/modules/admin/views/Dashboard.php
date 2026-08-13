@@ -541,7 +541,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById('label-open').innerText = 'Open Jobs';
       document.getElementById('label-hold').innerText = 'Hold Jobs';
       document.getElementById('label-rejected').innerText = 'Cancelled Jobs';
-      document.getElementById('label-closed').innerText = 'Closed Jobs';
+      document.getElementById('label-closed').innerText = 'Dropped Jobs';
 
       // KPI Icons — Jobs theme
       const kpiIcons = [
@@ -572,7 +572,7 @@ document.addEventListener("DOMContentLoaded", function () {
           holdCount++;
         } else if (status === 'not required') {
           rejectedCount++;
-        } else if (status === 'closed') {
+        } else if (status === 'closed' || status === 'dropped') {
           closedCount++;
         } else {
           openCount++; // Fallback
@@ -846,7 +846,7 @@ document.addEventListener("DOMContentLoaded", function () {
       canvas.style.display = 'block';
       pipelineEl.style.display = 'none';
 
-      const labels = ['Open', 'On-Hold', 'Cancelled', 'Closed'];
+      const labels = ['Open', 'On-Hold', 'Cancelled', 'Dropped'];
       const dataValues = [open, hold, rejected, closed];
       const bgColors = ['#3b82f6', '#475569', '#dc2626', '#0891b2']; // Blue, Slate, Red, Cyan for Jobs
 

@@ -6,23 +6,6 @@ if (empty($employee_det)) {
 $theme_path = $this->config->item('theme_locations') . $this->config->item('active_template');
 ?>
 
-<!-- Content Header (Page header) -->
-<div class="content-header">
-  <div class="container-fluid">
-    <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0 font-weight-bold text-dark"><i class="fas fa-check-circle text-success mr-2"></i>Approved Resources</h1>
-      </div>
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="<?= base_url('admin/dashboard'); ?>">Home</a></li>
-          <li class="breadcrumb-item"><a href="<?= base_url('admin/VaccancyList'); ?>">Vacancy Management</a></li>
-          <li class="breadcrumb-item active">Approved Resources</li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Main content -->
 <section class="content">
@@ -55,6 +38,23 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
             <tbody>
               <?php if (!empty($approved_resources)): ?>
                 <?php $i = 1; foreach ($approved_resources as $row): ?>
+                  <?php
+                  $salaryVal = !empty($row['EffectiveSalary']) ? trim($row['EffectiveSalary']) : (!empty($row['Salary']) ? trim($row['Salary']) : '');
+                  $locVal    = !empty($row['EffectiveLocation']) ? trim($row['EffectiveLocation']) : (!empty($row['JobLocation']) ? trim($row['JobLocation']) : '');
+                  $eduVal    = !empty($row['EffectiveEducation']) ? trim($row['EffectiveEducation']) : (!empty($row['EducationRequired']) ? trim($row['EducationRequired']) : '');
+                  $ctcVal    = !empty($row['EffectiveCtcApproverId']) ? (int)$row['EffectiveCtcApproverId'] : (!empty($row['CtcApproverId']) ? (int)$row['CtcApproverId'] : 0);
+
+                  $isAllFieldsFilled = !empty($row['JobTitle']) &&
+                                       (!empty($row['Did']) || !empty($row['Departmentname'])) &&
+                                       !empty($locVal) &&
+                                       !empty($eduVal) &&
+                                       (!empty($row['MustHaveSkills']) || !empty($row['Skills'])) &&
+                                       !empty($row['CommunicationLang']) &&
+                                       !empty($row['JobDescription']) &&
+                                       !empty($row['Responsibilities']) &&
+                                       !empty($salaryVal) &&
+                                       $ctcVal > 0;
+                  ?>
                   <tr>
                     <td><?= $i++; ?></td>
                     <td><span class="badge badge-pill badge-primary"><?= htmlspecialchars($row['RequestCode']); ?></span></td>
@@ -97,7 +97,7 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
                           <i class="fas fa-eye"></i>
                         </button>
 
-                        <!-- Assign / Reassign Recruiter -->
+                        <!-- Assign / Reassign Recruiter (ONLY SHOWN IF ALL MANDATORY FIELDS ARE FILLED OR ALREADY ASSIGNED) -->
                         <?php if (!empty($row['AssignedRecruiterManagerId']) || $row['Status'] === 'ASSIGNED'): ?>
                           <button type="button" 
                                   class="btn btn-sm btn-warning btn-assign" 
@@ -108,7 +108,7 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
                                   data-assigned="<?= (int)$row['AssignedRecruiterManagerId']; ?>">
                             <i class="fas fa-user-edit"></i>
                           </button>
-                        <?php else: ?>
+                        <?php elseif ($isAllFieldsFilled): ?>
                           <button type="button" 
                                   class="btn btn-sm btn-success btn-assign" 
                                   title="Assign Recruiter" 
@@ -202,6 +202,7 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
 <div id="editVacancyPanel" class="right-form">
   <form id="editVacancyForm" action="<?= base_url('admin/updateVacancy') ?>" method="post">
       <input type="hidden" name="jid" id="edit_jid">
+      <input type="hidden" name="requestId" id="edit_requestId" value="0">
 
       <div class="right-form-header">
           <h5>
@@ -266,8 +267,8 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
                           </select>
                       </div>
                       <div class="form-group">
-                          <label>Role Summary*</label>
-                          <input type="text" name="role" id="edit_role" class="form-control" placeholder="Enter Role Summary">
+                          <label>Functional Role / Role <span class="text-danger">*</span></label>
+                          <input type="text" name="role" id="edit_role" class="form-control" placeholder="Enter Functional Role (e.g. Senior Software Engineer)">
                       </div>
                       <div class="form-group">
                           <label>Target Onboarding Date*</label>
@@ -301,10 +302,6 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
                           <select name="expMax" id="edit_expMax" class="form-control"></select>
                       </div>
                       <div class="form-group">
-                          <label>Salary (LPA)*</label>
-                          <input type="text" name="salary" id="edit_salary" class="form-control" placeholder="e.g. 5 - 10 LPA">
-                      </div>
-                      <div class="form-group">
                           <label>Job Location*</label>
                           <div class="position-relative">
                               <input type="text" id="edit_jobLocationInput" class="form-control" autocomplete="off">
@@ -333,12 +330,22 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
                           <input type="number" name="positions" id="edit_positions" class="form-control">
                       </div>
                       <div class="form-group">
-                          <label>Skills*</label>
+                          <label class="font-weight-bold"><i class="fas fa-check-circle text-success mr-1"></i> Must-Have Skills <span class="text-danger">*</span></label>
                           <div class="position-relative">
-                              <input type="text" id="edit_skillsInput" class="form-control">
-                              <div class="dropdown-menu w-100" id="edit_skillsDropdown"></div>
+                              <input type="text" id="edit_mustHaveSkillsInput" class="form-control search-input" placeholder="Type mandatory skill..." autocomplete="off">
+                              <input type="hidden" name="mustHaveSkills" id="edit_mustHaveSkills">
+                              <div class="dropdown-menu w-100" id="edit_mustHaveSkillsDropdown"></div>
                           </div>
-                          <div class="chip-container mt-2" id="edit_skillsChips"></div>
+                          <div class="chip-container mt-2" id="edit_mustHaveSkillsChips"></div>
+                      </div>
+                      <div class="form-group">
+                          <label class="font-weight-bold"><i class="fas fa-star text-info mr-1"></i> Nice-to-Have Skills</label>
+                          <div class="position-relative">
+                              <input type="text" id="edit_niceToHaveSkillsInput" class="form-control search-input" placeholder="Type optional skill..." autocomplete="off">
+                              <input type="hidden" name="niceToHaveSkills" id="edit_niceToHaveSkills">
+                              <div class="dropdown-menu w-100" id="edit_niceToHaveSkillsDropdown"></div>
+                          </div>
+                          <div class="chip-container mt-2" id="edit_niceToHaveSkillsChips"></div>
                       </div>
                       <div class="form-group">
                           <label>Communication Language*</label>
@@ -363,6 +370,11 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
 
                   <!-- STEP 4: CTC -->
                   <div id="edit-ctc-part" class="content">
+                      <div class="form-group">
+                          <label class="font-weight-bold"><i class="fas fa-money-bill-wave text-success mr-1"></i> Salary / CTC (LPA) <span class="text-danger">*</span></label>
+                          <input type="text" name="salary" id="edit_salary" class="form-control" placeholder="e.g. 5 - 10 LPA" required>
+                      </div>
+
                       <div class="form-group">
                           <label class="font-weight-bold">CTC Approver</label>
                           <select name="CtcApproverId" id="edit_CtcApproverId" class="form-control">
@@ -439,6 +451,110 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+function preloadChips(values, chipsId, hiddenId) {
+    const chips = document.getElementById(chipsId);
+    const hidden = hiddenId ? document.getElementById(hiddenId) : null;
+    if (!chips) return;
+    chips.innerHTML = '';
+    if (!values) {
+        if (hidden) hidden.value = '';
+        return;
+    }
+    const arr = values.split(',');
+    arr.forEach(v => {
+        v = v.trim();
+        if (!v) return;
+        const chip = document.createElement('span');
+        chip.className = chipsId.includes('MustHave') ? 'badge badge-pill badge-success mr-2 mb-2' : (chipsId.includes('NiceToHave') ? 'badge badge-pill badge-info mr-2 mb-2' : 'badge badge-pill badge-primary mr-2 mb-2');
+        chip.innerHTML = `${v} <span style="cursor:pointer; margin-left:4px;">×</span>`;
+        chip.querySelector('span').onclick = () => {
+            chip.remove();
+            if (hidden) {
+                hidden.value = [...chips.querySelectorAll('.badge')].map(x => x.textContent.replace('×', '').trim()).join(',');
+            }
+        };
+        chips.appendChild(chip);
+    });
+    if (hidden) {
+        hidden.value = arr.join(',');
+    }
+}
+
+function initChipAutocomplete(config) {
+    const input = document.getElementById(config.inputId);
+    const dropdown = document.getElementById(config.dropdownId);
+    const chipsContainer = document.getElementById(config.chipsId);
+    const hiddenInput = config.hiddenId ? document.getElementById(config.hiddenId) : null;
+    if (!input || !dropdown || !chipsContainer) return;
+
+    function syncHidden() {
+        if (!hiddenInput) return;
+        hiddenInput.value = [...chipsContainer.querySelectorAll('.badge')].map(x => x.textContent.replace('×', '').trim()).join(',');
+    }
+
+    input.addEventListener('keyup', function() {
+        const q = this.value.trim();
+        if (q.length < 2) {
+            dropdown.style.display = 'none';
+            dropdown.innerHTML = '';
+            return;
+        }
+        fetch(`${config.url}?q=${encodeURIComponent(q)}`)
+            .then(res => res.json())
+            .then(data => {
+                dropdown.innerHTML = '';
+                if (!data || !data.length) {
+                    dropdown.innerHTML = '<span class="dropdown-item disabled">No results</span>';
+                } else {
+                    data.forEach(item => {
+                        const value = item[config.key];
+                        const el = document.createElement('a');
+                        el.className = 'dropdown-item';
+                        el.style.cursor = 'pointer';
+                        el.textContent = value;
+                        el.onclick = () => addChip(value);
+                        dropdown.appendChild(el);
+                    });
+                }
+                dropdown.style.display = 'block';
+            });
+    });
+
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const value = input.value.trim();
+            if (value.length >= 1) addChip(value);
+        }
+    });
+
+    function addChip(value) {
+        if (!value) return;
+        const existing = [...chipsContainer.querySelectorAll('.badge')]
+            .map(x => x.textContent.replace('×', '').trim());
+        if (existing.includes(value)) return;
+
+        const chip = document.createElement('span');
+        chip.className = config.inputId.includes('MustHave') ? 'badge badge-pill badge-success mr-2 mb-2' : (config.inputId.includes('NiceToHave') ? 'badge badge-pill badge-info mr-2 mb-2' : 'badge badge-pill badge-primary mr-2 mb-2');
+        chip.innerHTML = `${value} <span style="cursor:pointer; margin-left:4px;">×</span>`;
+
+        chip.querySelector('span').onclick = () => {
+            chip.remove();
+            syncHidden();
+        };
+        chipsContainer.appendChild(chip);
+        input.value = '';
+        dropdown.style.display = 'none';
+        syncHidden();
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+}
+
 $(document).ready(function() {
     if ($.fn.DataTable) {
         if ($.fn.DataTable.isDataTable('#approvedTable')) {
@@ -457,6 +573,47 @@ $(document).ready(function() {
         }
     });
 
+    initChipAutocomplete({
+        inputId: 'edit_mustHaveSkillsInput',
+        dropdownId: 'edit_mustHaveSkillsDropdown',
+        chipsId: 'edit_mustHaveSkillsChips',
+        hiddenId: 'edit_mustHaveSkills',
+        url: '<?= base_url("admin/searchSkills") ?>',
+        key: 'SkillName'
+    });
+    initChipAutocomplete({
+        inputId: 'edit_niceToHaveSkillsInput',
+        dropdownId: 'edit_niceToHaveSkillsDropdown',
+        chipsId: 'edit_niceToHaveSkillsChips',
+        hiddenId: 'edit_niceToHaveSkills',
+        url: '<?= base_url("admin/searchSkills") ?>',
+        key: 'SkillName'
+    });
+    initChipAutocomplete({
+        inputId: 'edit_languageInput',
+        dropdownId: 'edit_languageDropdown',
+        chipsId: 'edit_languageChips',
+        hiddenId: 'edit_comLanguage',
+        url: '<?= base_url("admin/searchLanguage") ?>',
+        key: 'CommunicationLang'
+    });
+    initChipAutocomplete({
+        inputId: 'edit_jobLocationInput',
+        dropdownId: 'edit_jobLocationDropdown',
+        chipsId: 'edit_jobLocationChips',
+        hiddenId: 'edit_jobLocation',
+        url: '<?= base_url("admin/searchLocation") ?>',
+        key: 'JobLocation'
+    });
+    initChipAutocomplete({
+        inputId: 'edit_educationInput',
+        dropdownId: 'edit_educationDropdown',
+        chipsId: 'edit_educationChips',
+        hiddenId: 'edit_education',
+        url: '<?= base_url("admin/searchEducation") ?>',
+        key: 'EducationRequired'
+    });
+
     // Work mode & Emp type toggle buttons
     $('.edit-work-mode').on('click', function() {
         $('.edit-work-mode').removeClass('active');
@@ -469,6 +626,13 @@ $(document).ready(function() {
         $('#edit_employment_type').val($(this).data('value'));
     });
 
+    function cleanExpVal(val) {
+        if (val === null || val === undefined || val === '') return '';
+        let num = parseFloat(val);
+        if (isNaN(num)) return '';
+        return (num % 1 === 0) ? num.toFixed(0) : num.toString();
+    }
+
     // Experience dropdown population
     function populateEditExpMin() {
         let html = '<option value="">Select Min Exp</option>';
@@ -479,7 +643,8 @@ $(document).ready(function() {
     }
     function populateEditExpMax(minVal) {
         let html = '<option value="">Select Max Exp</option>';
-        let start = minVal !== '' ? parseInt(minVal) : 0;
+        let start = (minVal !== '' && minVal !== null && minVal !== undefined) ? parseInt(minVal) : 0;
+        if (isNaN(start)) start = 0;
         for (let i = start; i <= 30; i++) {
             html += `<option value="${i}">${i} ${i === 1 ? 'Year' : 'Years'}</option>`;
         }
@@ -570,6 +735,7 @@ $(document).on('click', '.remove-level-btn', function() {
             $.post('<?= base_url("admin/getJobDetails") ?>', { jid: jid }, function(res) {
                 let d = JSON.parse(res);
                 $('#edit_jid').val(d.Jid);
+                $('#edit_requestId').val(reqData.RequestId || 0);
                 $('#editJobCodeText').text(d.JobCode || '');
                 $('#edit_jobCode').val(d.JobCode || '');
                 $('#edit_jobTitle').val(d.JobTitle || '');
@@ -577,12 +743,17 @@ $(document).on('click', '.remove-level-btn', function() {
                 $('#edit_role').val(d.RoleSummary || '');
                 $('#edit_positions').val(d.NoofOpenings || '');
                 $('#edit_targetOnboardingDate').val((d.TargetOnboardingDate || '').split(' ')[0]);
-                $('#edit_JD').val(d.JobDescription || '');
-                $('#edit_RR').val(d.Responsibilities || '');
-                $('#edit_CtcApproverId').val(d.CtcApproverId || '');
-                $('#edit_salary').val(d.Salary || '');
+                let salaryVal = d.Salary || (reqData ? reqData.Salary : '') || '';
+                let ctcApproverVal = d.CtcApproverId || (reqData ? reqData.CtcApproverId : '') || '';
+                let jdVal = d.JobDescription || (reqData ? reqData.JobDescription : '') || '';
+                let rrVal = d.Responsibilities || (reqData ? reqData.Responsibilities : '') || '';
 
-                if (d.interviewPanels && Array.isArray(d.interviewPanels)) {
+                $('#edit_JD').val(jdVal);
+                $('#edit_RR').val(rrVal);
+                $('#edit_CtcApproverId').val(ctcApproverVal);
+                $('#edit_salary').val(salaryVal);
+
+                if (d.interviewPanels && Array.isArray(d.interviewPanels) && d.interviewPanels.length > 0) {
                     d.interviewPanels.forEach(function(p) {
                         var lvl = parseInt(p.LevelOrder);
                         var uid = p.InterviewerId;
@@ -596,21 +767,27 @@ $(document).on('click', '.remove-level-btn', function() {
                     });
                 }
 
-                if (d.ExpMin !== undefined) {
-                    $('#edit_expMin').val(d.ExpMin);
-                    populateEditExpMax(d.ExpMin);
-                    $('#edit_expMax').val(d.ExpMax || '');
-                }
+                let minExp = cleanExpVal(d.ExpMin !== undefined && d.ExpMin !== null ? d.ExpMin : (reqData ? reqData.ExpMin : ''));
+                let maxExp = cleanExpVal(d.ExpMax !== undefined && d.ExpMax !== null ? d.ExpMax : (reqData ? reqData.ExpMax : ''));
+                $('#edit_expMin').val(minExp);
+                populateEditExpMax(minExp);
+                $('#edit_expMax').val(maxExp);
 
-                let workMode = (d.WorkMode || 'Onsite').trim();
+                let workMode = (d.WorkMode || (reqData ? reqData.WorkMode : '') || 'Onsite').trim();
                 $('.edit-work-mode').removeClass('active');
                 $(`.edit-work-mode[data-value="${workMode}"]`).addClass('active');
                 $('#edit_work_mode').val(workMode);
 
-                let empType = (d.EmploymentType || 'Full-Time').trim();
+                let empType = (d.EmploymentType || (reqData ? reqData.EmploymentType : '') || 'Full-Time').trim();
                 $('.edit-emp-type').removeClass('active');
                 $(`.edit-emp-type[data-value="${empType}"]`).addClass('active');
                 $('#edit_employment_type').val(empType);
+
+                preloadChips(d.JobLocation || (reqData ? reqData.JobLocation : ''), 'edit_jobLocationChips', 'edit_jobLocation');
+                preloadChips(d.EducationRequired || (reqData ? reqData.EducationRequired : ''), 'edit_educationChips', 'edit_education');
+                preloadChips(d.MustHaveSkills || d.Skills || (reqData ? (reqData.MustHaveSkills || reqData.Skills) : '') || '', 'edit_mustHaveSkillsChips', 'edit_mustHaveSkills');
+                preloadChips(d.NiceToHaveSkills || (reqData ? reqData.NiceToHaveSkills : '') || '', 'edit_niceToHaveSkillsChips', 'edit_niceToHaveSkills');
+                preloadChips(d.CommunicationLang || (reqData ? reqData.CommunicationLang : ''), 'edit_languageChips', 'edit_comLanguage');
 
                 $('#editVacancyPanel').addClass('open');
                 $('#vacancyOverlay').addClass('show');
@@ -618,6 +795,7 @@ $(document).on('click', '.remove-level-btn', function() {
         } else {
             // Unconverted Approved Request
             $('#edit_jid').val(0);
+            $('#edit_requestId').val(reqData.RequestId || 0);
             $('#editJobCodeText').text(reqData.RequestCode || '');
             $('#edit_jobCode').val(reqData.RequestCode || '');
             $('#edit_jobTitle').val(reqData.JobTitle || '');
@@ -628,13 +806,13 @@ $(document).on('click', '.remove-level-btn', function() {
             $('#edit_JD').val(reqData.JobDescription || '');
             $('#edit_RR').val(reqData.Responsibilities || '');
             $('#edit_CtcApproverId').val(reqData.CtcApproverId || '');
-            $('#edit_salary').val((reqData.SalMin || reqData.SalMax) ? (reqData.SalMin + ' - ' + reqData.SalMax + ' LPA') : '');
+            $('#edit_salary').val(reqData.Salary || '');
 
-            if (reqData.ExpMin !== undefined) {
-                $('#edit_expMin').val(reqData.ExpMin);
-                populateEditExpMax(reqData.ExpMin);
-                $('#edit_expMax').val(reqData.ExpMax || '');
-            }
+            let minExp = cleanExpVal(reqData.ExpMin);
+            let maxExp = cleanExpVal(reqData.ExpMax);
+            $('#edit_expMin').val(minExp);
+            populateEditExpMax(minExp);
+            $('#edit_expMax').val(maxExp);
 
             $('.edit-work-mode').removeClass('active');
             $('.edit-work-mode[data-value="Onsite"]').addClass('active');
@@ -643,6 +821,12 @@ $(document).on('click', '.remove-level-btn', function() {
             $('.edit-emp-type').removeClass('active');
             $('.edit-emp-type[data-value="Full-Time"]').addClass('active');
             $('#edit_employment_type').val('Full-Time');
+
+            preloadChips(reqData.JobLocation || '', 'edit_jobLocationChips', 'edit_jobLocation');
+            preloadChips(reqData.EducationRequired || '', 'edit_educationChips', 'edit_education');
+            preloadChips(reqData.MustHaveSkills || '', 'edit_mustHaveSkillsChips', 'edit_mustHaveSkills');
+            preloadChips(reqData.NiceToHaveSkills || '', 'edit_niceToHaveSkillsChips', 'edit_niceToHaveSkills');
+            preloadChips(reqData.CommunicationLang || '', 'edit_languageChips', 'edit_comLanguage');
 
             $('#editVacancyPanel').addClass('open');
             $('#vacancyOverlay').addClass('show');
@@ -654,20 +838,45 @@ $(document).on('click', '.remove-level-btn', function() {
         e.preventDefault();
         $('#btnUpdateVacancySubmit').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Updating...');
 
+        // Sync all chip containers to their hidden inputs before serializing
+        function syncChips(chipsId, hiddenId) {
+            var chips = document.getElementById(chipsId);
+            var hidden = document.getElementById(hiddenId);
+            if (chips && hidden) {
+                hidden.value = [...chips.querySelectorAll('.badge')].map(function(x) {
+                    return x.textContent.replace('\u00d7', '').trim();
+                }).join(',');
+            }
+        }
+        syncChips('edit_jobLocationChips', 'edit_jobLocation');
+        syncChips('edit_educationChips', 'edit_education');
+        syncChips('edit_mustHaveSkillsChips', 'edit_mustHaveSkills');
+        syncChips('edit_niceToHaveSkillsChips', 'edit_niceToHaveSkills');
+        syncChips('edit_languageChips', 'edit_comLanguage');
+
+        var formData = $(this).serialize();
+        console.log('[EditVacancy] Submitting POST data:', formData);
+
         $.ajax({
             url: '<?= base_url("admin/updateVacancy") ?>',
             type: 'POST',
-            data: $(this).serialize(),
-            dataType: 'json',
-            success: function(res) {
+            data: formData,
+            success: function(rawResponse) {
                 $('#btnUpdateVacancySubmit').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Update');
-                alert(res.msg || 'Vacancy updated successfully.');
-                location.reload();
+                var res;
+                try { res = (typeof rawResponse === 'string') ? JSON.parse(rawResponse) : rawResponse; } catch(e) { res = {}; }
+                if (res && res.status === 'success') {
+                    showAlert(res.msg || 'Vacancy updated successfully.', 'success');
+                    location.reload();
+                } else {
+                    console.error('[EditVacancy] Server error response:', rawResponse);
+                    showAlert((res && res.msg) ? res.msg : 'Update failed. Check console for details.', 'danger');
+                }
             },
-            error: function() {
+            error: function(xhr, status, err) {
                 $('#btnUpdateVacancySubmit').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Update');
-                alert('Vacancy updated successfully.');
-                location.reload();
+                console.error('[EditVacancy] AJAX error:', status, err, xhr.responseText ? xhr.responseText.substring(0, 500) : '');
+                showAlert('Server error during update. Check browser console for details.', 'danger');
             }
         });
     });
@@ -700,7 +909,7 @@ $(document).on('click', '.remove-level-btn', function() {
         let managerId = $('#assign_recruiterSelect').val();
 
         if (!managerId) {
-            alert('Please select a Recruitment Manager / Recruiter.');
+            showAlert('Please select a Recruitment Manager / Recruiter.', 'warning');
             return;
         }
 
@@ -715,15 +924,15 @@ $(document).on('click', '.remove-level-btn', function() {
                 $('#btnConfirmAssign').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Save Assignment');
                 if (res.status === 'success') {
                     $('#assignRecruiterModal').modal('hide');
-                    alert(res.message);
+                    showAlert(res.message, 'success');
                     location.reload();
                 } else {
-                    alert(res.message || 'Failed to assign resource.');
+                    showAlert(res.message || 'Failed to assign resource.', 'danger');
                 }
             },
             error: function() {
                 $('#btnConfirmAssign').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Save Assignment');
-                alert('An error occurred while connecting to the server.');
+                showAlert('An error occurred while connecting to the server.', 'danger');
             }
         });
     });
@@ -741,13 +950,14 @@ $(document).on('click', '.remove-level-btn', function() {
                     <div class="col-md-6">
                         <p><b>Request Code:</b> ${d.RequestCode || '-'}</p>
                         <p><b>Job Title:</b> ${d.JobTitle || '-'}</p>
+                        <p><b>Functional Role / Role:</b> ${d.FunctionalRole || d.RoleSummary || '-'}</p>
                         <p><b>Department:</b> ${d.Departmentname || '-'}</p>
                         <p><b>Openings:</b> ${d.NoofOpenings || '1'}</p>
                         <p><b>Position Type:</b> ${d.PositionType || '-'}</p>
                         <p><b>Experience:</b> ${d.ExpMin || 0} - ${d.ExpMax || 0} Years</p>
                     </div>
                     <div class="col-md-6">
-                        <p><b>Salary Range:</b> ${d.SalMin || 0} - ${d.SalMax || 0} LPA</p>
+                        <p><b>Salary Range:</b> ${d.Salary || reqData.Salary || 'N/A'}</p>
                         <p><b>Target Onboarding:</b> ${d.TargetOnboardingDate || '-'}</p>
                         <p><b>Requested By:</b> ${d.RequestedByName || 'Hiring Manager'}</p>
                         <p><b>Approver:</b> ${d.ApproverName || '-'}</p>
@@ -758,6 +968,10 @@ $(document).on('click', '.remove-level-btn', function() {
                 <hr>
                 <div class="row">
                     <div class="col-12">
+                        <h5><b>Must-Have Skills:</b></h5>
+                        <p class="bg-light p-2 rounded">${d.MustHaveSkills || d.Skills || '-'}</p>
+                        <h5><b>Nice-to-Have Skills:</b></h5>
+                        <p class="bg-light p-2 rounded">${d.NiceToHaveSkills || '-'}</p>
                         <h5><b>Job Description:</b></h5>
                         <p class="bg-light p-2 rounded" style="white-space: pre-wrap;">${d.JobDescription || '-'}</p>
                         <h5><b>Roles & Responsibilities:</b></h5>

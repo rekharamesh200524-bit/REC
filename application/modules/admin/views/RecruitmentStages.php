@@ -292,16 +292,19 @@ $(document).on('click', '.stageStatusBtn', function () {
 </script>
 <script>
 $(document).ready(function() {
-    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#recruitmentStagesTable')) {
+    setTimeout(function() {
+        if ($.fn.DataTable.isDataTable('#recruitmentStagesTable')) {
+            $('#recruitmentStagesTable').DataTable().destroy();
+        }
         $('#recruitmentStagesTable').DataTable({
             "responsive": true,
             "autoWidth": false
         });
-    }
-    $(window).on('resize orientationchange', function() {
-        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#recruitmentStagesTable')) {
-            $('#recruitmentStagesTable').DataTable().columns.adjust().responsive.recalc();
-        }
-    });
+        $(window).on('resize orientationchange', function() {
+            if ($.fn.DataTable && $.fn.DataTable.isDataTable('#recruitmentStagesTable')) {
+                $('#recruitmentStagesTable').DataTable().columns.adjust().responsive.recalc();
+            }
+        });
+    }, 100);
 });
 </script>

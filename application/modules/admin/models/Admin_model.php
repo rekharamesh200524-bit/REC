@@ -282,12 +282,29 @@ public function getCandidatesList($Jid){
         return !empty($res) ? $res[0] : null;
     }
 
-    public function insertResourceRequest($data)
-    {
-        $this->db->insert('resource_requests', $data);
-        return $this->db->insert_id();
+    // public function insertResourceRequest($data)
+    // {
+    //     $this->db->insert('resource_requests', $data);
+    //     return $this->db->insert_id();
+    // }
+public function insertResourceRequest($data)
+{
+    $result = $this->db->insert('resource_requests', $data);
+
+    if (!$result) {
+        $error = $this->db->error();
+
+        log_message(
+            'error',
+            'Resource Request Insert Failed: ' . json_encode($error) .
+            ' | DATA: ' . json_encode($data)
+        );
+
+        return false;
     }
 
+    return $this->db->insert_id();
+}
     public function updateResourceRequest($id, $data)
     {
         $this->db->where('RequestId', $id);
@@ -305,14 +322,20 @@ public function getCandidatesList($Jid){
             req.EmpName AS RequestedByName,
             req.EmpEmail AS RequestedByEmail,
             app.EmpName AS ApproverName,
-            ctc.EmpName AS CtcApproverName,
-            arm.EmpName AS AssignedRecruiterManagerName
+            COALESCE(ctc_job.EmpName, ctc.EmpName) AS CtcApproverName,
+            arm.EmpName AS AssignedRecruiterManagerName,
+            COALESCE(j.Salary, rr.Salary) AS EffectiveSalary,
+            COALESCE(j.JobLocation, rr.JobLocation) AS EffectiveLocation,
+            COALESCE(j.EducationRequired, rr.EducationRequired) AS EffectiveEducation,
+            COALESCE(j.CtcApproverId, rr.CtcApproverId) AS EffectiveCtcApproverId
         ");
         $this->db->from("resource_requests rr");
+        $this->db->join("ihrjobslist j", "j.Jid = rr.ConvertedJid", "left");
         $this->db->join("Departments d", "d.Did = rr.Did", "left");
         $this->db->join("IHUsers req", "req.IUid = rr.RequestedBy", "left");
         $this->db->join("IHUsers app", "app.IUid = rr.ApproverId", "left");
         $this->db->join("IHUsers ctc", "ctc.IUid = rr.CtcApproverId", "left");
+        $this->db->join("IHUsers ctc_job", "ctc_job.IUid = j.CtcApproverId", "left");
         $this->db->join("IHUsers arm", "arm.IUid = rr.AssignedRecruiterManagerId", "left");
         $this->db->where_in("rr.Status", ["ACCEPTED", "ASSIGNED"]);
         $this->db->order_by("rr.RequestId", "DESC");
