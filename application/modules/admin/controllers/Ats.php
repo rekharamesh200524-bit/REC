@@ -196,7 +196,7 @@ public function analyzeResumeModal()
                     'ResumePath'      => 'atscheck/modal/' . $uploadData['file_name'],
                     'Source'          => 'Upload',
                     'ProfileMatchPer' => $result['score'],
-                    'ATS_Status'      => $atsStatus,
+                    'ATS_Status'      => 'CV Uploaded',
                     'ATS_Stage'       => 1,
                     'MatchedSkills'   => $result['matched_skills'] ?? '',
                     'EducationMatch'  => $result['education_match'],
@@ -215,7 +215,7 @@ public function analyzeResumeModal()
                     'Jid'           => $vacancy['Jid'],
                     'CandidateId'   => $candidateId,
                     'CurrentStage'  => $appStage['StageName'],
-                    'CurrentStatus' => ($atsStatus === 'Rejected') ? 'Rejected' : 'In Progress'
+                    'CurrentStatus' => 'CV Uploaded'
                 ]);
  
                 $applicationId = $this->db->insert_id();
@@ -250,7 +250,7 @@ public function analyzeResumeModal()
                     'data'   => [
                         'name'   => $candidateName,
                         'score'  => $result['score'],
-                        'status' => $atsStatus
+                        'status' => 'CV Uploaded'
                     ],
                     'redirect' => base_url('admin/CandidateList/' . $vacancy['Jid'])
                 ]);  

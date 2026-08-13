@@ -454,19 +454,6 @@
       <h1>Welcome back</h1>
       <p class="sub">Sign in to continue to your workspace</p>
 
-          <?php
-        if($this->session->flashdata('true')){ ?>
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <?php echo $this->session->flashdata('true'); ?>
-          </div>
-      <?php } else if($this->session->flashdata('error')){ ?>
-          <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i>
-            <?php echo $this->session->flashdata('error'); ?>
-          </div>
-      <?php } ?>
-
       <!-- Form — action/method/names untouched -->
       <form action="<?php echo site_url('admin/CheckLoginData'); ?>" method="post" multipart="">
 

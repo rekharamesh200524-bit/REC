@@ -15,14 +15,37 @@
         <link href="<?=$theme_path?>/css/jquery-ui.css" rel="stylesheet" />
         <script type="text/javascript" src="<?= $theme_path; ?>/js/jquery-ui.js"></script>
 
- 
+        <!-- Toastr -->
+        <link rel="stylesheet" href="<?=$theme_path?>/assets/plugins/toastr/toastr.min.css">
+        <script src="<?=$theme_path?>/assets/plugins/toastr/toastr.min.js"></script>
     </head>
 
    <body class="h-100">
        <div class="authincation h-100">
              	<?php echo $content; ?>
- 
-        </div>
-       
+       </div>
+       <script>
+       $(function () {
+         <?php if ($this->session->flashdata('success')): ?>
+           toastr.success("<?= $this->session->flashdata('success'); ?>");
+         <?php endif; ?>
+
+         <?php if ($this->session->flashdata('true')): ?>
+           toastr.success("<?= $this->session->flashdata('true'); ?>");
+         <?php endif; ?>
+
+         <?php if ($this->session->flashdata('error')): ?>
+           toastr.error("<?= $this->session->flashdata('error'); ?>");
+         <?php endif; ?>
+
+         <?php if ($this->session->flashdata('info')): ?>
+           toastr.info("<?= $this->session->flashdata('info'); ?>");
+         <?php endif; ?>
+
+         <?php if ($this->session->flashdata('warning')): ?>
+           toastr.warning("<?= $this->session->flashdata('warning'); ?>");
+         <?php endif; ?>
+       });
+       </script>
     </body>
 </html>

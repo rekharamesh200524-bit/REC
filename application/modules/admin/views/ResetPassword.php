@@ -438,19 +438,7 @@
       <h1>Reset Password</h1>
       <p class="sub">Enter your new password below.</p>
 
-      <!-- Flash messages -->
-      <?php
-        if($this->session->flashdata('true')){ ?>
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <?php echo $this->session->flashdata('true'); ?>
-          </div>
-      <?php } else if($this->session->flashdata('error')){ ?>
-          <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i>
-            <?php echo $this->session->flashdata('error'); ?>
-          </div>
-      <?php } ?>
+
 
       <!-- Form -->
       <form action="<?php echo base_url('admin/ResetPassword/' . $token); ?>" method="post">

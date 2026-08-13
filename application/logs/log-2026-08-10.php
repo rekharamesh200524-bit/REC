@@ -6,3 +6,4 @@ ERROR - 2026-08-10 09:21:30 --> 404 Page Not Found: /index
 ERROR - 2026-08-10 09:22:07 --> 404 Page Not Found: /index
 ERROR - 2026-08-10 09:22:21 --> 404 Page Not Found: /index
 ERROR - 2026-08-10 11:19:13 --> Severity: error --> Exception: syntax error, unexpected 'public' (T_PUBLIC) D:\xampp\htdocs\REC\application\modules\admin\controllers\Admin.php 861
+ERROR - 2026-08-10 18:12:18 --> Severity: error --> Exception: Call to undefined method Admin_model::getApprovedResourceRequests() D:\xampp\htdocs\REC\application\modules\admin\controllers\Admin.php 3686

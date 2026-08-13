@@ -1,0 +1,48 @@
+2026-08-11 10:48:52 saveCandidateStage POST:
+  action        = 
+  interviewDate = 
+  interviewDate_normalized = 
+  interviewType = 
+  interviewerId = 
+  interviewLevel= 
+---
+2026-08-11 10:48:52 saveCandidateStage DB Save Details:
+  Operation        = INSERT CandidateInterviews (ID: 25)
+  ApplicationId    = 20
+  InterviewRound   = 1
+  InterviewType    = 
+  ScheduledAt      = OMITTED/NULL
+  InterviewerId    = 
+---
+2026-08-11 11:04:49 saveCandidateStage POST:
+  action        = 
+  interviewDate = 
+  interviewDate_normalized = 
+  interviewType = 
+  interviewerId = 
+  interviewLevel= 
+---
+2026-08-11 11:04:49 saveCandidateStage DB Save Details:
+  Operation        = INSERT CandidateInterviews (ID: 26)
+  ApplicationId    = 21
+  InterviewRound   = 1
+  InterviewType    = 
+  ScheduledAt      = OMITTED/NULL
+  InterviewerId    = 
+---
+2026-08-11 11:08:12 saveCandidateStage POST:
+  action        = Shortlisted
+  interviewDate = 2026-08-13
+  interviewDate_normalized = 2026-08-13 00:00:00
+  interviewType = Offline
+  interviewerId = 16
+  interviewLevel= 7
+---
+2026-08-11 11:08:12 saveCandidateStage DB Save Details:
+  Operation        = INSERT CandidateInterviews (ID: 27)
+  ApplicationId    = 21
+  InterviewRound   = 2
+  InterviewType    = Offline
+  ScheduledAt      = 2026-08-13 00:00:00
+  InterviewerId    = 16
+---

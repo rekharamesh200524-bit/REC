@@ -1527,3 +1527,1591 @@ Array
 )
 
 ============================
+
+============================
+2026-08-11 10:22:08 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '6'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-11 10:22:08 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND6_20260811102208168.pdf
+    [vacancy] => 6
+)
+
+==============================
+2026-08-11 10:22:09 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-11 10:22:09 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-11 10:22:09 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-11 10:22:09 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-11 10:22:09 | name
+Shiji M K
+==============================
+2026-08-11 10:22:09 | mobileno
+7550080350
+==============================
+2026-08-11 10:22:09 | expyrs
+0
+==============================
+2026-08-11 10:22:09 | Input skills
+
+==============================
+2026-08-11 10:22:09 | Skills
+Array
+(
+)
+
+============================
+2026-08-11 10:22:09 | vacancy
+Array
+(
+    [Jid] => 6
+    [JobCode] => JOB-2026-0005
+    [JobTitle] => dii
+    [RoleSummary] => dii
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 1
+    [ExpMax] => 2
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => sss
+    [Responsibilities] => ssss
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 15:50:10
+    [UpdatedOn] => 2026-08-11 10:21:33
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-09-05
+    [Salary] => 0 - 0 LPA
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-11 10:22:09 | FINAL RESULT RETURN
+Array
+(
+    [score] => 35
+    [status] => Rejected
+    [email] => mkshiji0809@gmail.com
+    [name] => Shiji M K
+    [mobileNumbers] => 7550080350
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => 2022 jan
+                            [to] => 2024 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2019 jan
+                            [to] => 2021 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => 2008 jan
+                            [to] => 2011 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                    [3] => Array
+                        (
+                            [from] => 2006 jan
+                            [to] => 2008 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [4] => Array
+                        (
+                            [from] => 2005 jan
+                            [to] => 2006 jan
+                            [years] => 1
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 10 Years 0 Months
+        )
+
+    [domain] => Fintech
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 10
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-11 10:28:38 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '10'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-11 10:28:38 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND10_20260811102838262.pdf
+    [vacancy] => 10
+)
+
+==============================
+2026-08-11 10:28:39 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-11 10:28:39 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-11 10:28:39 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-11 10:28:39 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-11 10:28:39 | name
+Shiji M K
+==============================
+2026-08-11 10:28:39 | mobileno
+7550080350
+==============================
+2026-08-11 10:28:39 | expyrs
+0
+==============================
+2026-08-11 10:28:39 | Input skills
+
+==============================
+2026-08-11 10:28:39 | Skills
+Array
+(
+)
+
+============================
+2026-08-11 10:28:39 | vacancy
+Array
+(
+    [Jid] => 10
+    [JobCode] => JOB-2026-0008
+    [JobTitle] => du
+    [RoleSummary] => du
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 0
+    [ExpMax] => 0
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => d
+    [Responsibilities] => d
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 18:14:52
+    [UpdatedOn] => 2026-08-10 18:16:54
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 
+    [Salary] => 
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-11 10:28:39 | FINAL RESULT RETURN
+Array
+(
+    [score] => 35
+    [status] => Rejected
+    [email] => mkshiji0809@gmail.com
+    [name] => Shiji M K
+    [mobileNumbers] => 7550080350
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => 2022 jan
+                            [to] => 2024 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2019 jan
+                            [to] => 2021 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => 2008 jan
+                            [to] => 2011 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                    [3] => Array
+                        (
+                            [from] => 2006 jan
+                            [to] => 2008 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [4] => Array
+                        (
+                            [from] => 2005 jan
+                            [to] => 2006 jan
+                            [years] => 1
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 10 Years 0 Months
+        )
+
+    [domain] => Fintech
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 10
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-11 10:31:39 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '12'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-11 10:31:39 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND12_20260811103139172.pdf
+    [vacancy] => 12
+)
+
+==============================
+2026-08-11 10:31:39 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-11 10:31:39 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-11 10:31:39 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-11 10:31:39 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-11 10:31:39 | name
+Shiji M K
+==============================
+2026-08-11 10:31:39 | mobileno
+7550080350
+==============================
+2026-08-11 10:31:39 | expyrs
+0
+==============================
+2026-08-11 10:31:39 | Input skills
+
+==============================
+2026-08-11 10:31:39 | Skills
+Array
+(
+)
+
+============================
+2026-08-11 10:31:39 | vacancy
+Array
+(
+    [Jid] => 12
+    [JobCode] => JOB-2026-0009
+    [JobTitle] => dummy
+    [RoleSummary] => dummy
+    [Did] => 3
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 0
+    [ExpMax] => 0
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => dfd
+    [Responsibilities] => dfd
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-11 10:30:30
+    [UpdatedOn] => 2026-08-11 10:31:13
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 
+    [Salary] => 
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-11 10:31:39 | FINAL RESULT RETURN
+Array
+(
+    [score] => 35
+    [status] => Rejected
+    [email] => mkshiji0809@gmail.com
+    [name] => Shiji M K
+    [mobileNumbers] => 7550080350
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => 2022 jan
+                            [to] => 2024 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2019 jan
+                            [to] => 2021 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => 2008 jan
+                            [to] => 2011 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                    [3] => Array
+                        (
+                            [from] => 2006 jan
+                            [to] => 2008 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [4] => Array
+                        (
+                            [from] => 2005 jan
+                            [to] => 2006 jan
+                            [years] => 1
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 10 Years 0 Months
+        )
+
+    [domain] => Fintech
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 10
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-11 10:59:53 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '4'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-11 10:59:53 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND4_20260811105953303.pdf
+    [vacancy] => 4
+)
+
+==============================
+2026-08-11 10:59:53 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-11 10:59:53 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-11 10:59:53 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-11 10:59:53 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-11 10:59:53 | name
+Shiji M K
+==============================
+2026-08-11 10:59:53 | mobileno
+7550080350
+==============================
+2026-08-11 10:59:53 | expyrs
+0
+==============================
+2026-08-11 10:59:53 | Input skills
+
+==============================
+2026-08-11 10:59:53 | Skills
+Array
+(
+)
+
+============================
+2026-08-11 10:59:53 | vacancy
+Array
+(
+    [Jid] => 4
+    [JobCode] => JOB-2026-0003
+    [JobTitle] => data engineer
+    [RoleSummary] => data  anlaysis
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 2
+    [ExpMax] => 3
+    [SalMin] => 100000
+    [SalMax] => 200000
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => data engineer
+    [Responsibilities] => data engineer to mainthatina and anlysis tht edata
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 15:26:39
+    [UpdatedOn] => 2026-08-11 10:57:57
+    [ExpiryDate] => 1970-01-01
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 100000 - 200000 LPA
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-11 10:59:53 | FINAL RESULT RETURN
+Array
+(
+    [score] => 35
+    [status] => Rejected
+    [email] => mkshiji0809@gmail.com
+    [name] => Shiji M K
+    [mobileNumbers] => 7550080350
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => 2022 jan
+                            [to] => 2024 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2019 jan
+                            [to] => 2021 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => 2008 jan
+                            [to] => 2011 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                    [3] => Array
+                        (
+                            [from] => 2006 jan
+                            [to] => 2008 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [4] => Array
+                        (
+                            [from] => 2005 jan
+                            [to] => 2006 jan
+                            [years] => 1
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 10 Years 0 Months
+        )
+
+    [domain] => Fintech
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 10
+            [projects] => 5
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================
+
+============================
+2026-08-11 12:31:18 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '4'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-11 12:31:18 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND4_20260811123118829.pdf
+    [vacancy] => 4
+)
+
+==============================
+2026-08-11 12:31:18 | PDF_EXTRACT_SUCCESS
+EVLYN JANET
+
+ People Operations Lead | HR Operations | Employee Lifecycle & JML Excellence
+Phone: 7022384920 | Email: evjane@myyahoo.com
+
+ PROFESSIONAL SUMMARY
+
+ Experienced People Operations and HR professional with 5+ years of progressive experience across global
+organisations, specialising in HR Operations, Employee Lifecycle Management, Joiners-Movers-Leavers (JML),
+Talent Acquisition support, and HR service delivery. Proven expertise in Leave of Absence (LOA), Absence
+Management, Attendance Management, Timesheet Management and HR Case Management within fast-paced,
+high-volume environments. Skilled in handling escalations, streamlining HR processes, improving SLA adherence and
+partnering with cross-functional stakeholders to deliver seamless employee experiences. Strong background in HR
+analytics, compliance, process optimisation, onboarding, workforce coordination and operational governance.
+
+ SKILLS
+ 
+ End-to-end HR Operations
+ 
+ Employee Lifecycle Management
+ 
+ Leave of Absen
+==============================
+2026-08-11 12:31:18 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => aug 2024
+                    [to] => feb 2025
+                    [years] => 0
+                    [months] => 6
+                )
+
+            [1] => Array
+                (
+                    [from] => april 2022
+                    [to] => june 2024
+                    [years] => 2
+                    [months] => 2
+                )
+
+            [2] => Array
+                (
+                    [from] => march 2021
+                    [to] => april 2022
+                    [years] => 1
+                    [months] => 1
+                )
+
+        )
+
+    [total] => 3 Years 9 Months
+)
+
+==============================
+2026-08-11 12:31:18 | RAW_RESUME_TEXT
+evlyn janet
+
+ people operations lead | hr operations | employee lifecycle & jml excellence
+phone: 7022384920 | email: evjane@myyahoo.com
+
+ professional summary
+
+ experienced people operations and hr professional with 5+ years of progressive experience across global
+organisations, specialising in hr operations, employee lifecycle management, joiners-movers-leavers (jml),
+talent acquisition support, and hr service delivery. proven expertise in leave of absence (loa), absence
+management, attendance management, timesheet management and hr case management within fast-paced,
+high-volume environments. skilled in handling escalations, streamlining hr processes, improving sla adherence and
+partnering with cross-functional stakeholders to deliver seamless employee experiences. strong background in hr
+analytics, compliance, process optimisation, onboarding, workforce coordination and operational governance.
+
+ skills
+ 
+ end-to-end hr operations
+ 
+ employee lifecycle management
+ 
+ leave of absence (loa)
+ 
+ absence management
+ 
+ attendance management
+ 
+ timesheet management
+ 
+ hr case management
+ 
+ onboarding & offboarding
+ 
+ ticketing process handling
+ 
+ hris tools – workday, greyhr, keka, servicenow
+ 
+ sop documentation & process improvement
+ 
+ stakeholder & escalation management
+ 
+ hr reporting & analytics
+ professional experience
+ smith and howard – senior talent & operations specialist | march 2025 – october 2025
+ 
+
+ managed end-to-end employee lifecycle operations including onboarding, internal transfers, promotions,
+compensation revisions, leave administration, exits and hr documentation while ensuring complete compliance
+and process accuracy.
+ 
+
+ handled leave of absence (loa), attendance management and timesheet management activities for employees
+across multiple business functions while maintaining sla adherence and operational efficiency.
+ 
+ acted as the primary escalation point for complex hr operational issues, hr case management queries and
+emp
+==============================
+2026-08-11 12:31:18 | Email
+evjane@myyahoo.com
+==============================
+2026-08-11 12:31:18 | name
+Evlyn Janet
+==============================
+2026-08-11 12:31:18 | mobileno
+7022384920
+==============================
+2026-08-11 12:31:18 | expyrs
+1
+==============================
+2026-08-11 12:31:18 | Input skills
+
+==============================
+2026-08-11 12:31:18 | Skills
+Array
+(
+)
+
+============================
+2026-08-11 12:31:18 | vacancy
+Array
+(
+    [Jid] => 4
+    [JobCode] => JOB-2026-0003
+    [JobTitle] => data engineer
+    [RoleSummary] => data  anlaysis
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => Bachelor Degree
+    [ExpMin] => 2
+    [ExpMax] => 3
+    [SalMin] => 100000
+    [SalMax] => 200000
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => data engineer
+    [Responsibilities] => data engineer to mainthatina and anlysis tht edata
+    [Qualifications] => 
+    [JobLocation] => 
+    [CommunicationLang] => 
+    [PostedOn] => 2026-08-10 15:26:39
+    [UpdatedOn] => 2026-08-11 12:18:29
+    [ExpiryDate] => 1970-01-01
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 100000 - 200000 LPA
+    [PostedBy] => 16
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-11 12:31:18 | FINAL RESULT RETURN
+Array
+(
+    [score] => 30
+    [status] => Rejected
+    [email] => evjane@myyahoo.com
+    [name] => Evlyn Janet
+    [mobileNumbers] => 7022384920
+    [expyrs] => 1
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => aug 2024
+                            [to] => feb 2025
+                            [years] => 0
+                            [months] => 6
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => april 2022
+                            [to] => june 2024
+                            [years] => 2
+                            [months] => 2
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => march 2021
+                            [to] => april 2022
+                            [years] => 1
+                            [months] => 1
+                        )
+
+                )
+
+            [total] => 3 Years 9 Months
+        )
+
+    [domain] => Fintech
+    [matched_skills] => 
+    [education_match] => Yes
+    [experience] => Yes
+    [score_breakdown] => Array
+        (
+            [skills] => 0
+            [education] => 10
+            [experience] => 10
+            [projects] => 0
+            [certifications] => 0
+            [resume_quality] => 5
+            [domain_knowledge] => 5
+        )
+
+)
+
+============================

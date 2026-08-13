@@ -142,13 +142,30 @@ function getUsers(){
 
 function get_VaccancyList(){ 
 
-    $this->db->from('IHRJobsList jl'); 
+    $this->db->from('IHRJobsList jl');
+
+    $check_session = $this->session->userdata('logged_in');
+    if (!empty($check_session) && isset($check_session['EmpRoleId'])) {
+        $roleId = (int)$check_session['EmpRoleId'];
+        $currentUserId = (int)$check_session['IUid'];
+
+        if ($roleId === 10 || $roleId === 11) { // Recruitment Manager (10) or Recruiter (11)
+            $this->db->group_start();
+            $this->db->where('jl.AssignedRecruiterManagerId', $currentUserId);
+            $this->db->or_group_start();
+            $this->db->where('jl.AssignedRecruiterManagerId IS NULL', null, false);
+            $this->db->where('jl.PostedBy', $currentUserId);
+            $this->db->group_end();
+            $this->db->group_end();
+        }
+    } 
     $this->db->select("
     jl.*,
     Departments.Did,
     Departments.Departmentname,
     IHUsers.IUid,
     IHUsers.EmpName,
+    (SELECT COUNT(DISTINCT ja.ApplicationId) FROM JobApplications ja WHERE ja.Jid = jl.Jid) AS CandidateCount,
     GROUP_CONCAT(IHSkills.SkillName ORDER BY IHSkills.SkillName SEPARATOR ', ') AS Skills
     ", false); 
     $this->db->join('Departments', 'Departments.Did = jl.Did', 'left');
@@ -204,6 +221,16 @@ public function getCandidatesList($Jid){
 
     // --- RESOURCE REQUEST METHODS ---
 
+    public function getAllUsers()
+    {
+        $this->db->select('u.IUid, u.EmpName, u.EmpEmail, u.EmpDesignation, r.RoleName');
+        $this->db->from('IHUsers u');
+        $this->db->join('emproles r', 'u.Erid = r.Erid', 'left');
+        $this->db->where('u.UStatus', 1);
+        $this->db->order_by('u.EmpName', 'ASC');
+        return $this->db->get()->result_array();
+    }
+
     public function getApproverUsers()
     {
         $role = $this->db->select('Erid')->from('emproles')->where('LOWER(RoleName)', 'approver')->get()->row_array();
@@ -225,11 +252,12 @@ public function getCandidatesList($Jid){
 
     public function getResourceRequests($filters = [])
     {
-        $this->db->select('rr.*, d.Departmentname, req.EmpName AS RequestedByName, req.EmpEmail AS RequestedByEmail, app.EmpName AS ApproverName, app.EmpEmail AS ApproverEmail');
+        $this->db->select('rr.*, d.Departmentname, req.EmpName AS RequestedByName, req.EmpEmail AS RequestedByEmail, app.EmpName AS ApproverName, app.EmpEmail AS ApproverEmail, ctc.EmpName AS CtcApproverName, ctc.EmpEmail AS CtcApproverEmail');
         $this->db->from('resource_requests rr');
         $this->db->join('departments d', 'rr.Did = d.Did', 'left');
         $this->db->join('IHUsers req', 'rr.RequestedBy = req.IUid', 'left');
         $this->db->join('IHUsers app', 'rr.ApproverId = app.IUid', 'left');
+        $this->db->join('IHUsers ctc', 'rr.CtcApproverId = ctc.IUid', 'left');
 
         if (!empty($filters['RequestedBy'])) {
             $this->db->where('rr.RequestedBy', $filters['RequestedBy']);
@@ -267,6 +295,38 @@ public function getCandidatesList($Jid){
     }
 
 
+
+
+    public function getApprovedResourceRequests()
+    {
+        $this->db->select("
+            rr.*,
+            d.Departmentname,
+            req.EmpName AS RequestedByName,
+            req.EmpEmail AS RequestedByEmail,
+            app.EmpName AS ApproverName,
+            ctc.EmpName AS CtcApproverName,
+            arm.EmpName AS AssignedRecruiterManagerName
+        ");
+        $this->db->from("resource_requests rr");
+        $this->db->join("Departments d", "d.Did = rr.Did", "left");
+        $this->db->join("IHUsers req", "req.IUid = rr.RequestedBy", "left");
+        $this->db->join("IHUsers app", "app.IUid = rr.ApproverId", "left");
+        $this->db->join("IHUsers ctc", "ctc.IUid = rr.CtcApproverId", "left");
+        $this->db->join("IHUsers arm", "arm.IUid = rr.AssignedRecruiterManagerId", "left");
+        $this->db->where_in("rr.Status", ["ACCEPTED", "ASSIGNED"]);
+        $this->db->order_by("rr.RequestId", "DESC");
+        return $this->db->get()->result_array();
+    }
+
+    public function getRecruitmentManagers()
+    {
+        return $this->db->select("u.IUid, u.EmpName, u.EmpEmail, u.EmpDesignation, r.RoleName")
+            ->from("IHUsers u")
+            ->join("emproles r", "u.Erid = r.Erid", "left")
+            ->where_in("LOWER(r.RoleName)", ["recruitment manager", "recruiter"])
+            ->order_by("u.EmpName", "ASC")
+            ->get()->result_array();
+    }
+
 } //Main Class
-
-

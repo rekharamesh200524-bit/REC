@@ -213,7 +213,7 @@ class Admin extends MX_Controller
 					    </div>
 
 					    <div class="footer">
-					        © '.date('Y').' REC. All Rights Reserved.
+					        ï¿½ '.date('Y').' REC. All Rights Reserved.
 					    </div>
 
 					</div>
@@ -398,6 +398,41 @@ public function dashboard()
     $data["onhold_vacancies"] = $this->db->where("JobStatus", "On-Hold")->count_all_results("IHRJobsList");
     $data["open_vacancies"]   = $this->db->where("JobStatus", "Open")->count_all_results("IHRJobsList");
 
+    // On-Hold Vacancy Reminders Check
+    $today = date('Y-m-d');
+    if ($this->db->field_exists('HoldUntilDate', 'IHRJobsList')) {
+        $this->db->select("jl.*, u.EmpName AS RecruiterName, u.EmpEmail AS RecruiterEmail, d.Departmentname");
+        $this->db->from("IHRJobsList jl");
+        $this->db->join("IHUsers u", "u.IUid = jl.AssignedRecruiterManagerId", "left");
+        $this->db->join("Departments d", "d.Did = jl.Did", "left");
+        $this->db->group_start();
+            $this->db->where("jl.JobStatus", "On-Hold");
+            $this->db->or_where("jl.JobStatus", "On Hold");
+        $this->db->group_end();
+        $this->db->where("jl.HoldUntilDate IS NOT NULL", null, false);
+        $this->db->where("jl.HoldUntilDate <=", $today);
+
+        if ($roleId != 1) {
+            $this->db->group_start();
+                $this->db->where("jl.AssignedRecruiterManagerId", $uid);
+                $this->db->or_where("jl.PostedBy", $uid);
+            $this->db->group_end();
+        }
+        $onHoldReminders = $this->db->get()->result_array();
+        $data["onhold_reminders"] = $onHoldReminders;
+
+        foreach ($onHoldReminders as $remJob) {
+            if (empty($remJob['HoldReminderSentDate']) || $remJob['HoldReminderSentDate'] !== $today) {
+                $sent = $this->_sendHoldExpiryEmailToRecruiter($remJob);
+                if ($sent && !empty($remJob['Jid'])) {
+                    $this->db->where('Jid', $remJob['Jid'])->update('IHRJobsList', ['HoldReminderSentDate' => $today]);
+                }
+            }
+        }
+    } else {
+        $data["onhold_reminders"] = [];
+    }
+
     // 3. Resource Requests Statistics
     $data["total_resource_requests"]   = $this->db->count_all_results("resource_requests");
     $data["pending_resource_requests"] = $this->db->where("Status", "PENDING APPROVAL")->count_all_results("resource_requests");
@@ -504,6 +539,16 @@ public function dashboard()
     $this->db->order_by("ja.AppliedOn", "DESC");
     $data["all_candidates"] = $this->db->get()->result_array();
 
+    
+    // Fetch full Resource Requests details for Dashboard
+    $this->db->select("rr.*, d.Departmentname, req_u.EmpName as RequestedByName, app_u.EmpName as ApproverName");
+    $this->db->from("resource_requests rr");
+    $this->db->join("Departments d", "d.Did = rr.Did", "left");
+    $this->db->join("IHUsers req_u", "req_u.IUid = rr.RequestedBy", "left");
+    $this->db->join("IHUsers app_u", "app_u.IUid = rr.ApproverId", "left");
+    $this->db->order_by("rr.CreatedAt", "DESC");
+    $data["resource_requests_list"] = $this->db->get()->result_array();
+
     $data["departments"] = $this->admin_model->getDepartments();
 
     // Render Master Dashboard for all roles
@@ -529,6 +574,7 @@ public function ManageUsers(){
         
 	            $data['users'] = $this->admin_model->getUsers(); 
 	            $data['department'] = $this->admin_model->getUserDepartments();
+        $data['ctc_approvers'] = $this->admin_model->getAllUsers();
 	            $data['role']       = $this->admin_model->getUserRoles();
 				$this->template->write_view('content', 'admin/ManageUsers', $data);
 				$this->template->render();
@@ -558,6 +604,7 @@ public function Candidatelist($Jid){
         
 	            // $data['users'] = $this->admin_model->getUsers(); 
 	            // $data['department'] = $this->admin_model->getUserDepartments();
+        $data['ctc_approvers'] = $this->admin_model->getAllUsers();
 	            $data['Candidatelist']       = $this->admin_model->getCandidatesList($Jid);
                 $data['jobdetails'] = $this->db
     ->where('Jid',$Jid)
@@ -841,6 +888,7 @@ public function VaccancyList(){
         $data['currentUrlArray'] = $this->admin_model->getBreadcrumb($currentUrl);
         $data['vaclist'] = $this->admin_model->get_VaccancyList();	
         $data['department'] = $this->admin_model->getUserDepartments();
+        $data['ctc_approvers'] = $this->admin_model->getAllUsers();
 
         $this->template->write_view('content', 'admin/VaccancyList', $data);
         $this->template->render();
@@ -1064,6 +1112,7 @@ public function saveVacancy(){
             'JobLocation'       => $this->input->post('jobLocation'),
             'CommunicationLang' => $this->input->post('comLanguage'),
             'PostedBy'          => $Hrms_Session['IUid'],
+            'CtcApproverId'      => $this->input->post('CtcApproverId') ? (int)$this->input->post('CtcApproverId') : null,
             'ExpiryDate' => date('Y-m-d', strtotime($this->input->post('ExpiryDate'))),
             'SkillScore'           => ($this->input->post('SkillScore') !== null && $this->input->post('SkillScore') !== '') ? $this->input->post('SkillScore') : 50,
             'EducationScore'       => ($this->input->post('EducationScore') !== null && $this->input->post('EducationScore') !== '') ? $this->input->post('EducationScore') : 20,
@@ -1202,11 +1251,39 @@ public function updateJobStatus(){
          $jid = $this->input->post('jid');
 	     $status = $this->input->post('status');
 
-	    $this->db->where('Jid', $jid)
-	             ->update('IHRJobsList', [
-	                 'JobStatus' => $status,
-	                 'UpdatedOn' => date('Y-m-d H:i:s')
-	             ]);
+        $statusLower = strtolower(trim($status));
+
+        if (!$this->db->field_exists('HoldUntilDate', 'IHRJobsList')) {
+            $this->db->query("ALTER TABLE IHRJobsList ADD COLUMN HoldUntilDate DATE NULL");
+        }
+        if (!$this->db->field_exists('HoldReminderSentDate', 'IHRJobsList')) {
+            $this->db->query("ALTER TABLE IHRJobsList ADD COLUMN HoldReminderSentDate DATE NULL");
+        }
+
+        $updateData = [
+            'JobStatus' => $status,
+            'UpdatedOn' => date('Y-m-d H:i:s')
+        ];
+
+        if ($statusLower === 'on-hold' || $statusLower === 'on hold') {
+            $holdUntilDate = $this->input->post('holdUntilDate');
+            if (!empty($holdUntilDate)) {
+                $updateData['HoldUntilDate'] = date('Y-m-d', strtotime($holdUntilDate));
+            } else {
+                $updateData['HoldUntilDate'] = date('Y-m-d', strtotime('+1 day'));
+            }
+            $updateData['HoldReminderSentDate'] = null;
+        } else {
+            $updateData['HoldUntilDate'] = null;
+            $updateData['HoldReminderSentDate'] = null;
+        }
+
+        $this->db->where('Jid', $jid)->update('IHRJobsList', $updateData);
+
+        // Send initial confirmation email to assigned recruiter if job is put On-Hold
+        if ($statusLower === 'on-hold' || $statusLower === 'on hold') {
+            $this->_sendVacancyOnHoldEmailToRecruiter($jid);
+        }
 
 			    echo json_encode([
 		   		 'status'  => 'success',
@@ -1425,6 +1502,7 @@ public function getJobDetails(){
     	d.Departmentname,
     	  jl.RoleSummary,
     	  u.EmpName AS PostedByName,
+        arm.EmpName AS AssignedRecruiterManagerName,
         GROUP_CONCAT(s.SkillName SEPARATOR ',') AS Skills
      ");
 
@@ -1437,8 +1515,23 @@ public function getJobDetails(){
      $this->db->where('jl.Jid',$jid);
      $this->db->group_by('jl.Jid');
      $this->db->join('IHUsers u','u.IUid = jl.PostedBy','left');
+     $this->db->join('IHUsers ctc','ctc.IUid = jl.CtcApproverId','left');
+     $this->db->join('IHUsers arm','arm.IUid = jl.AssignedRecruiterManagerId','left');
 
      $row = $this->db->get()->row_array();
+
+     if ($row && !empty($row['Jid'])) {
+         $this->db->query("CREATE TABLE IF NOT EXISTS JobInterviewPanels (
+             PanelId INT AUTO_INCREMENT PRIMARY KEY,
+             Jid INT NOT NULL,
+             LevelOrder INT NOT NULL,
+             InterviewerId INT NOT NULL,
+             CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+             INDEX (Jid)
+         )");
+         $panels = $this->db->where('Jid', $row['Jid'])->order_by('LevelOrder', 'ASC')->get('JobInterviewPanels')->result_array();
+         $row['interviewPanels'] = $panels;
+     }
 
      echo json_encode($row);
 
@@ -1449,6 +1542,56 @@ public function getJobDetails(){
         redirect($this->config->item('base_url')."admin/index");
     }
 }
+
+public function getCandidateInterviewPanelInfo()
+{
+    $candidateId = $this->input->post('candidateId');
+    if (empty($candidateId)) {
+        echo json_encode(['status' => 'error', 'msg' => 'Candidate ID missing']);
+        return;
+    }
+
+    $app = $this->db->select('ja.ApplicationId, ja.Jid')
+                    ->from('JobApplications ja')
+                    ->where('ja.CandidateId', $candidateId)
+                    ->order_by('ja.ApplicationId', 'DESC')
+                    ->limit(1)
+                    ->get()
+                    ->row();
+
+    $jid = $app ? $app->Jid : 0;
+    if (!$jid) {
+        $cand = $this->db->select('Jid')->where('CandidateId', $candidateId)->get('IHrCandidates')->row();
+        $jid = $cand ? $cand->Jid : 0;
+    }
+
+    $panels = [];
+    if ($jid) {
+        $this->db->query("CREATE TABLE IF NOT EXISTS JobInterviewPanels (
+            PanelId INT AUTO_INCREMENT PRIMARY KEY,
+            Jid INT NOT NULL,
+            LevelOrder INT NOT NULL,
+            InterviewerId INT NOT NULL,
+            CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX (Jid)
+        )");
+
+        $panels = $this->db->select('p.LevelOrder, p.InterviewerId, u.EmpName')
+                           ->from('JobInterviewPanels p')
+                           ->join('IHUsers u', 'u.IUid = p.InterviewerId', 'left')
+                           ->where('p.Jid', $jid)
+                           ->order_by('p.LevelOrder', 'ASC')
+                           ->get()
+                           ->result_array();
+    }
+
+    echo json_encode([
+        'status' => 'success',
+        'jid'    => $jid,
+        'panels' => $panels
+    ]);
+}
+
 public function updateVacancy()
 {
     $Hrms_Session = $this->session->userdata('logged_in');
@@ -1488,7 +1631,34 @@ public function updateVacancy()
             }
         }
 
+        $data['CtcApproverId'] = $this->input->post('CtcApproverId') ? (int)$this->input->post('CtcApproverId') : null;
         $this->db->where('Jid',$jid)->update('IHRJobsList',$data);
+
+        $this->db->query("CREATE TABLE IF NOT EXISTS JobInterviewPanels (
+            PanelId INT AUTO_INCREMENT PRIMARY KEY,
+            Jid INT NOT NULL,
+            LevelOrder INT NOT NULL,
+            InterviewerId INT NOT NULL,
+            CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX (Jid)
+        )");
+
+        $interviewPanel = $this->input->post('interviewPanel');
+        if ($interviewPanel !== null) {
+            $this->db->where('Jid', $jid)->delete('JobInterviewPanels');
+            if (is_array($interviewPanel)) {
+                foreach ($interviewPanel as $lvl => $interviewerId) {
+                    $interviewerId = (int)$interviewerId;
+                    if ($interviewerId > 0) {
+                        $this->db->insert('JobInterviewPanels', [
+                            'Jid' => $jid,
+                            'LevelOrder' => (int)$lvl,
+                            'InterviewerId' => $interviewerId
+                        ]);
+                    }
+                }
+            }
+        }
 
        
 
@@ -1680,33 +1850,48 @@ public function saveCandidateStage()
   
     $currentStatus = 'In Progress';
 
-
-    if(strtolower($action) == 'rejected'){
+    $actLower = strtolower(trim($action));
+    if($actLower == 'cv screened' || $actLower == 'screened'){
+        $currentStatus = 'CV Screened';
+    }
+    elseif($actLower == 'cv rejected' || $actLower == 'not interested' || $actLower == 'not intrested'){
+        $currentStatus = 'CV Rejected';
+    }
+    elseif($actLower == 'rejected'){
         $currentStatus = 'Rejected';
     }
-
-    // If on hold
-    elseif(strtolower($action) == 'on hold'){
+    elseif($actLower == 'on hold'){
         $currentStatus = 'On Hold';
     }
-
-    // If reschedule
-    elseif(strtolower($action) == 'reschedule'){
+    elseif($actLower == 'reschedule'){
         $currentStatus = 'Rescheduled';
     }
-
-  
-    elseif(strtolower($action) == 'shortlisted' && !empty($level)){
-
+    elseif($actLower == 'shortlisted' && !empty($level)){
         $stageRow = $this->db->where('StageId', $level)->get('recruitmentstages')->row();
-
         if($stageRow){
             $currentStatus = $stageRow->StageName;   
         }
     }
+    elseif(!empty($stageId)){
+        $stageRow = $this->db->where('StageId', $stageId)->get('recruitmentstages')->row();
+        if($stageRow){
+            $sNameLower = strtolower(trim($stageRow->StageName));
+            if(strpos($sNameLower, 'screen') !== false){
+                $currentStatus = 'CV Screened';
+            } else if(strpos($sNameLower, 'reject') !== false){
+                $currentStatus = 'CV Rejected';
+            } else {
+                $currentStatus = $stageRow->StageName;
+            }
+        }
+    }
 
-        $this->db->where('ApplicationId',$applicationId)->update('JobApplications',['CurrentStage'  => $stageId,'CurrentStatus' => $currentStatus
-                 ]);
+    $updateJobApp = ['CurrentStatus' => $currentStatus];
+    if(!empty($stageId)){
+        $updateJobApp['CurrentStage'] = $stageId;
+    }
+    $this->db->where('ApplicationId',$applicationId)->update('JobApplications', $updateJobApp);
+    $this->db->where('CandidateId', $candidateId)->update('IHrCandidates', ['ATS_Status' => $currentStatus]);
 
                 
 
@@ -2205,9 +2390,22 @@ public function vacancies()
 
 	if (isset($Hrms_Session) && !empty($Hrms_Session)) {
  
-    $this->db->select('jl.*, d.Departmentname');
+    $this->db->select("jl.*, d.Departmentname, (SELECT COUNT(DISTINCT ja.ApplicationId) FROM JobApplications ja WHERE ja.Jid = jl.Jid) AS CandidateCount", false);
     $this->db->from('IHRJobsList jl');
     $this->db->join('Departments d','d.Did = jl.Did','left');
+
+    $roleId = isset($Hrms_Session['EmpRoleId']) ? (int)$Hrms_Session['EmpRoleId'] : 0;
+    $currentUserId = (int)$Hrms_Session['IUid'];
+
+    if ($roleId === 10 || $roleId === 11) { // Recruitment Manager (10) or Recruiter (11)
+        $this->db->group_start();
+        $this->db->where('jl.AssignedRecruiterManagerId', $currentUserId);
+        $this->db->or_group_start();
+        $this->db->where('jl.AssignedRecruiterManagerId IS NULL', null, false);
+        $this->db->where('jl.PostedBy', $currentUserId);
+        $this->db->group_end();
+        $this->db->group_end();
+    }
  
     $dateRange  = $this->input->post('dateRange', TRUE) ?: $this->input->get('dateRange', TRUE);
     $department = $this->input->post('department', TRUE) ?: $this->input->get('department', TRUE);
@@ -2239,6 +2437,7 @@ public function vacancies()
  
     $data['vaclist'] = $this->db->get()->result_array();
     $data['department'] = $this->admin_model->getUserDepartments();
+        $data['ctc_approvers'] = $this->admin_model->getAllUsers();
  
     $currentUrl = strtolower(uri_string());
     $data['currentUrlArray'] = $this->admin_model->getBreadcrumb($currentUrl);
@@ -3234,17 +3433,32 @@ public function mark_all_notifications_read() {
         $roleRow = $this->db->select("RoleName")->from("emproles")->where("Erid", $roleId)->get()->row_array();
         $roleName = !empty($roleRow) ? strtolower($roleRow["RoleName"]) : "";
 
+        // ===== STRICT ROLE-BASED VISIBILITY RULES =====
+        // Roles that see ALL requests (company-wide view):
+        //   Management (Erid=1), HR (Erid=3)
+        // Approver (Erid=12): sees ONLY requests assigned to them for approval
+        // ALL OTHER roles (Hiring Manager, Recruitment Manager, Recruiter, TL, PM):
+        //   see ONLY the requests they personally raised (RequestedBy = their own userId)
+
+        $adminRoles   = [1, 3]; // Management + HR see all
+        $approverRole = 12;     // Approver sees assigned requests
+
         $filters = [];
-        // Role-based filtering
-        if ($roleName === "hiring manager") {
-            $filters["RequestedBy"] = $userId;
-        } else if ($roleName === "approver") {
+        if (in_array($roleId, $adminRoles)) {
+            // No filter: Management and HR see all requests company-wide
+        } elseif ($roleId == $approverRole) {
+            // Approver sees only requests assigned to them for approval action
             $filters["ApproverId"] = $userId;
+        } else {
+            // Hiring Manager, Recruitment Manager, Recruiter, TL, PM
+            // can ONLY see their own raised requests
+            $filters["RequestedBy"] = $userId;
         }
 
         $data["employee_det"] = $check_session;
         $data["requests"] = $this->admin_model->getResourceRequests($filters);
         $data["approvers"] = $this->admin_model->getApproverUsers();
+        $data["ctc_approvers"] = $this->admin_model->getAllUsers();
         $data["department"] = $this->db->select("Did, Departmentname")->from("departments")->where("Status", 1)->get()->result_array();
         $data["userRoleName"] = !empty($roleRow) ? $roleRow["RoleName"] : "";
 
@@ -3268,39 +3482,116 @@ public function mark_all_notifications_read() {
             return;
         }
 
-        // Generate Request Code
-        $count = $this->db->count_all("resource_requests") + 1;
-        $requestCode = "RR-" . date("Y") . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+        $requestId = isset($inps["RequestId"]) ? (int)$inps["RequestId"] : 0;
+        $sessionRoleId = isset($check_session["EmpRoleId"]) ? (int)$check_session["EmpRoleId"] : 0;
+        $sessionUserId = isset($check_session["IUid"]) ? (int)$check_session["IUid"] : 0;
 
-        $data = [
-            "RequestCode"          => $requestCode,
-            "JobTitle"             => trim($inps["JobTitle"]),
-            "FunctionalRole"       => isset($inps["FunctionalRole"]) ? trim($inps["FunctionalRole"]) : "",
-            "Did"                  => isset($inps["Did"]) ? (int)$inps["Did"] : null,
-            "NoofOpenings"         => isset($inps["NoofOpenings"]) ? (int)$inps["NoofOpenings"] : 1,
-            "PositionType"         => isset($inps["PositionType"]) ? $inps["PositionType"] : "New Position",
-            "ExpMin"               => isset($inps["ExpMin"]) ? (int)$inps["ExpMin"] : 0,
-            "ExpMax"               => isset($inps["ExpMax"]) ? (int)$inps["ExpMax"] : 0,
-            "SalMin"               => isset($inps["SalMin"]) ? (int)$inps["SalMin"] : 0,
-            "SalMax"               => isset($inps["SalMax"]) ? (int)$inps["SalMax"] : 0,
-            "RecruitmentStartDate" => !empty($inps["RecruitmentStartDate"]) ? $inps["RecruitmentStartDate"] : null,
-            "TargetOnboardingDate" => !empty($inps["TargetOnboardingDate"]) ? $inps["TargetOnboardingDate"] : null,
-            "ReasonForRequirement" => isset($inps["ReasonForRequirement"]) ? trim($inps["ReasonForRequirement"]) : "",
-            "JobDescription"       => isset($inps["JobDescription"]) ? trim($inps["JobDescription"]) : "",
-            "Responsibilities"     => isset($inps["Responsibilities"]) ? trim($inps["Responsibilities"]) : "",
-            "RequestedBy"          => $check_session["IUid"],
-            "ApproverId"           => (int)$inps["ApproverId"],
-            "Status"               => "PENDING APPROVAL",
-            "CreatedAt"            => date("Y-m-d H:i:s")
-        ];
+        if ($requestId > 0) {
+            // EDIT / UPDATE EXISTING RESOURCE REQUEST
+            $existing = $this->admin_model->getResourceRequestById($requestId);
+            if (empty($existing)) {
+                $this->session->set_flashdata("error", "Resource Request not found.");
+                redirect($this->config->item("base_url") . "admin/RequestedResources");
+                return;
+            }
 
-        $requestId = $this->admin_model->insertResourceRequest($data);
-        if ($requestId) {
-            // Trigger Email to Approver
-            $this->_sendResourceRequestEmailToApprover($requestId);
-            $this->session->set_flashdata("true", "Resource Request submitted successfully and sent for approval.");
+            // STRICT OWNERSHIP / PERMISSION CHECK FOR UPDATE:
+            // Hiring Manager (Erid 9) can ONLY update their own requests
+            if ($sessionRoleId === 9 && (int)$existing["RequestedBy"] !== $sessionUserId) {
+                $this->session->set_flashdata("error", "Access denied. You can only update your own resource requests.");
+                redirect($this->config->item("base_url") . "admin/RequestedResources");
+                return;
+            }
+
+            $updateData = [
+                "JobTitle"             => trim($inps["JobTitle"]),
+                "FunctionalRole"       => isset($inps["FunctionalRole"]) ? trim($inps["FunctionalRole"]) : "",
+                "Did"                  => isset($inps["Did"]) ? (int)$inps["Did"] : null,
+                "NoofOpenings"         => isset($inps["NoofOpenings"]) ? (int)$inps["NoofOpenings"] : 1,
+                "PositionType"         => isset($inps["PositionType"]) ? $inps["PositionType"] : "New Position",
+                "ExpMin"               => isset($inps["ExpMin"]) ? (int)$inps["ExpMin"] : 0,
+                "ExpMax"               => isset($inps["ExpMax"]) ? (int)$inps["ExpMax"] : 0,
+                "SalMin"               => isset($inps["SalMin"]) ? (int)$inps["SalMin"] : 0,
+                "SalMax"               => isset($inps["SalMax"]) ? (int)$inps["SalMax"] : 0,
+                "RecruitmentStartDate" => !empty($inps["RecruitmentStartDate"]) ? $inps["RecruitmentStartDate"] : null,
+                "TargetOnboardingDate" => !empty($inps["TargetOnboardingDate"]) ? $inps["TargetOnboardingDate"] : null,
+                "ReasonForRequirement" => isset($inps["ReasonForRequirement"]) ? trim($inps["ReasonForRequirement"]) : "",
+                "JobDescription"       => isset($inps["JobDescription"]) ? trim($inps["JobDescription"]) : "",
+                "Responsibilities"     => isset($inps["Responsibilities"]) ? trim($inps["Responsibilities"]) : "",
+                "ApproverId"           => (int)$inps["ApproverId"],
+                "CtcApproverId"        => !empty($inps["CtcApproverId"]) ? (int)$inps["CtcApproverId"] : null,
+                "UpdatedAt"            => date("Y-m-d H:i:s")
+            ];
+
+            $res = $this->admin_model->updateResourceRequest($requestId, $updateData);
+            if ($res) {
+                if (!empty($existing["ConvertedJid"])) {
+                    $vacancyUpdate = [
+                        "JobTitle"             => trim($inps["JobTitle"]),
+                        "RoleSummary"          => isset($inps["FunctionalRole"]) ? trim($inps["FunctionalRole"]) : "",
+                        "Did"                  => isset($inps["Did"]) ? (int)$inps["Did"] : null,
+                        "NoofOpenings"         => isset($inps["NoofOpenings"]) ? (int)$inps["NoofOpenings"] : 1,
+                        "ExpMin"               => isset($inps["ExpMin"]) ? (int)$inps["ExpMin"] : 0,
+                        "ExpMax"               => isset($inps["ExpMax"]) ? (int)$inps["ExpMax"] : 0,
+                        "SalMin"               => isset($inps["SalMin"]) ? (int)$inps["SalMin"] : 0,
+                        "SalMax"               => isset($inps["SalMax"]) ? (int)$inps["SalMax"] : 0,
+                        "TargetOnboardingDate" => !empty($inps["TargetOnboardingDate"]) ? $inps["TargetOnboardingDate"] : null,
+                        "JobDescription"       => isset($inps["JobDescription"]) ? trim($inps["JobDescription"]) : "",
+                        "Responsibilities"     => isset($inps["Responsibilities"]) ? trim($inps["Responsibilities"]) : "",
+                        "CtcApproverId"        => !empty($inps["CtcApproverId"]) ? (int)$inps["CtcApproverId"] : null,
+                    ];
+                    $this->db->where("Jid", (int)$existing["ConvertedJid"])->update("ihrjobslist", $vacancyUpdate);
+                }
+                $this->session->set_flashdata("true", "Resource Request [" . $existing["RequestCode"] . "] updated successfully.");
+            } else {
+                $this->session->set_flashdata("error", "Failed to update Resource Request.");
+            }
         } else {
-            $this->session->set_flashdata("error", "Failed to submit Resource Request.");
+            // CREATE NEW RESOURCE REQUEST
+            $count = $this->db->count_all("resource_requests") + 1;
+            $requestCode = "RR-" . date("Y") . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+
+            $data = [
+                "RequestCode"          => $requestCode,
+                "JobTitle"             => trim($inps["JobTitle"]),
+                "FunctionalRole"       => isset($inps["FunctionalRole"]) ? trim($inps["FunctionalRole"]) : "",
+                "Did"                  => isset($inps["Did"]) ? (int)$inps["Did"] : null,
+                "NoofOpenings"         => isset($inps["NoofOpenings"]) ? (int)$inps["NoofOpenings"] : 1,
+                "PositionType"         => isset($inps["PositionType"]) ? $inps["PositionType"] : "New Position",
+                "ExpMin"               => isset($inps["ExpMin"]) ? (int)$inps["ExpMin"] : 0,
+                "ExpMax"               => isset($inps["ExpMax"]) ? (int)$inps["ExpMax"] : 0,
+                "SalMin"               => isset($inps["SalMin"]) ? (int)$inps["SalMin"] : 0,
+                "SalMax"               => isset($inps["SalMax"]) ? (int)$inps["SalMax"] : 0,
+                "RecruitmentStartDate" => !empty($inps["RecruitmentStartDate"]) ? $inps["RecruitmentStartDate"] : null,
+                "TargetOnboardingDate" => !empty($inps["TargetOnboardingDate"]) ? $inps["TargetOnboardingDate"] : null,
+                "ReasonForRequirement" => isset($inps["ReasonForRequirement"]) ? trim($inps["ReasonForRequirement"]) : "",
+                "JobDescription"       => isset($inps["JobDescription"]) ? trim($inps["JobDescription"]) : "",
+                "Responsibilities"     => isset($inps["Responsibilities"]) ? trim($inps["Responsibilities"]) : "",
+                "RequestedBy"          => $check_session["IUid"],
+                "ApproverId"           => (int)$inps["ApproverId"],
+                "CtcApproverId"        => !empty($inps["CtcApproverId"]) ? (int)$inps["CtcApproverId"] : null,
+                "Status"               => "PENDING APPROVAL",
+                "CreatedAt"            => date("Y-m-d H:i:s")
+            ];
+
+            $newId = $this->admin_model->insertResourceRequest($data);
+            if ($newId) {
+                // Trigger Email to Approver
+                $this->_sendResourceRequestEmailToApprover($newId);
+
+                // Trigger In-App Push Notification for Approver
+                $this->load->model("Notification_model");
+                $this->Notification_model->addNotification(
+                    "New Resource Request Pending Approval",
+                    "Resource Request [" . $requestCode . "] for \"" . trim($inps["JobTitle"]) . "\" requested by " . $check_session["EmpName"] . " requires your approval.",
+                    "warning",
+                    (int)$inps["ApproverId"],
+                    12
+                );
+                $this->session->set_flashdata("true", "Resource Request submitted successfully and sent for approval.");
+            } else {
+                $this->session->set_flashdata("error", "Failed to submit Resource Request.");
+            }
         }
 
         redirect($this->config->item("base_url") . "admin/RequestedResources");
@@ -3329,6 +3620,45 @@ public function mark_all_notifications_read() {
             return;
         }
 
+        // ===== OWNERSHIP / PERMISSION SECURITY CHECK =====
+        // Prevent URL tampering: verify the logged-in user is authorised for this request
+        $sessionRoleId = isset($check_session["EmpRoleId"]) ? (int)$check_session["EmpRoleId"] : 0;
+        $sessionUserId = isset($check_session["IUid"]) ? (int)$check_session["IUid"] : 0;
+        // Roles allowed to take approval actions:
+        // 1, 3, 10 (Management, HR, Recruitment Manager) - see all, can approve any
+        // 12 (Approver) - can only approve requests assigned to them
+        // 9  (Hiring Manager) - can only ACCEPT/convert their OWN requests (self-submission to vacancy)
+        $adminRolesForApproval = [1, 3, 9, 10, 12];
+
+        if (!in_array($sessionRoleId, $adminRolesForApproval)) {
+            echo json_encode(["status" => "error", "message" => "Access denied. You do not have permission to perform this action."]);
+            return;
+        }
+
+        if ($sessionRoleId == 12) {
+            // Approver can only action requests assigned to them
+            $reqCheck = $this->admin_model->getResourceRequestById($requestId);
+            if (empty($reqCheck) || (int)$reqCheck["ApproverId"] !== $sessionUserId) {
+                echo json_encode(["status" => "error", "message" => "Access denied. This request is not assigned to you for approval."]);
+                return;
+            }
+        }
+
+        if ($sessionRoleId == 9) {
+            // Hiring Manager can only accept/convert their OWN requests
+            $reqCheck = $this->admin_model->getResourceRequestById($requestId);
+            if (empty($reqCheck) || (int)$reqCheck["RequestedBy"] !== $sessionUserId) {
+                echo json_encode(["status" => "error", "message" => "Access denied. You can only submit your own resource requests to the vacancy list."]);
+                return;
+            }
+            // Hiring Manager can only ACCEPT (submit to vacancy), not REJECT
+            if ($status !== "ACCEPTED") {
+                echo json_encode(["status" => "error", "message" => "Hiring Managers can only submit approved requests to the vacancy list."]);
+                return;
+            }
+        }
+        // ===== END SECURITY CHECK =====
+
         $updateData = [
             "Status"          => $status,
             "ApprovalComment" => $comment,
@@ -3338,11 +3668,68 @@ public function mark_all_notifications_read() {
         $res = $this->admin_model->updateResourceRequest($requestId, $updateData);
         if ($res) {
             if ($status === "ACCEPTED") {
+                // AUTO CONVERT TO ACTIVE VACANCY IN IHRJobsList
+                $req = $this->admin_model->getResourceRequestById($requestId);
+                if (!empty($req) && empty($req["ConvertedJid"])) {
+                    $count = $this->db->count_all("ihrjobslist") + 1;
+                    $jobCode = "JOB-" . date("Y") . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+
+                    $vacancyData = [
+                        "JobCode"               => $jobCode,
+                        "JobTitle"              => $req["JobTitle"],
+                        "RoleSummary"           => !empty($req["FunctionalRole"]) ? $req["FunctionalRole"] : $req["JobTitle"],
+                        "Did"                   => $req["Did"],
+                        "EmploymentType"        => "Full-Time",
+                        "WorkMode"              => "Onsite",
+                        "EducationRequired"     => "Bachelor Degree",
+                        "ExpMin"                => $req["ExpMin"],
+                        "ExpMax"                => $req["ExpMax"],
+                        "SalMin"                => $req["SalMin"],
+                        "SalMax"                => $req["SalMax"],
+                        "TargetOnboardingDate"  => !empty($req["TargetOnboardingDate"]) ? $req["TargetOnboardingDate"] : null,
+                        "Salary"                => (!empty($req["SalMin"]) || !empty($req["SalMax"])) ? ($req["SalMin"] . " - " . $req["SalMax"] . " LPA") : "",
+                        "NoofOpenings"          => $req["NoofOpenings"],
+                        "JobStatus"             => "Open",
+                        "JobDescription"        => $req["JobDescription"],
+                        "Responsibilities"      => $req["Responsibilities"],
+                        "PostedBy"              => $req["RequestedBy"],
+                        "PostedOn"              => date("Y-m-d H:i:s")
+                    ];
+
+                    $this->db->insert("ihrjobslist", $vacancyData);
+                    $jid = $this->db->insert_id();
+
+                    if ($jid) {
+                        $this->admin_model->updateResourceRequest($requestId, ["ConvertedJid" => $jid]);
+                    }
+                }
+
+                // Send acceptance & notification email to Recruitment Manager
                 $this->_sendResourceRequestAcceptEmail($requestId);
+
+                // Trigger In-App Push Notification for Recruitment Manager (Role 10) & Requester
+                $this->load->model("Notification_model");
+                $this->Notification_model->addNotification(
+                    "New Vacancy Approved & Published",
+                    "Resource Request [" . $req["RequestCode"] . "] (\"" . $req["JobTitle"] . "\") was approved by " . $check_session["EmpName"] . " and automatically published to Vacancy List as " . $jobCode . "!",
+                    "success",
+                    null,
+                    10
+                );
+
+                if (!empty($req["RequestedBy"])) {
+                    $this->Notification_model->addNotification(
+                        "Resource Request Approved",
+                        "Your Resource Request [" . $req["RequestCode"] . "] (\"" . $req["JobTitle"] . "\") has been approved!",
+                        "success",
+                        $req["RequestedBy"],
+                        null
+                    );
+                }
             } else if ($status === "REJECTED") {
                 $this->_sendResourceRequestRejectEmail($requestId);
             }
-            echo json_encode(["status" => "success", "message" => "Resource Request has been " . strtolower($status) . " successfully."]);
+            echo json_encode(["status" => "success", "message" => "Resource Request has been " . strtolower($status) . " successfully and added to Vacancy List."]);
         } else {
             echo json_encode(["status" => "error", "message" => "Failed to update Resource Request."]);
         }
@@ -3379,6 +3766,8 @@ public function mark_all_notifications_read() {
             "ExpMax"                => $req["ExpMax"],
             "SalMin"                => $req["SalMin"],
             "SalMax"                => $req["SalMax"],
+                        "TargetOnboardingDate"  => !empty($req["TargetOnboardingDate"]) ? $req["TargetOnboardingDate"] : null,
+                        "Salary"                => (!empty($req["SalMin"]) || !empty($req["SalMax"])) ? ($req["SalMin"] . " - " . $req["SalMax"] . " LPA") : "",
             "NoofOpenings"          => $req["NoofOpenings"],
             "JobStatus"             => "Open",
             "JobDescription"        => $req["JobDescription"],
@@ -3471,5 +3860,266 @@ public function mark_all_notifications_read() {
         return @mail($req["RequestedByEmail"], $subject, $message);
     }
 
+    private function _sendVacancyOnHoldEmailToRecruiter($jid)
+    {
+        if (empty($jid)) return false;
 
+        $job = $this->db->select('jl.*, u.EmpName AS RecruiterName, u.EmpEmail AS RecruiterEmail, d.Departmentname')
+                        ->from('IHRJobsList jl')
+                        ->join('IHUsers u', 'u.IUid = jl.AssignedRecruiterManagerId', 'left')
+                        ->join('Departments d', 'd.Did = jl.Did', 'left')
+                        ->where('jl.Jid', $jid)
+                        ->get()
+                        ->row_array();
+
+        if (empty($job)) return false;
+
+        $recruiterEmail = !empty($job['RecruiterEmail']) ? trim($job['RecruiterEmail']) : '';
+        $recruiterName  = !empty($job['RecruiterName']) ? trim($job['RecruiterName']) : 'Recruiter';
+
+        if (empty($recruiterEmail) && !empty($job['PostedBy'])) {
+            $postedUser = $this->db->select('EmpName, EmpEmail')->where('IUid', $job['PostedBy'])->get('IHUsers')->row();
+            if ($postedUser && !empty($postedUser->EmpEmail)) {
+                $recruiterEmail = trim($postedUser->EmpEmail);
+                $recruiterName  = trim($postedUser->EmpName);
+            }
+        }
+
+        if (empty($recruiterEmail)) return false;
+
+        $subject = "Reminder: Vacancy Put On-Hold - " . $job['JobTitle'] . " (" . $job['JobCode'] . ")";
+
+        $message  = "Dear " . htmlspecialchars($recruiterName) . ",\n\n";
+        $message .= "This is a reminder notification that the following vacancy has been put ON-HOLD in the Recruitment system:\n\n";
+        $message .= "Job Code: " . $job['JobCode'] . "\n";
+        $message .= "Job Title: " . $job['JobTitle'] . "\n";
+        $message .= "Department: " . (!empty($job['Departmentname']) ? $job['Departmentname'] : 'N/A') . "\n";
+        $message .= "Openings: " . (!empty($job['NoofOpenings']) ? $job['NoofOpenings'] : 1) . "\n";
+        $message .= "Status: On-Hold\n";
+        $message .= "Updated On: " . date('Y-m-d H:i:s') . "\n\n";
+        $message .= "Please pause recruitment activities for this position until further notice.\n\n";
+        $message .= "Best regards,\nHR Recruitment System";
+
+        try {
+            if (file_exists(APPPATH . 'libraries/InetMailer.php')) {
+                require_once(APPPATH . 'libraries/InetMailer.php');
+                $objs = new InetMailer();
+                $mail = $objs->load();
+                if ($mail) {
+                    $mail->setFrom('info@inetcsc.com', 'I-NET CSC Recruitment');
+                    $mail->addAddress($recruiterEmail);
+                    $mail->isHTML(false);
+                    $mail->Subject = $subject;
+                    $mail->Body    = $message;
+                    if ($mail->send()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception $e) {}
+
+        $headers  = "From: info@inetcsc.com\r\n";
+        $headers .= "Reply-To: info@inetcsc.com\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+        return @mail($recruiterEmail, $subject, $message, $headers);
+    }
+
+    private function _sendHoldExpiryEmailToRecruiter($job)
+    {
+        if (empty($job)) return false;
+
+        $recruiterEmail = !empty($job['RecruiterEmail']) ? trim($job['RecruiterEmail']) : '';
+        $recruiterName  = !empty($job['RecruiterName']) ? trim($job['RecruiterName']) : 'Recruiter';
+
+        if (empty($recruiterEmail) && !empty($job['PostedBy'])) {
+            $postedUser = $this->db->select('EmpName, EmpEmail')->where('IUid', $job['PostedBy'])->get('IHUsers')->row();
+            if ($postedUser && !empty($postedUser->EmpEmail)) {
+                $recruiterEmail = trim($postedUser->EmpEmail);
+                $recruiterName  = trim($postedUser->EmpName);
+            }
+        }
+
+        if (empty($recruiterEmail)) return false;
+
+        $subject = "Reminder: Vacancy Hold Period Ended - " . $job['JobTitle'] . " (" . $job['JobCode'] . ")";
+
+        $message  = "Dear " . htmlspecialchars($recruiterName) . ",\n\n";
+        $message .= "This is an automated reminder notification that the hold period for the following vacancy has ENDED today:\n\n";
+        $message .= "Job Code: " . $job['JobCode'] . "\n";
+        $message .= "Job Title: " . $job['JobTitle'] . "\n";
+        $message .= "Department: " . (!empty($job['Departmentname']) ? $job['Departmentname'] : 'N/A') . "\n";
+        $message .= "Hold Date: " . $job['HoldUntilDate'] . "\n";
+        $message .= "Status: On-Hold\n\n";
+        $message .= "Please review this position and resume recruitment activities as scheduled.\n\n";
+        $message .= "Best regards,\nHR Recruitment System";
+
+        try {
+            if (file_exists(APPPATH . 'libraries/InetMailer.php')) {
+                require_once(APPPATH . 'libraries/InetMailer.php');
+                $objs = new InetMailer();
+                $mail = $objs->load();
+                if ($mail) {
+                    $mail->setFrom('info@inetcsc.com', 'I-NET CSC Recruitment');
+                    $mail->addAddress($recruiterEmail);
+                    $mail->isHTML(false);
+                    $mail->Subject = $subject;
+                    $mail->Body    = $message;
+                    if ($mail->send()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception $e) {}
+
+        $headers  = "From: info@inetcsc.com\r\n";
+        $headers .= "Reply-To: info@inetcsc.com\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+        return @mail($recruiterEmail, $subject, $message, $headers);
+    }
+
+
+
+
+    public function ApprovedResources()
+    {
+        $check_session = $this->session->userdata("logged_in");
+        if (empty($check_session)) {
+            redirect($this->config->item("base_url") . "admin/index");
+            return;
+        }
+
+        $roleId = isset($check_session["EmpRoleId"]) ? (int)$check_session["EmpRoleId"] : 0;
+        
+        // Strict role validation: Only Recruitment Manager (10) or Management/Admin (1)
+        if ($roleId !== 10 && $roleId !== 1) {
+            $this->session->set_flashdata("error", "Access Denied: You do not have permission to access Approved Resources.");
+            redirect($this->config->item("base_url") . "admin/dashboard");
+            return;
+        }
+
+        $data["approved_resources"]   = $this->admin_model->getApprovedResourceRequests();
+        $data["recruitment_managers"] = $this->admin_model->getRecruitmentManagers();
+        $data["department"]           = $this->admin_model->getUserDepartments();
+        $data["ctc_approvers"]        = $this->admin_model->getAllUsers();
+
+        $this->template->write_view("content", "admin/ApprovedResources", $data);
+        $this->template->render();
+    }
+
+    public function assignResourceToRecruiter()
+    {
+        $check_session = $this->session->userdata("logged_in");
+        if (empty($check_session)) {
+            echo json_encode(["status" => "error", "message" => "Session expired. Please log in again."]);
+            return;
+        }
+
+        $roleId = isset($check_session["EmpRoleId"]) ? (int)$check_session["EmpRoleId"] : 0;
+        if ($roleId !== 10 && $roleId !== 1) {
+            echo json_encode(["status" => "error", "message" => "Access Denied: Only Recruitment Managers can perform assignments."]);
+            return;
+        }
+
+        $requestId         = (int)$this->input->post("requestId");
+        $assignedManagerId = (int)$this->input->post("assignedManagerId");
+
+        if (empty($requestId) || empty($assignedManagerId)) {
+            echo json_encode(["status" => "error", "message" => "Invalid parameters."]);
+            return;
+        }
+
+        $req = $this->admin_model->getResourceRequestById($requestId);
+        if (empty($req) || ($req["Status"] !== "ACCEPTED" && $req["Status"] !== "ASSIGNED")) {
+            echo json_encode(["status" => "error", "message" => "Only ACCEPTED or ASSIGNED resource requests can be assigned."]);
+            return;
+        }
+
+        // Verify assigned manager is a valid user
+        $targetUser = $this->db->select("u.IUid, u.EmpName, u.EmpEmail")
+            ->from("IHUsers u")
+            ->where("u.IUid", $assignedManagerId)
+            ->get()->row_array();
+
+        if (empty($targetUser)) {
+            echo json_encode(["status" => "error", "message" => "Selected Recruitment Manager not found."]);
+            return;
+        }
+
+        $jid = !empty($req["ConvertedJid"]) ? (int)$req["ConvertedJid"] : null;
+
+        // Check if vacancy record already exists
+        if (empty($jid)) {
+            // Create the vacancy record ONCE
+            $count   = $this->db->count_all("ihrjobslist") + 1;
+            $jobCode = "JOB-" . date("Y") . "-" . str_pad($count, 4, "0", STR_PAD_LEFT);
+
+            $vacancyData = [
+                "JobCode"                    => $jobCode,
+                "JobTitle"                   => $req["JobTitle"],
+                "RoleSummary"                => $req["FunctionalRole"],
+                "Did"                        => $req["Did"],
+                "EmploymentType"             => "Full-Time",
+                "WorkMode"                   => "Onsite",
+                "EducationRequired"          => "Bachelor Degree",
+                "ExpMin"                     => $req["ExpMin"],
+                "ExpMax"                     => $req["ExpMax"],
+                "SalMin"                     => $req["SalMin"],
+                "SalMax"                     => $req["SalMax"],
+                "TargetOnboardingDate"       => !empty($req["TargetOnboardingDate"]) ? $req["TargetOnboardingDate"] : null,
+                "Salary"                     => (!empty($req["SalMin"]) || !empty($req["SalMax"])) ? ($req["SalMin"] . " - " . $req["SalMax"] . " LPA") : "",
+                "NoofOpenings"               => $req["NoofOpenings"],
+                "JobStatus"                  => "Open",
+                "JobDescription"             => $req["JobDescription"],
+                "Responsibilities"           => $req["Responsibilities"],
+                "PostedBy"                   => $check_session["IUid"],
+                "CtcApproverId"              => !empty($req["CtcApproverId"]) ? (int)$req["CtcApproverId"] : null,
+                "AssignedRecruiterManagerId" => $assignedManagerId,
+                "PostedOn"                   => date("Y-m-d H:i:s")
+            ];
+
+            $this->db->insert("ihrjobslist", $vacancyData);
+            $jid = $this->db->insert_id();
+
+            if ($jid) {
+                // Link ConvertedJid to resource_requests
+                $this->admin_model->updateResourceRequest($requestId, [
+                    "ConvertedJid"               => $jid,
+                    "AssignedRecruiterManagerId" => $assignedManagerId,
+                    "Status"                     => "ASSIGNED"
+                ]);
+            } else {
+                echo json_encode(["status" => "error", "message" => "Failed to create vacancy record."]);
+                return;
+            }
+        } else {
+            // Vacancy record ALREADY exists -> Do NOT create duplicate vacancy!
+            // Update AssignedRecruiterManagerId on existing ihrjobslist record
+            $this->db->where("Jid", $jid)->update("ihrjobslist", [
+                "AssignedRecruiterManagerId" => $assignedManagerId
+            ]);
+
+            // Synchronize AssignedRecruiterManagerId & Status on resource_requests
+            $this->admin_model->updateResourceRequest($requestId, [
+                "AssignedRecruiterManagerId" => $assignedManagerId,
+                "Status"                     => "ASSIGNED"
+            ]);
+        }
+
+        // Push Notification trigger to assigned Recruitment Manager if assigned to another user
+        if ($assignedManagerId !== (int)$check_session["IUid"]) {
+            $this->load->model("Notification_model");
+            $this->Notification_model->addNotification(
+                "New Vacancy Assigned",
+                "Resource Request [" . $req["RequestCode"] . "] (\"" . $req["JobTitle"] . "\") has been assigned to you by " . $check_session["EmpName"] . ".",
+                "info",
+                $assignedManagerId,
+                null
+            );
+        }
+
+        echo json_encode([
+            "status"  => "success",
+            "message" => "Resource Request successfully assigned to " . $targetUser["EmpName"] . "."
+        ]);
+    }
 }

@@ -31,8 +31,35 @@ $emp_name = isset($employee_det['EmpName']) ? $employee_det['EmpName'] : 'HR Man
             <div class="greeting-date" id="liveDate"></div>
           </div>
         </div>
-      </div>
     </div>
+
+    <!-- ===== ON-HOLD REMINDER PUSH NOTIFICATIONS ===== -->
+    <?php if (!empty($onhold_reminders)): ?>
+      <div class="mt-3 mb-2">
+        <?php foreach ($onhold_reminders as $rem): ?>
+          <div class="alert alert-warning alert-dismissible fade show shadow-sm border-warning" role="alert">
+            <div class="d-flex align-items-center justify-content-between flex-wrap">
+              <div class="py-1">
+                <h6 class="alert-heading font-weight-bold mb-1 text-dark">
+                  <i class="fas fa-bell text-warning mr-2"></i>Vacancy Hold Expiry Notification
+                </h6>
+                <p class="mb-0 text-dark">
+                  The vacancy <strong><?= htmlspecialchars($rem['JobTitle']) ?></strong> (<code><?= htmlspecialchars($rem['JobCode']) ?></code>) hold period ended on <strong><?= date('d M Y', strtotime($rem['HoldUntilDate'])) ?></strong>. Please review and resume recruitment activities.
+                </p>
+              </div>
+              <div class="mt-2 mt-sm-0">
+                <a href="<?= base_url('admin/VaccancyList') ?>" class="btn btn-sm btn-warning text-dark font-weight-bold shadow-sm">
+                  <i class="fas fa-eye mr-1"></i> View Vacancies
+                </a>
+              </div>
+            </div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <?php endforeach; ?>
+      </div>
+    <?php endif; ?>
 
     <!-- ===== HEADER & TOGGLE ===== -->
     <div class="section-label mb-3">Analytics Overview</div>
@@ -123,7 +150,123 @@ $emp_name = isset($employee_det['EmpName']) ? $employee_det['EmpName'] : 'HR Man
       </div>
     </div>
 
-    <!-- MAIN ANALYTICS SECTION -->
+    
+    <!-- ===== RESOURCE REQUESTS & VACANCIES OVERVIEW ===== -->
+    <div class="card card-primary card-outline shadow-sm mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title font-weight-bold mb-0 text-dark">
+          <i class="fas fa-file-signature text-primary mr-2"></i>Resource Requests & Vacancy Tracking
+        </h3>
+        <span class="badge badge-primary px-3 py-1 font-weight-bold"><?= count(isset($resource_requests_list) ? $resource_requests_list : []); ?> Total Requests</span>
+      </div>
+      <div class="card-body p-0 table-responsive">
+        <table class="table table-hover table-striped mb-0 text-nowrap">
+          <thead class="bg-success text-white">
+            <tr>
+              <th>Request Code</th>
+              <th>Job Title / Vacancy</th>
+              <th>Department</th>
+              <th>Openings</th>
+              <th>Requested By</th>
+              <th>Requested Date</th>
+              <th>Target Onboarding</th>
+              <th>Approver</th>
+              <th>Status</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php if (!empty($resource_requests_list)): ?>
+              <?php foreach ($resource_requests_list as $rr): ?>
+                <tr>
+                  <td class="font-weight-bold text-primary"><?= htmlspecialchars($rr['RequestCode']); ?></td>
+                  <td><strong class="text-dark"><?= htmlspecialchars($rr['JobTitle']); ?></strong></td>
+                  <td><?= htmlspecialchars($rr['Departmentname'] ? $rr['Departmentname'] : '-'); ?></td>
+                  <td><span class="badge badge-info px-2"><?= (int)$rr['NoofOpenings']; ?></span></td>
+                  <td><i class="fas fa-user-circle text-secondary mr-1"></i><?= htmlspecialchars($rr['RequestedByName'] ? $rr['RequestedByName'] : 'System'); ?></td>
+                  <td><?= date('d-M-Y', strtotime($rr['CreatedAt'])); ?></td>
+                  <td><?= $rr['TargetOnboardingDate'] ? date('d-M-Y', strtotime($rr['TargetOnboardingDate'])) : '-'; ?></td>
+                  <td><?= htmlspecialchars($rr['ApproverName'] ? $rr['ApproverName'] : '-'); ?></td>
+                  <td>
+                    <?php if ($rr['Status'] === 'PENDING APPROVAL'): ?>
+                      <span class="badge badge-warning px-2"><i class="fas fa-clock mr-1"></i>Pending Approval</span>
+                    <?php elseif ($rr['Status'] === 'ACCEPTED'): ?>
+                      <span class="badge badge-success px-2"><i class="fas fa-check-circle mr-1"></i>Approved & Published</span>
+                    <?php elseif ($rr['Status'] === 'REJECTED'): ?>
+                      <span class="badge badge-danger px-2"><i class="fas fa-times-circle mr-1"></i>Rejected</span>
+                    <?php else: ?>
+                      <span class="badge badge-secondary px-2"><?= htmlspecialchars($rr['Status']); ?></span>
+                    <?php endif; ?>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-info btn-xs font-weight-bold" onclick="viewDashboardRequestDetails(<?= htmlspecialchars(json_encode($rr)); ?>)">
+                      <i class="fas fa-eye mr-1"></i> View Details
+                    </button>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <tr>
+                <td colspan="10" class="text-center text-muted py-4">
+                  <i class="fas fa-inbox fa-2x d-block text-secondary mb-2"></i>
+                  No resource requests recorded yet.
+                </td>
+              </tr>
+            <?php endif; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- DASHBOARD REQUEST DETAILS MODAL -->
+    <div class="modal fade" id="dashRequestModal" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title font-weight-bold"><i class="fas fa-info-circle mr-2"></i>Resource Request Details</h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="dashRequestModalContent"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    function viewDashboardRequestDetails(rr) {
+      var html = '<table class="table table-bordered table-sm">'+
+        '<tr><th style="width:30%">Request Code</th><td><strong class="text-primary">' + (rr.RequestCode || '') + '</strong></td></tr>'+
+        '<tr><th>Job Title / Vacancy</th><td>' + (rr.JobTitle || '') + '</td></tr>'+
+        '<tr><th>Department</th><td>' + (rr.Departmentname || '-') + '</td></tr>'+
+        '<tr><th>Number of Positions</th><td>' + (rr.NoofOpenings || 1) + '</td></tr>'+
+        '<tr><th>Position Type</th><td>' + (rr.PositionType || 'New Position') + '</td></tr>'+
+        '<tr><th>Experience Required</th><td>' + (rr.ExpMin || 0) + ' - ' + (rr.ExpMax || 0) + ' Years</td></tr>'+
+        '<tr><th>Start Date</th><td>' + (rr.RecruitmentStartDate || '-') + '</td></tr>'+
+        '<tr><th>Target Onboarding Date</th><td>' + (rr.TargetOnboardingDate || '-') + '</td></tr>'+
+        '<tr><th>Reason for Requirement</th><td>' + (rr.ReasonForRequirement || '-') + '</td></tr>'+
+        '<tr><th>Job Description</th><td><pre style="white-space:pre-wrap; font-family:inherit;">' + (rr.JobDescription || '') + '</pre></td></tr>'+
+        '<tr><th>Roles & Responsibilities</th><td><pre style="white-space:pre-wrap; font-family:inherit;">' + (rr.Responsibilities || '') + '</pre></td></tr>'+
+        '<tr><th>Requested By</th><td><strong class="text-dark">' + (rr.RequestedByName || '-') + '</strong></td></tr>'+
+        '<tr><th>Approver Name</th><td>' + (rr.ApproverName || '-') + '</td></tr>'+
+        '<tr><th>Requested Date</th><td>' + (rr.CreatedAt || '') + '</td></tr>'+
+        '<tr><th>Status</th><td><strong>' + (rr.Status || '') + '</strong></td></tr>';
+
+      if (rr.ApprovalComment) {
+        html += '<tr><th>Approver Comment</th><td class="text-danger">' + rr.ApprovalComment + '</td></tr>';
+        html += '<tr><th>Actioned At</th><td>' + (rr.ActionedAt || '') + '</td></tr>';
+      }
+
+      html += '</table>';
+      $('#dashRequestModalContent').html(html);
+      $('#dashRequestModal').modal('show');
+    }
+    </script>
+
+<!-- MAIN ANALYTICS SECTION -->
     <div class="row analytics-row">
       <div class="col-lg-8 mb-4">
         <div class="card h-100 shadow-sm dashboard-card-accent dashboard-accent-shadow">

@@ -237,14 +237,6 @@
 
     <div class="right-form-body">
 
-        <!-- Inline validation error inside the panel -->
-        <?php if ($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size:0.875rem; margin-bottom:1rem;">
-            <i class="fas fa-exclamation-circle mr-1"></i>
-            <?php echo $this->session->flashdata('error'); ?>
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-        </div>
-        <?php endif; ?>
 
         <form class="form-valide" id="addUserForm"
               action="<?= base_url('admin/SaveUser'); ?>"

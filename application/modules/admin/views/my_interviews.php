@@ -122,7 +122,7 @@ Rejected
 
 <table id="example1" class="table table-bordered table-striped">
 
-<thead class="bg-navy">
+<thead class="bg-success text-white">
 <tr>
 <th>S.No</th>
 <th>Code</th>
@@ -455,5 +455,21 @@ success: function (res) {
         });
     });
 
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#example1')) {
+        $('#example1').DataTable({
+            "responsive": true,
+            "autoWidth": false
+        });
+    }
+    $(window).on('resize orientationchange', function() {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
+            $('#example1').DataTable().columns.adjust().responsive.recalc();
+        }
+    });
 });
 </script>

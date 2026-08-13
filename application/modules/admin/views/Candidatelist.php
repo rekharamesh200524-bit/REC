@@ -65,6 +65,12 @@
           </li>
 
           <li class="nav-item">
+            <a class="nav-link filterPill rounded-pill" data-status="CV Uploaded">
+              CV Uploaded
+            </a>
+          </li>
+
+          <li class="nav-item">
             <a class="nav-link filterPill rounded-pill" data-status="Selected">
               Selected
             </a>
@@ -96,7 +102,7 @@
 
               <div class="card-body">
                   <table id="example1" class="table table-bordered table-striped">
-                  <thead class="bg-navy">
+                  <thead class="bg-success text-white">
                   <tr>
                     <th>S.No</th>
                     <th>Code</th>
@@ -188,6 +194,7 @@
 <button class="btn btn-sm btn-primary openCandidateStage"
         data-id="<?= $cl['CandidateId']; ?>"
         data-stage="<?= $cl['CurrentStageOrder'] ?? 1 ?>"
+        data-status="<?= htmlspecialchars($cl['CurrentStatus'] ?? '', ENT_QUOTES); ?>"
         title="Update Stage">
 <i class="fas fa-edit"></i>
 </button>
@@ -403,26 +410,24 @@ if ($showOffer): ?>
 
 <input type="hidden" id="stageCandidateId">
 
-<div class="form-group">
+<div class="form-group" id="stageGroup">
 <label>Stage</label>
-
 <select id="stageId" class="form-control">
 <option value="">Select Stage</option>
 </select>
-
 </div>
-<div class="form-group">
+
+<div class="form-group" id="actionGroup">
     <label>Action</label>
     <select id="stageAction" class="form-control">
         <option value="">Select Action</option>
-        <!-- <option value="Approved">Approved</option> -->
-         <option value="Shortlisted">Shortlisted</option>
+        <option value="Screened">Screened</option>
+        <option value="Shortlisted">Shortlisted</option>
         <option value="Rejected">Rejected</option>
-        <!-- <option value="Scheduled">Scheduled</option> -->
-         <option value="On Hold">On Hold</option>
-          <option value="Not Qualifed">Not Qualifed</option>
-           <option value="Not Intrested">Not Intersted</option>
-           <option value="Reschedule">Reschedule</option>
+        <option value="On Hold">On Hold</option>
+        <option value="Not Qualifed">Not Qualifed</option>
+        <option value="Not Intrested">Not Intersted</option>
+        <option value="Reschedule">Reschedule</option>
     </select>
 </div>
 <!-- Interview (only for Screened) -->
@@ -500,6 +505,8 @@ Save
 
 </div>
 </div>
+
+
 <div class="modal fade" id="candidateDetailsModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -680,18 +687,75 @@ $(document).on('click','.openCandidateStage',function(){
 
    let cid = $(this).data('id');
    let currentOrder = $(this).data('stage');   
+   let status = ($(this).data('status') || '').toString().trim().toLowerCase();
 
    $('#stageCandidateId').val(cid);
 
-   
-   $('.screenedOnly').hide();
+   $('.shortlistedOnly, .followupOnly').hide();
    $('#interviewDate').val('');
    $('#stageAction').val('');
+   $('#stageRemarks').val('');
+
+   window.currentCandidateJobPanels = [];
+   $.post('<?= base_url("admin/getCandidateInterviewPanelInfo") ?>', { candidateId: cid }, function(res) {
+       try {
+           let d = JSON.parse(res);
+           if (d.status === 'success' && d.panels) {
+               window.currentCandidateJobPanels = d.panels;
+           }
+       } catch(e) {}
+   });
+
+   if (status === 'cv uploaded' || status === 'uploaded') {
+       $('#stageGroup').show();
+       $('#actionGroup').hide();
+   } else {
+       $('#stageGroup').hide();
+       $('#actionGroup').show();
+   }
+
    $('#candidateStagePanel').addClass('open');
    $('#vacancyOverlay').addClass('show');
 
    loadNextStages(currentOrder);   
 
+});
+
+$('#saveCvScreeningBtn').on('click', function() {
+    var $btn = $(this);
+    var originalText = $btn.html();
+    var cid = $('#cvCandidateId').val();
+    var action = $('#cvScreeningAction').val();
+    var remarks = $('#cvScreeningRemarks').val();
+
+    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+
+    $.post('<?= base_url("admin/saveCandidateStage") ?>', {
+        candidateId: cid,
+        action: action,
+        remarks: remarks
+    }, function(res) {
+        var data;
+        try {
+            data = JSON.parse(res);
+        } catch(e) {
+            data = { status: 'error', msg: 'Invalid server response' };
+        }
+
+        if (data.status === 'success' || data.status === 'rejected') {
+            toastr.success(data.msg || 'Candidate stage updated successfully.');
+            $('#cvScreeningModal').modal('hide');
+            setTimeout(function() {
+                location.reload();
+            }, 1000);
+        } else {
+            $btn.prop('disabled', false).html(originalText);
+            toastr.error(data.msg || 'Error updating stage.');
+        }
+    }).fail(function() {
+        $btn.prop('disabled', false).html(originalText);
+        toastr.error('Network or server error.');
+    });
 });
 
 $('#closeCandidateStage').on('click',function(){
@@ -706,39 +770,48 @@ $('#saveCandidateStage').on('click',function(){
 
     var $btn = $(this);
     var originalText = $btn.html();
-    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
 
-    var action = $('#stageAction').val();
-    if (action === 'Shortlisted' || action === 'Reschedule') {
-        var intDate = $('#interviewDate').val();
-        var intType = $('#interviewType').val();
-        var intLevel = $('#interviewLevel').val();
-        var interviewer = $('#interviewerId').val();
+    if ($('#stageGroup').is(':visible') && !$('#stageId').val()) {
+        toastr.error("Please select stage.");
+        return;
+    }
 
-        if (!intDate) {
-            toastr.error("Please select interview schedule date.");
-            $btn.prop('disabled', false).html(originalText);
+    if ($('#actionGroup').is(':visible')) {
+        var action = $('#stageAction').val();
+        if (!action) {
+            toastr.error("Please select action.");
             return;
         }
 
-        if (!intType) {
-            toastr.error("Please select interview mode.");
-            $btn.prop('disabled', false).html(originalText);
-            return;
-        }
+        if (action === 'Shortlisted' || action === 'Reschedule') {
+            var intDate = $('#interviewDate').val();
+            var intType = $('#interviewType').val();
+            var intLevel = $('#interviewLevel').val();
+            var interviewer = $('#interviewerId').val();
 
-        if (!intLevel) {
-            toastr.error("Please select interview level.");
-            $btn.prop('disabled', false).html(originalText);
-            return;
-        }
+            if (!intDate) {
+                toastr.error("Please select interview schedule date.");
+                return;
+            }
 
-        if (!interviewer) {
-            toastr.error("Please select interviewer.");
-            $btn.prop('disabled', false).html(originalText);
-            return;
+            if (!intType) {
+                toastr.error("Please select interview mode.");
+                return;
+            }
+
+            if (!intLevel) {
+                toastr.error("Please select interview level.");
+                return;
+            }
+
+            if (!interviewer) {
+                toastr.error("Please select interviewer.");
+                return;
+            }
         }
     }
+
+    $btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
 
     $.post('<?= base_url("admin/saveCandidateStage") ?>',{
         candidateId: $('#stageCandidateId').val(),
@@ -873,6 +946,29 @@ $('#increaseLevel').on('click',function(e){
  }
 });
 
+function autoSelectInterviewerForLevel() {
+    if (!window.currentCandidateJobPanels || window.currentCandidateJobPanels.length === 0) return;
+
+    let selectedOption = $('#interviewLevel option:selected');
+    let selectedText = selectedOption.text();
+    let levelNum = 1;
+
+    let match = selectedText.match(/level\s*(\d+)/i);
+    if (match && match[1]) {
+        levelNum = parseInt(match[1]);
+    } else {
+        let selectedIdx = $('#interviewLevel')[0].selectedIndex;
+        if (selectedIdx > 0) {
+            levelNum = selectedIdx;
+        }
+    }
+
+    let panel = window.currentCandidateJobPanels.find(p => parseInt(p.LevelOrder) === levelNum);
+    if (panel && panel.InterviewerId) {
+        $('#interviewerId').val(panel.InterviewerId);
+    }
+}
+
 function loadInterviewLevels(){
 
  $.post('<?= base_url("admin/getInterviewLevels") ?>',{},function(res){
@@ -886,8 +982,18 @@ function loadInterviewLevels(){
      ddl.append(`<option value="${r.StageId}">${r.StageName}</option>`);
    });
 
+   if (ddl.find('option').length > 1) {
+       ddl.prop('selectedIndex', 1);
+   }
+
+   autoSelectInterviewerForLevel();
+
  });
- }
+}
+
+$(document).on('change', '#interviewLevel', function() {
+    autoSelectInterviewerForLevel();
+});
 
 
 $(document).on('click', '[data-card-widget="collapse"]', function () {
@@ -1573,7 +1679,7 @@ $(document).on('click', '.btnScoreHelp', function () {
             </div>
 
             <table class="table table-sm table-bordered table-striped mt-2">
-                <thead class="bg-navy text-white">
+                <thead class="bg-success text-white">
                     <tr>
                         <th>Assessment Criteria</th>
                         <th class="text-center" style="width: 120px;">Score Gained</th>
@@ -1665,3 +1771,18 @@ $(document).on('click', '.btnScoreHelp', function () {
 });
 </script>
  
+<script>
+$(document).ready(function() {
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#example1')) {
+        $('#example1').DataTable({
+            "responsive": true,
+            "autoWidth": false
+        });
+    }
+    $(window).on('resize orientationchange', function() {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
+            $('#example1').DataTable().columns.adjust().responsive.recalc();
+        }
+    });
+});
+</script>

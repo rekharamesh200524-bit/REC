@@ -418,7 +418,7 @@
       <h2>Streamline your hiring process.</h2>
       <p>
         Manage job applications, track candidates, schedule interviews,
-        monitor hiring stages, and simplify recruitment workflows”
+        monitor hiring stages, and simplify recruitment workflowsï¿½
         all in one ATS platform.
       </p>
     </div>
@@ -440,19 +440,7 @@
       <h1>Forgot Password</h1>
       <p class="sub">Enter your email address to receive a password reset link.</p>
 
-      <!-- Flash messages -->
-      <?php
-        if($this->session->flashdata('true')){ ?>
-          <div class="alert alert-success">
-            <i class="fas fa-check-circle"></i>
-            <?php echo $this->session->flashdata('true'); ?>
-          </div>
-      <?php } else if($this->session->flashdata('error')){ ?>
-          <div class="alert alert-danger">
-            <i class="fas fa-exclamation-circle"></i>
-            <?php echo $this->session->flashdata('error'); ?>
-          </div>
-      <?php } ?>
+
 
       <!-- Form -->
       <form action="<?php echo $this->config->item('base_url'); ?>admin/ForgotPassword"  method="post">

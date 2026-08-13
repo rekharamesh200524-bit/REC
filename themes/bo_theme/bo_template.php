@@ -411,6 +411,10 @@ $(function () {
     toastr.success("<?= $this->session->flashdata('success'); ?>");
   <?php endif; ?>
 
+  <?php if ($this->session->flashdata('true')): ?>
+    toastr.success("<?= $this->session->flashdata('true'); ?>");
+  <?php endif; ?>
+
   <?php if ($this->session->flashdata('error')): ?>
     toastr.error("<?= $this->session->flashdata('error'); ?>");
   <?php endif; ?>
@@ -426,4 +430,74 @@ $(function () {
 });
 </script>
 <script src="<?=$theme_path?>/js/custom-script.js"></script>
+
+<!-- REAL-TIME NAVBAR NOTIFICATIONS SCRIPT -->
+<script>
+$(document).ready(function() {
+  function fetchHeaderNotifications() {
+    $.ajax({
+      url: base_url + "admin/get_notifications",
+      type: "GET",
+      dataType: "json",
+      success: function(res) {
+        if (res.status === "success") {
+          var count = res.unread_count || 0;
+          var notifs = res.data || [];
+          
+          if (count > 0) {
+            $("#notifBadge").text(count).show();
+            $("#notifCountText").text(count);
+          } else {
+            $("#notifBadge").hide();
+            $("#notifCountText").text(0);
+          }
+
+          var html = "";
+          if (notifs.length > 0) {
+            $.each(notifs, function(i, n) {
+              var iconClass = "fa-info-circle text-info";
+              if (n.Type === "success") iconClass = "fa-check-circle text-success";
+              else if (n.Type === "warning") iconClass = "fa-exclamation-triangle text-warning";
+              else if (n.Type === "danger") iconClass = "fa-times-circle text-danger";
+
+              html += '<a href="javascript:void(0);" class="dropdown-item py-2 mark-single-notif" data-id="' + n.NotificationId + '">' +
+                '<div class="media">' +
+                  '<i class="fas ' + iconClass + ' mr-2 mt-1 fa-lg"></i>' +
+                  '<div class="media-body">' +
+                    '<h3 class="dropdown-item-title font-weight-bold" style="font-size: 13px;">' + (n.Title || "Notification") + '</h3>' +
+                    '<p class="text-sm mb-1 text-wrap" style="font-size: 12px; line-height: 1.3;">' + (n.Message || "") + '</p>' +
+                    '<p class="text-sm text-muted mb-0" style="font-size: 10px;"><i class="far fa-clock mr-1"></i>' + (n.CreatedAt || "") + '</p>' +
+                  '</div>' +
+                '</div>' +
+              '</a>' +
+              '<div class="dropdown-divider"></div>';
+            });
+          } else {
+            html = '<div class="dropdown-item text-center text-muted py-3">No unread notifications</div>';
+          }
+          $("#notifListContainer").html(html);
+        }
+      }
+    });
+  }
+
+  fetchHeaderNotifications();
+  setInterval(fetchHeaderNotifications, 15000);
+
+  $(document).on("click", ".mark-single-notif", function() {
+    var nid = $(this).data("id");
+    $.post(base_url + "admin/mark_notification_read", { notification_id: nid }, function() {
+      fetchHeaderNotifications();
+    });
+  });
+
+  $("#markAllReadBtn").on("click", function(e) {
+    e.preventDefault();
+    $.post(base_url + "admin/mark_all_notifications_read", function() {
+      fetchHeaderNotifications();
+    });
+  });
+});
+</script>
+
 </html>

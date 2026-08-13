@@ -26,7 +26,7 @@ $theme_path = $this->config->item('theme_locations').$this->config->item('active
 
       <div class="card-body">
         <table id="recruitmentStagesTable" class="table table-bordered table-striped">
-          <thead>
+          <thead class="bg-success text-white">
             <tr>
               <th>Stage Order</th>
               <th>Stage Name</th>
@@ -288,5 +288,20 @@ $(document).on('click', '.stageStatusBtn', function () {
 
     $('#stageStatusModal').modal('show');
 
+});
+</script>
+<script>
+$(document).ready(function() {
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#recruitmentStagesTable')) {
+        $('#recruitmentStagesTable').DataTable({
+            "responsive": true,
+            "autoWidth": false
+        });
+    }
+    $(window).on('resize orientationchange', function() {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#recruitmentStagesTable')) {
+            $('#recruitmentStagesTable').DataTable().columns.adjust().responsive.recalc();
+        }
+    });
 });
 </script>

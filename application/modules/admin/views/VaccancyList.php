@@ -332,6 +332,13 @@
                                               <span class="bs-stepper-label">SKILL & DETAILS</span>
                                           </button>
                                       </div>
+                                      <div class="line"></div>
+                                      <div class="step" data-target="#ctc-part">
+                                          <button type="button" class="step-trigger" role="tab" aria-controls="ctc-part" id="ctc-part-trigger">
+                                              <span class="bs-stepper-circle">4</span>
+                                              <span class="bs-stepper-label">CTC</span>
+                                          </button>
+                                      </div>
                                   </div>
                                   
                                   <div class="bs-stepper-content mt-3">
@@ -517,6 +524,24 @@
                                           </div>
 
                                           <button type="button" class="btn btn-secondary mr-1" onclick="stepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
+                                          <button type="button" class="btn btn-primary" onclick="stepper.next()">Next <i class="fas fa-arrow-right ml-1"></i></button>
+                                      </div>
+
+                                      <!-- STEP 4: CTC -->
+                                      <div id="ctc-part" class="content" role="tabpanel" aria-labelledby="ctc-part-trigger">
+                                          <div class="form-group">
+                                              <label class="font-weight-bold">CTC Approver</label>
+                                              <select name="CtcApproverId" id="CtcApproverId" class="form-control">
+                                                  <option value="">Select CTC Approver</option>
+                                                  <?php if (!empty($ctc_approvers)): ?>
+                                                      <?php foreach ($ctc_approvers as $ca): ?>
+                                                          <option value="<?= $ca['IUid']; ?>"><?= htmlspecialchars($ca['EmpName']); ?> (<?= htmlspecialchars($ca['RoleName'] ? $ca['RoleName'] : 'Employee'); ?>)</option>
+                                                      <?php endforeach; ?>
+                                                  <?php endif; ?>
+                                              </select>
+                                          </div>
+
+                                          <button type="button" class="btn btn-secondary mr-1" onclick="stepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
                                           <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane mr-1"></i> Submit</button>
                                       </div>
 
@@ -572,6 +597,15 @@
                           <button type="button" class="step-trigger">
                               <span class="bs-stepper-circle">3</span>
                               <span class="bs-stepper-label">SKILL INFO</span>
+                          </button>
+                      </div>
+
+                      <div class="line"></div>
+
+                      <div class="step" data-target="#edit-ctc-part">
+                          <button type="button" class="step-trigger">
+                              <span class="bs-stepper-circle">4</span>
+                              <span class="bs-stepper-label">CTC</span>
                           </button>
                       </div>
 
@@ -740,58 +774,27 @@
                               <textarea name="RR" id="edit_RR" class="form-control"></textarea>
                           </div>
 
-                          <!-- ATS Score Breakdown Section -->
-                          <div class="card card-outline card-success mt-4">
-                              <div class="card-header">
-                                  <h5 class="card-title mb-0 font-weight-bold text-success">ATS Score Breakdown</h5>
-                              </div>
-                              <div class="card-body p-3">
-                                  <div class="row">
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Skills Match</label>
-                                          <input type="number" name="SkillScore" id="edit_SkillScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Education Match</label>
-                                          <input type="number" name="EducationScore" id="edit_EducationScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Experience Match</label>
-                                          <input type="number" name="ExperienceScore" id="edit_ExperienceScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Projects & Achievements</label>
-                                          <input type="number" name="ProjectScore" id="edit_ProjectScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Certifications</label>
-                                          <input type="number" name="CertificationScore" id="edit_CertificationScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Resume Quality</label>
-                                          <input type="number" name="ResumeQualityScore" id="edit_ResumeQualityScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                  </div>
-                                  <div class="row">
-                                      <div class="col-md-6 form-group">
-                                          <label class="text-label">Role Fit / Domain Knowledge</label>
-                                          <input type="number" name="DomainKnowledgeScore" id="edit_DomainKnowledgeScore" class="form-control ats-score-input" min="0" required>
-                                      </div>
-                                  </div>
-                                  <hr class="my-2">
-                                  <div class="d-flex justify-content-between align-items-center">
-                                      <h6 class="mb-0 font-weight-bold">Total ATS Marks:</h6>
-                                      <span class="h5 text-success font-weight-bold total-ats-marks">115</span>
-                                  </div>
-                              </div>
+                          <button type="button" class="btn btn-secondary mr-1" onclick="editStepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
+                          <button type="button" class="btn btn-primary" onclick="editStepper.next()">Next <i class="fas fa-arrow-right ml-1"></i></button>
+
+                      </div>
+
+                      <!-- STEP 4: CTC -->
+                      <div id="edit-ctc-part" class="content">
+                          <div class="form-group">
+                              <label class="font-weight-bold">CTC Approver</label>
+                              <select name="CtcApproverId" id="edit_CtcApproverId" class="form-control">
+                                  <option value="">Select CTC Approver</option>
+                                  <?php if (!empty($ctc_approvers)): ?>
+                                      <?php foreach ($ctc_approvers as $ca): ?>
+                                          <option value="<?= $ca['IUid']; ?>"><?= htmlspecialchars($ca['EmpName']); ?> (<?= htmlspecialchars($ca['RoleName'] ? $ca['RoleName'] : 'Employee'); ?>)</option>
+                                      <?php endforeach; ?>
+                                  <?php endif; ?>
+                              </select>
                           </div>
 
-                          <button type="button" class="btn btn-primary" onclick="editStepper.previous()">Previous</button>
-                          <button type="submit" class="btn btn-primary">Update</button>
+                          <button type="button" class="btn btn-secondary mr-1" onclick="editStepper.previous()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
+                          <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Update</button>
 
                       </div>
 
@@ -1191,15 +1194,6 @@
               preloadChips(d.EducationRequired, 'edit_educationChips', 'edit_education');
               preloadChips(d.Skills, 'edit_skillsChips', 'edit_skills');
               preloadChips(d.CommunicationLang, 'edit_languageChips', 'edit_comLanguage');
-
-              $('#edit_SkillScore').val(d.SkillScore ?? 50);
-              $('#edit_EducationScore').val(d.EducationScore ?? 20);
-              $('#edit_ExperienceScore').val(d.ExperienceScore ?? 20);
-              $('#edit_ProjectScore').val(d.ProjectScore ?? 5);
-              $('#edit_CertificationScore').val(d.CertificationScore ?? 10);
-              $('#edit_ResumeQualityScore').val(d.ResumeQualityScore ?? 5);
-              $('#edit_DomainKnowledgeScore').val(d.DomainKnowledgeScore ?? 5);
-              calculateTotalAtsMarks('#editVacancyPanel');
 
               $('#editVacancyPanel').addClass('open');
               $('#vacancyOverlay').addClass('show');

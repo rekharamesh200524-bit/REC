@@ -1,3 +1,16 @@
+<style>
+.right-form {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: 620px !important;
+    max-width: 90vw !important;
+    transition: right 0.3s ease !important;
+}
+.right-form.open {
+    right: 0 !important;
+}
+</style>
 <!-- Content Header (Page header) -->
 <div class="content-header">
   <div class="container-fluid">
@@ -19,37 +32,19 @@
 <section class="content">
   <div class="container-fluid">
 
-    <?php if ($this->session->flashdata('true')): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle mr-1"></i> <?= $this->session->flashdata('true'); ?>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    <?php endif; ?>
-
-    <?php if ($this->session->flashdata('error')): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="fas fa-exclamation-triangle mr-1"></i> <?= $this->session->flashdata('error'); ?>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    <?php endif; ?>
-
     <div class="card card-primary card-outline">
       <div class="card-header d-flex align-items-center justify-content-between">
         <h3 class="card-title font-weight-bold mb-0"><i class="fas fa-list-alt mr-2"></i>Resource Requests List</h3>
         <div class="card-tools ml-auto">
-          <button type="button" class="btn btn-sm btn-warning font-weight-bold" id="openRequestResourcePanel">
+          <button type="button" class="btn btn-sm btn-warning font-weight-bold" id="openRequestResourcePanel" onclick="openCreateRequestModal()">
             <i class="fas fa-plus-circle mr-1"></i> Request Resource
           </button>
         </div>
       </div>
 
       <div class="card-body p-0 table-responsive">
-        <table class="table table-hover table-striped mb-0 text-nowrap" id="requestsTable">
-          <thead class="thead-light">
+        <table class="table table-bordered table-striped align-middle" id="requestsTable">
+          <thead class="bg-success text-white">
             <tr>
               <th>Request Code</th>
               <th>Job Title / Designation</th>
@@ -89,31 +84,62 @@
                     <?php endif; ?>
                   </td>
                   <td class="text-center">
-                    <!-- View Details Button -->
-                    <button type="button" class="btn btn-info btn-xs mr-1" onclick="viewRequestDetails(<?= htmlspecialchars(json_encode($req)); ?>)">
-                      <i class="fas fa-eye"></i> View
-                    </button>
-
-                    <!-- Approver Actions -->
-                    <?php if ($req['Status'] === 'PENDING APPROVAL'): ?>
-                      <button type="button" class="btn btn-success btn-xs mr-1" onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
-                        <i class="fas fa-check"></i> Accept
+                    <div class="btn-group" role="group">
+                      <!-- View Details -->
+                      <button type="button" class="btn btn-sm btn-info" title="View Details" onclick="viewRequestDetails(<?= htmlspecialchars(json_encode($req)); ?>)">
+                        <i class="fas fa-eye"></i>
                       </button>
-                      <button type="button" class="btn btn-danger btn-xs mr-1" onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'REJECTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
-                        <i class="fas fa-times"></i> Reject
-                      </button>
-                    <?php endif; ?>
 
-                    <!-- Convert to Vacancy (Recruitment Manager / Management) -->
-                    <?php if ($req['Status'] === 'ACCEPTED'): ?>
-                      <?php if (!empty($req['ConvertedJid'])): ?>
-                        <span class="badge badge-outline-primary"><i class="fas fa-link mr-1"></i>Vacancy Created</span>
-                      <?php else: ?>
-                        <a href="<?= base_url('admin/convertRequestToVacancy/' . $req['RequestId']); ?>" class="btn btn-primary btn-xs" onclick="return confirm('Convert this approved Resource Request into an active vacancy?');">
-                          <i class="fas fa-plus"></i> Create Vacancy
+                      <!-- Update / Edit Button -->
+                      <?php
+                      $sessionUserId = isset($employee_det['IUid']) ? (int)$employee_det['IUid'] : 0;
+                      $canUpdate = ($isHiringManager && (int)$req['RequestedBy'] === $sessionUserId) || in_array($sessionRole, [1, 3, 10]);
+                      ?>
+                      <?php if ($canUpdate && $req['Status'] === 'PENDING APPROVAL'): ?>
+                        <button type="button" class="btn btn-sm btn-primary" title="Edit Request"
+                          onclick='openEditRequestModal(<?= json_encode($req, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)'>
+                          <i class="fas fa-edit"></i>
+                        </button>
+                      <?php endif; ?>
+
+                      <!-- Role-based Action Buttons -->
+                      <?php
+                      $sessionRole = isset($employee_det['EmpRoleId']) ? (int)$employee_det['EmpRoleId'] : 0;
+                      $isHiringManager = ($sessionRole === 9);
+                      $isApproverRole  = in_array($sessionRole, [1, 3, 10, 12]); // Management, HR, RM, Approver
+                      ?>
+
+                      <?php if ($req['Status'] === 'PENDING APPROVAL'): ?>
+
+                        <?php if ($isHiringManager): ?>
+                          <!-- Hiring Manager: single "Submit to Vacancy" button -->
+                          <button type="button" class="btn btn-sm btn-warning text-dark" title="Submit to Vacancy"
+                            onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
+                            <i class="fas fa-paper-plane"></i>
+                          </button>
+
+                        <?php elseif ($isApproverRole): ?>
+                          <!-- Approver / Admin: Accept + Reject buttons -->
+                          <button type="button" class="btn btn-sm btn-success" title="Accept Request"
+                            onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
+                            <i class="fas fa-check"></i>
+                          </button>
+                          <button type="button" class="btn btn-sm btn-danger" title="Reject Request"
+                            onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'REJECTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        <?php endif; ?>
+
+                      <?php endif; ?>
+
+                      <!-- Vacancy status convert (ACCEPTED requests) -->
+                      <?php if ($req['Status'] === 'ACCEPTED' && empty($req['ConvertedJid']) && !$isHiringManager): ?>
+                        <a href="<?= base_url('admin/convertRequestToVacancy/' . $req['RequestId']); ?>" class="btn btn-sm btn-primary" title="Publish Vacancy"
+                          onclick="return confirm('Publish this approved request as an active vacancy?');">
+                          <i class="fas fa-plus"></i>
                         </a>
                       <?php endif; ?>
-                    <?php endif; ?>
+                    </div>
                   </td>
                 </tr>
               <?php endforeach; ?>
@@ -138,7 +164,7 @@
      ========================================== -->
 <div id="requestResourcePanel" class="right-form">
   <div class="right-form-header">
-    <h5 class="mb-0 font-weight-bold"><i class="fas fa-user-plus mr-2"></i>Request Resource</h5>
+    <h5 class="mb-0 font-weight-bold" id="panelHeaderTitle"><i class="fas fa-user-plus mr-2"></i>Request Resource</h5>
     <button type="button" class="close-btn" id="closeRequestResourcePanel">&times;</button>
   </div>
 
@@ -146,7 +172,8 @@
     <div class="row">
       <div class="col-md-12">
         <div class="card card-default shadow-none border-0">
-          <form action="<?= base_url('admin/saveResourceRequest'); ?>" method="post">
+          <form action="<?= base_url('admin/saveResourceRequest'); ?>" method="post" id="resourceRequestForm">
+            <input type="hidden" name="RequestId" id="res_RequestId" value="0">
             <div class="card-body p-0">
               <div class="bs-stepper">
                 
@@ -161,14 +188,14 @@
                   <div class="step" data-target="#res-salary-part">
                     <button type="button" class="step-trigger" role="tab" aria-controls="res-salary-part" id="res-salary-part-trigger">
                       <span class="bs-stepper-circle">2</span>
-                      <span class="bs-stepper-label">SALARY & DATES</span>
+                      <span class="bs-stepper-label">SALARY INFO</span>
                     </button>
                   </div>
                   <div class="line"></div>
                   <div class="step" data-target="#res-desc-part">
                     <button type="button" class="step-trigger" role="tab" aria-controls="res-desc-part" id="res-desc-part-trigger">
                       <span class="bs-stepper-circle">3</span>
-                      <span class="bs-stepper-label">JD & RESPONSIBILITIES</span>
+                      <span class="bs-stepper-label">SKILL INFO</span>
                     </button>
                   </div>
                 </div>
@@ -183,10 +210,7 @@
                       <input type="text" name="JobTitle" class="form-control" placeholder="e.g. Senior Software Engineer" required>
                     </div>
 
-                    <div class="form-group">
-                      <label class="text-label font-weight-bold">Functional Role</label>
-                      <input type="text" name="FunctionalRole" class="form-control" placeholder="e.g. Backend Developer">
-                    </div>
+                    
 
                     <div class="form-group">
                       <label class="text-label font-weight-bold">Department <span class="text-danger">*</span></label>
@@ -220,6 +244,8 @@
                       </select>
                     </div>
 
+
+
                     <div class="form-group">
                       <label class="text-label font-weight-bold">Reason for Requirement</label>
                       <textarea name="ReasonForRequirement" class="form-control" rows="3" placeholder="State reasons for this resource requirement..."></textarea>
@@ -228,7 +254,7 @@
                     <button type="button" class="btn btn-primary" onclick="resStepperNext()">Next <i class="fas fa-arrow-right ml-1"></i></button>
                   </div>
 
-                  <!-- STEP 2: SALARY & DATES -->
+                  <!-- STEP 2: EXP & DATES -->
                   <div id="res-salary-part" class="content" role="tabpanel" aria-labelledby="res-salary-part-trigger">
                     
                     <div class="form-group">
@@ -244,18 +270,7 @@
                       </div>
                     </div>
 
-                    <div class="form-group">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <label class="text-label font-weight-bold">Minimum Salary (₹ / Annum)</label>
-                          <input type="number" name="SalMin" class="form-control" placeholder="e.g. 500000">
-                        </div>
-                        <div class="col-md-6">
-                          <label class="text-label font-weight-bold">Maximum Salary (₹ / Annum)</label>
-                          <input type="number" name="SalMax" class="form-control" placeholder="e.g. 800000">
-                        </div>
-                      </div>
-                    </div>
+                    
 
                     <div class="form-group">
                       <label class="text-label font-weight-bold">Recruitment Start Date</label>
@@ -266,6 +281,8 @@
                       <label class="text-label font-weight-bold">Target Onboarding Date</label>
                       <input type="date" name="TargetOnboardingDate" class="form-control">
                     </div>
+
+
 
                     <button type="button" class="btn btn-secondary mr-1" onclick="resStepperPrev()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
                     <button type="button" class="btn btn-primary" onclick="resStepperNext()">Next <i class="fas fa-arrow-right ml-1"></i></button>
@@ -290,7 +307,7 @@
                     </div>
 
                     <button type="button" class="btn btn-secondary mr-1" onclick="resStepperPrev()"><i class="fas fa-arrow-left mr-1"></i> Previous</button>
-                    <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane mr-1"></i> Submit Request</button>
+                    <button type="submit" class="btn btn-success" id="resSubmitBtn"><i class="fas fa-paper-plane mr-1"></i> Submit Request</button>
                   </div>
 
                 </div>
@@ -364,9 +381,21 @@
 var resStepperObj = null;
 
 $(document).ready(function() {
+    if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#requestsTable')) {
+        $('#requestsTable').DataTable({
+            "responsive": true,
+            "autoWidth": false,
+            "order": [[0, "asc"]]
+        });
+    }
+    $(window).on('resize orientationchange', function() {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#requestsTable')) {
+            $('#requestsTable').DataTable().columns.adjust().responsive.recalc();
+        }
+    });
   // Panel Open / Close controls
   $('#openRequestResourcePanel').on('click', function() {
-    $('#requestResourcePanel').addClass('open');
+    openCreateRequestModal();
   });
 
   $('#closeRequestResourcePanel').on('click', function() {
@@ -471,4 +500,45 @@ function submitApproval(e) {
     }
   });
 }
+
+function openCreateRequestModal() {
+  $("#res_RequestId").val("0");
+  $("#panelHeaderTitle").html('<i class="fas fa-user-plus mr-2"></i>Request Resource');
+  $("#resSubmitBtn").html('<i class="fas fa-paper-plane mr-1"></i> Submit Request');
+  if ($("#resourceRequestForm").length) {
+    $("#resourceRequestForm")[0].reset();
+  }
+  if (resStepperObj) {
+    resStepperObj.to(1);
+  }
+  $("#requestResourcePanel").addClass("open");
+}
+
+function openEditRequestModal(req) {
+  $("#res_RequestId").val(req.RequestId || "0");
+  $("#panelHeaderTitle").html('<i class="fas fa-edit mr-2"></i>Edit Resource Request [' + (req.RequestCode || "") + ']');
+  $("#resSubmitBtn").html('<i class="fas fa-save mr-1"></i> Update Request');
+
+  // Populate form fields
+  $('input[name="JobTitle"]').val(req.JobTitle || "");
+  $('select[name="Did"]').val(req.Did || "");
+  $('select[name="PositionType"]').val(req.PositionType || "New Position");
+  $('select[name="ApproverId"]').val(req.ApproverId || "");
+  $('textarea[name="ReasonForRequirement"]').val(req.ReasonForRequirement || "");
+
+  $('input[name="ExpMin"]').val(req.ExpMin || 0);
+  $('input[name="ExpMax"]').val(req.ExpMax || 0);
+  $('input[name="RecruitmentStartDate"]').val((req.RecruitmentStartDate || "").split(" ")[0]);
+  $('input[name="TargetOnboardingDate"]').val((req.TargetOnboardingDate || "").split(" ")[0]);
+
+  $('input[name="NoofOpenings"]').val(req.NoofOpenings || 1);
+  $('textarea[name="JobDescription"]').val(req.JobDescription || "");
+  $('textarea[name="Responsibilities"]').val(req.Responsibilities || "");
+
+  if (resStepperObj) {
+    resStepperObj.to(1);
+  }
+  $("#requestResourcePanel").addClass("open");
+}
+
 </script>
