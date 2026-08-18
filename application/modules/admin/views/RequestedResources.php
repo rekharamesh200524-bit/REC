@@ -176,18 +176,18 @@
                         <?php if ($isHiringManager): ?>
                           <!-- Hiring Manager: single "Submit to Vacancy" button -->
                           <button type="button" class="btn btn-sm btn-warning text-dark" title="Submit to Vacancy"
-                            onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
+                            onclick="openApprovalModal('<?= !empty($req['RequestId']) ? $req['RequestId'] : htmlspecialchars($req['RequestCode']); ?>', 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
                             <i class="fas fa-paper-plane"></i>
                           </button>
 
                         <?php elseif ($isApproverRole): ?>
                           <!-- Approver / Admin: Accept + Reject buttons -->
                           <button type="button" class="btn btn-sm btn-success" title="Accept Request"
-                            onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
+                            onclick="openApprovalModal('<?= !empty($req['RequestId']) ? $req['RequestId'] : htmlspecialchars($req['RequestCode']); ?>', 'ACCEPTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
                             <i class="fas fa-check"></i>
                           </button>
                           <button type="button" class="btn btn-sm btn-danger" title="Reject Request"
-                            onclick="openApprovalModal(<?= $req['RequestId']; ?>, 'REJECTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
+                            onclick="openApprovalModal('<?= !empty($req['RequestId']) ? $req['RequestId'] : htmlspecialchars($req['RequestCode']); ?>', 'REJECTED', '<?= htmlspecialchars($req['RequestCode']); ?>')">
                             <i class="fas fa-times"></i>
                           </button>
                         <?php endif; ?>
@@ -464,6 +464,7 @@
 
       <form id="approvalForm" onsubmit="submitApproval(event)">
         <input type="hidden" name="RequestId" id="approvalRequestId">
+        <input type="hidden" name="RequestCode" id="approvalRequestCode">
         <input type="hidden" name="Status" id="approvalStatus">
 
         <div class="modal-body">
@@ -702,8 +703,10 @@ function viewRequestDetails(req) {
 }
 
 function openApprovalModal(requestId, status, requestCode) {
-  $('#approvalRequestId').val(requestId);
-  $('#approvalStatus').val(status);
+  var finalReqId = (requestId !== null && requestId !== undefined && requestId !== '') ? requestId : (requestCode || '');
+  $('#approvalRequestId').val(finalReqId);
+  $('#approvalRequestCode').val(requestCode || '');
+  $('#approvalStatus').val(status || 'ACCEPTED');
   $('#approvalComment').val('');
 
   var header = $('#approvalModalHeader');

@@ -169,15 +169,18 @@
 <?php
     $recommendation = trim($cl['ProfileMatchPer'] ?? '');
 
-    if ($recommendation === 'Recommended') {
+    if (in_array($recommendation, ['Strong Match', 'Strongly Match', 'Recommended'])) {
         $badgeClass = 'badge-success';
-    } elseif ($recommendation === 'Review Required') {
+        $recommendation = 'Strong Match';
+    } elseif (in_array($recommendation, ['Potential Match', 'Review Required'])) {
         $badgeClass = 'badge-warning';
-    } elseif ($recommendation === 'Not Recommended') {
+        $recommendation = 'Potential Match';
+    } elseif (in_array($recommendation, ['Low Match', 'Not Recommended'])) {
         $badgeClass = 'badge-danger';
+        $recommendation = 'Low Match';
     } else {
         $badgeClass = 'badge-secondary';
-        $recommendation = $recommendation !== '' ? $recommendation : 'Review Required';
+        $recommendation = $recommendation !== '' ? $recommendation : 'Potential Match';
     }
 
     $analysisData = [];
@@ -1408,11 +1411,11 @@ $(document).on('click', '.viewCandidateDetails', function () {
                             <p><strong>Experience:</strong> ${c.ExpYrs ?? 0} Years</p>
                             <p><strong>ATS Recommendation:</strong>
                                 <span class="badge ${
-                                    c.ProfileMatchPer === 'Recommended' ? 'badge-success' :
-                                    c.ProfileMatchPer === 'Not Recommended' ? 'badge-danger' :
-                                    c.ProfileMatchPer === 'Review Required' ? 'badge-warning' :
+                                    (c.ProfileMatchPer === 'Strong Match' || c.ProfileMatchPer === 'Strongly Match' || c.ProfileMatchPer === 'Recommended') ? 'badge-success' :
+                                    (c.ProfileMatchPer === 'Low Match' || c.ProfileMatchPer === 'Not Recommended') ? 'badge-danger' :
+                                    (c.ProfileMatchPer === 'Potential Match' || c.ProfileMatchPer === 'Review Required') ? 'badge-warning' :
                                     'badge-secondary'}">
-                                    ${c.ProfileMatchPer ?? 'Review Required'}
+                                    ${c.ProfileMatchPer === 'Recommended' ? 'Strong Match' : (c.ProfileMatchPer === 'Review Required' ? 'Potential Match' : (c.ProfileMatchPer === 'Not Recommended' ? 'Low Match' : (c.ProfileMatchPer ?? 'Potential Match')))}
                                 </span>
                             </p>
                             <p><strong>Status:</strong>
@@ -1734,159 +1737,220 @@ $(document).on('click', '.btnScoreHelp', function () {
         analysis = {};
     }
 
-    let recommendation = analysis.recommendation || 'Review Required';
+    let recommendation = analysis.recommendation || 'Potential Match';
+    if (recommendation === 'Recommended') recommendation = 'Strong Match';
+    if (recommendation === 'Review Required') recommendation = 'Potential Match';
+    if (recommendation === 'Not Recommended') recommendation = 'Low Match';
+
     let reason = analysis.recommendation_reason || 'No recommendation reason is available.';
     let evidence = analysis.relevant_evidence || [];
     let missing = analysis.missing_requirements || [];
-    let domain = analysis.domain || 'Not identified';
+    let domain = analysis.domain || analysis.candidate_domain || 'Not identified';
+    let candidateDomain = analysis.candidate_domain || analysis.domain || 'Not identified';
+    let jobDomain = analysis.job_domain || 'Not identified';
+    let domainStatus = (analysis.domain_status || 'UNCLEAR').toUpperCase();
+    let domainAnalysis = analysis.domain_analysis || {};
     let matchedSkills = analysis.matched_skills || 'Not identified';
     let missingSkills = analysis.missing_skills || 'None identified';
     let detectedDegree = analysis.detected_degree || 'Not identified';
     let experience = analysis.experience || 'Not verified';
 
-    if (!Array.isArray(evidence)) {
-        evidence = [evidence];
-    }
+    let profile = analysis.candidate_profile || {};
+    let headline = profile.headline || 'Candidate';
+    let currentRole = profile.current_role || 'Not specified in resume';
+    let currentCompany = profile.current_company || 'Not specified in resume';
+    let degree = profile.degree || detectedDegree;
+    let institution = profile.institution || 'Not specified in resume';
+    let gradYear = profile.grad_year || 'Not specified in resume';
+    let training = profile.training || 'Not specified in resume';
+    let summary = profile.summary || 'Summary not available.';
+    let categorizedSkills = profile.categorized_skills || {};
+    let workHistory = profile.work_history || [];
+    let projects = profile.projects || [];
 
-    if (!Array.isArray(missing)) {
-        missing = [missing];
-    }
+    if (!Array.isArray(evidence)) evidence = [evidence];
+    if (!Array.isArray(missing)) missing = [missing];
 
     let badgeClass = 'badge-secondary';
-
-    if (recommendation === 'Recommended') {
+    if (recommendation === 'Strong Match' || recommendation === 'Strongly Match' || recommendation === 'Recommended') {
         badgeClass = 'badge-success';
-    } else if (recommendation === 'Review Required') {
+    } else if (recommendation === 'Potential Match' || recommendation === 'Review Required') {
         badgeClass = 'badge-warning';
-    } else if (recommendation === 'Not Recommended') {
+    } else if (recommendation === 'Low Match' || recommendation === 'Not Recommended' || recommendation === 'Not Suitable') {
         badgeClass = 'badge-danger';
     }
 
-    let evidenceHtml = '';
-
-    evidence.forEach(function (item) {
-        if (item && item.toString().trim() !== '') {
-            evidenceHtml += `
-                <li class="mb-2">
-                    <i class="fas fa-check-circle text-success mr-2"></i>
-                    ${item}
-                </li>
-            `;
+    // Build Categorized Skills HTML
+    let skillsCatHtml = '';
+    if (Object.keys(categorizedSkills).length > 0) {
+        for (let cat in categorizedSkills) {
+            let skillsArr = categorizedSkills[cat].split(', ');
+            let badgesStr = skillsArr.map(function(s) { return '<span class="badge badge-info mr-1 mb-1">' + s + '</span>'; }).join(' ');
+            skillsCatHtml += '<div class="mb-2"><strong class="text-secondary">' + cat + ':</strong><br>' + badgesStr + '</div>';
         }
-    });
-
-    if (evidenceHtml === '') {
-        evidenceHtml = `
-            <li class="text-muted">
-                No specific supporting evidence was recorded.
-            </li>
-        `;
+    } else {
+        skillsCatHtml = '<p class="text-muted mb-0">No specific technical skills categorized.</p>';
     }
 
-    let missingHtml = '';
+    // Build Work History HTML
+    let workHistHtml = '';
+    if (workHistory.length > 0) {
+        workHistory.forEach(function(w) {
+            workHistHtml += '<li class="mb-2"><i class="fas fa-briefcase text-primary mr-2"></i><strong>' + w.role + '</strong> — ' + w.company + '<small class="text-muted d-block ml-4">' + w.period + ' (' + w.duration + ')</small></li>';
+        });
+    } else {
+        workHistHtml = '<li class="text-muted">No employment history extracted.</li>';
+    }
 
-    missing.forEach(function (item) {
+    // Build Projects HTML
+    let projectsHtml = '';
+    if (projects.length > 0) {
+        projects.forEach(function(p) {
+            projectsHtml += '<li class="mb-2"><i class="fas fa-folder-open text-info mr-2"></i><strong>' + p.title + '</strong></li>';
+        });
+    } else {
+        projectsHtml = '<li class="text-muted">No explicit projects identified in resume.</li>';
+    }
+
+    // Build Evidence HTML
+    let evidenceHtml = '';
+    evidence.forEach(function(item) {
         if (item && item.toString().trim() !== '') {
-            missingHtml += `
-                <li class="mb-2">
-                    <i class="fas fa-exclamation-triangle text-warning mr-2"></i>
-                    ${item}
-                </li>
-            `;
+            evidenceHtml += '<li class="mb-2"><i class="fas fa-check-circle text-success mr-2"></i>' + item + '</li>';
         }
     });
+    if (evidenceHtml === '') evidenceHtml = '<li class="text-muted">No specific supporting evidence recorded.</li>';
 
-    if (missingHtml === '') {
-        missingHtml = `
-            <li class="text-success">
-                <i class="fas fa-check-circle mr-2"></i>
-                No major missing requirements were identified.
-            </li>
+    // Build Missing Requirements HTML
+    let missingHtml = '';
+    missing.forEach(function(item) {
+        if (item && item.toString().trim() !== '') {
+            missingHtml += '<li class="mb-2"><i class="fas fa-exclamation-triangle text-warning mr-2"></i>' + item + '</li>';
+        }
+    });
+    if (missingHtml === '') missingHtml = '<li class="text-success"><i class="fas fa-check-circle mr-2"></i>No major missing requirements identified.</li>';
+
+    let domainWarningHtml = '';
+    if (domainStatus === 'WRONG_DOMAIN') {
+        domainWarningHtml = `
+            <div class="callout callout-danger mb-4">
+                <h5 class="text-danger font-weight-bold mb-2"><i class="fas fa-exclamation-circle mr-2"></i>Wrong Domain Resume</h5>
+                <p class="mb-2"><strong>Candidate Domain:</strong> ${candidateDomain}</p>
+                <p class="mb-2"><strong>Job Domain:</strong> ${jobDomain}</p>
+                <p class="mb-0 text-dark">Candidate's professional background is ${candidateDomain}, while this vacancy is ${jobDomain}.</p>
+                <p class="mb-0 mt-2"><strong>Final Recommendation:</strong> <span class="badge badge-danger p-2">Not Suitable</span></p>
+            </div>
         `;
     }
 
     let html = `
         <div class="container-fluid">
-
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title">Recommendation</h3>
+            ${domainWarningHtml}
+            
+            <!-- PART A: CANDIDATE PROFILE LAYER -->
+            <div class="card card-outline card-info mb-4">
+                <div class="card-header bg-light">
+                    <h3 class="card-title text-info font-weight-bold mb-0">
+                        <i class="fas fa-user mr-2"></i>PART A: CANDIDATE PROFILE OVERVIEW
+                    </h3>
                 </div>
-
-                <div class="card-body text-center">
-                    <span class="badge ${badgeClass} p-2" style="font-size: 15px;">
-                        ${recommendation}
-                    </span>
-
-                    <p class="mt-3 mb-0">
-                        ${reason}
-                    </p>
-                </div>
-            </div>
-
-            <div class="card card-info collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">Candidate Profile Evaluation</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-
                 <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h4 class="font-weight-bold text-dark mb-1">${headline}</h4>
+                            <p class="text-muted mb-2"><i class="fas fa-building mr-1"></i> ${currentRole} at ${currentCompany}</p>
+                            <p class="mb-1"><strong><i class="fas fa-graduation-cap mr-1"></i> Education:</strong> ${degree} ${gradYear !== 'Not specified in resume' ? '(' + gradYear + ')' : ''}</p>
+                            <p class="mb-1"><strong><i class="fas fa-university mr-1"></i> Institution:</strong> ${institution}</p>
+                            <p class="mb-1"><strong><i class="fas fa-certificate mr-1"></i> Training / Specialization:</strong> ${training}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="callout callout-info">
+                                <h5><i class="fas fa-file-alt mr-2"></i>Professional Summary</h5>
+                                <p class="mb-0 text-dark">${summary}</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-md-6">
-                            <p><strong>Domain:</strong> ${domain}</p>
-                            <p><strong>Experience Match:</strong> ${experience}</p>
-                            <p><strong>Education:</strong> ${detectedDegree}</p>
+                            <div class="card card-outline card-secondary h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title font-weight-bold"><i class="fas fa-layer-group mr-2"></i>Categorized Technical Stack</h5>
+                                </div>
+                                <div class="card-body">
+                                    ${skillsCatHtml}
+                                </div>
+                            </div>
                         </div>
-
                         <div class="col-md-6">
-                            <p><strong>Matched Skills:</strong> ${matchedSkills || 'None identified'}</p>
-                            <p><strong>Missing Skills:</strong> ${missingSkills || 'None identified'}</p>
+                            <div class="card card-outline card-secondary h-100">
+                                <div class="card-header">
+                                    <h5 class="card-title font-weight-bold"><i class="fas fa-history mr-2"></i>Work History & Projects</h5>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="font-weight-bold text-secondary">Work History:</h6>
+                                    <ul class="list-unstyled mb-3">${workHistHtml}</ul>
+                                    <h6 class="font-weight-bold text-secondary">Projects:</h6>
+                                    <ul class="list-unstyled mb-0">${projectsHtml}</ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card card-success collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-check-circle mr-2"></i>
-                        Relevant Evidence
+            <!-- PART B: EXISTING ATS JOB MATCH EVALUATION -->
+            <div class="card card-outline card-primary mb-3">
+                <div class="card-header bg-light">
+                    <h3 class="card-title text-primary font-weight-bold mb-0">
+                        <i class="fas fa-tasks mr-2"></i>PART B: ATS VACANCY MATCH EVALUATION
                     </h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
                 </div>
-
                 <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        ${evidenceHtml}
-                    </ul>
-                </div>
-            </div>
-
-            <div class="card card-warning collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-exclamation-triangle mr-2"></i>
-                        Missing / Unclear Requirements
-                    </h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                    <div class="callout callout-warning mb-3">
+                        <h5 class="mb-2">
+                            <strong>Final Recommendation:</strong> 
+                            <span class="badge ${badgeClass} p-2 ml-2" style="font-size: 14px;">${recommendation}</span>
+                        </h5>
+                        <p class="mb-0 text-dark"><strong>Reason:</strong> ${reason}</p>
                     </div>
-                </div>
 
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        ${missingHtml}
-                    </ul>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Candidate Domain:</strong> ${candidateDomain}</p>
+                            <p class="mb-1"><strong>Job Domain:</strong> ${jobDomain}</p>
+                            <p class="mb-1"><strong>Domain Status:</strong> ${domainStatus}</p>
+                            <p class="mb-1"><strong>Experience Match:</strong> ${experience}</p>
+                            <p class="mb-1"><strong>Education Match:</strong> ${detectedDegree}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Matched Core Skills:</strong> ${matchedSkills || 'None identified'}</p>
+                            <p class="mb-1"><strong>Missing Core Skills:</strong> ${missingSkills || 'None identified'}</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-success card-outline mb-0">
+                                <div class="card-header">
+                                    <h5 class="card-title text-success font-weight-bold"><i class="fas fa-check-circle mr-2"></i>Relevant Evidence</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">${evidenceHtml}</ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card card-warning card-outline mb-0">
+                                <div class="card-header">
+                                    <h5 class="card-title text-warning font-weight-bold"><i class="fas fa-exclamation-triangle mr-2"></i>Missing / Needs Verification</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled mb-0">${missingHtml}</ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

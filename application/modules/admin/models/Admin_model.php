@@ -269,7 +269,11 @@ public function getCandidatesList($Jid){
             $this->db->where('rr.Status', $filters['Status']);
         }
         if (!empty($filters['RequestId'])) {
-            $this->db->where('rr.RequestId', $filters['RequestId']);
+            if (is_numeric($filters['RequestId'])) {
+                $this->db->where('rr.RequestId', (int)$filters['RequestId']);
+            } else {
+                $this->db->where('rr.RequestCode', trim($filters['RequestId']));
+            }
         }
 
         $this->db->order_by('rr.RequestId', 'DESC');
@@ -307,7 +311,11 @@ public function insertResourceRequest($data)
 }
     public function updateResourceRequest($id, $data)
     {
-        $this->db->where('RequestId', $id);
+        if (is_numeric($id)) {
+            $this->db->where('RequestId', (int)$id);
+        } else {
+            $this->db->where('RequestCode', trim($id));
+        }
         return $this->db->update('resource_requests', $data);
     }
 
