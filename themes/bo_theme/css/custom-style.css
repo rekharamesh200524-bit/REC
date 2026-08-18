@@ -103,6 +103,7 @@
 
 .kpi-bg-total { background: linear-gradient(135deg, #5B7CFF 0%, #3B4FD9 100%); }
 .kpi-bg-open { background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%); }
+.kpi-bg-pending { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
 .kpi-bg-hold { background: linear-gradient(135deg, #FF8C42 0%, #FB7E1F 100%); }
 .kpi-bg-rejected { background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%); }
 .kpi-bg-closed { background: linear-gradient(135deg, #2ED86C 0%, #1CA653 100%); }
@@ -155,6 +156,7 @@
 /* KPI Card backgrounds — Jobs (Indigo/Blue gradient) */
 .theme-job .kpi-bg-total    { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); }
 .theme-job .kpi-bg-open     { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+.theme-job .kpi-bg-pending  { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
 .theme-job .kpi-bg-hold     { background: linear-gradient(135deg, #64748b 0%, #475569 100%); }
 .theme-job .kpi-bg-rejected { background: linear-gradient(135deg, #f87171 0%, #dc2626 100%); }
 .theme-job .kpi-bg-closed   { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
@@ -162,6 +164,7 @@
 /* KPI Card backgrounds — Candidates (Teal/Emerald gradient) */
 .theme-candidate .kpi-bg-total    { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); }
 .theme-candidate .kpi-bg-open     { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.theme-candidate .kpi-bg-pending  { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
 .theme-candidate .kpi-bg-hold     { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
 .theme-candidate .kpi-bg-rejected { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); }
 .theme-candidate .kpi-bg-closed   { background: linear-gradient(135deg, #10b981 0%, #047857 100%); }
@@ -176,6 +179,7 @@
 }
 .theme-candidate .kpi-card-body.kpi-bg-total    { border-left-color: #0d9488 !important; }
 .theme-candidate .kpi-card-body.kpi-bg-open     { border-left-color: #10b981 !important; }
+.theme-candidate .kpi-card-body.kpi-bg-pending  { border-left-color: #f59e0b !important; }
 .theme-candidate .kpi-card-body.kpi-bg-hold     { border-left-color: #f59e0b !important; }
 .theme-candidate .kpi-card-body.kpi-bg-rejected { border-left-color: #ef4444 !important; }
 .theme-candidate .kpi-card-body.kpi-bg-closed   { border-left-color: #047857 !important; }
@@ -186,6 +190,7 @@
 /* Candidate KPI icon boxes — coloured tints instead of solid fills */
 .theme-candidate .kpi-icon-box { background-color: rgba(13, 148, 136, 0.08) !important; color: #0d9488 !important; box-shadow: none !important; }
 .theme-candidate .kpi-bg-open     .kpi-icon-box { background-color: rgba(16, 185, 129, 0.08) !important; color: #10b981 !important; }
+.theme-candidate .kpi-bg-pending  .kpi-icon-box { background-color: rgba(245, 158, 11, 0.08) !important; color: #f59e0b !important; }
 .theme-candidate .kpi-bg-hold     .kpi-icon-box { background-color: rgba(245, 158, 11, 0.08) !important; color: #f59e0b !important; }
 .theme-candidate .kpi-bg-rejected .kpi-icon-box { background-color: rgba(239, 68, 68, 0.08) !important; color: #ef4444 !important; }
 .theme-candidate .kpi-bg-closed   .kpi-icon-box { background-color: rgba(4, 120, 87, 0.08) !important; color: #047857 !important; }

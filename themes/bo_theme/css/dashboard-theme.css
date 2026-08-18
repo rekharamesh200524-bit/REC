@@ -19,6 +19,10 @@
   background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%) !important;
   box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
 }
+.dashboard-theme-jobs .kpi-bg-pending {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+}
 .dashboard-theme-jobs .kpi-bg-hold {
   background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
   box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
