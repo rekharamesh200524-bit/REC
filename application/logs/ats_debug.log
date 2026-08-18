@@ -5471,3 +5471,2447 @@ Array
 )
 
 ============================
+
+============================
+2026-08-13 17:29:05 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '31'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-13 17:29:05 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND31_20260813172905610.pdf
+    [vacancyId] => 31
+    [jobTitle] => HUMAN RESOURCES
+)
+
+==============================
+2026-08-13 17:29:06 | PDF_EXTRACT_SUCCESS
+EVLYN JANET
+
+ People Operations Lead | HR Operations | Employee Lifecycle & JML Excellence
+Phone: 7022384920 | Email: evjane@myyahoo.com
+
+ PROFESSIONAL SUMMARY
+
+ Experienced People Operations and HR professional with 5+ years of progressive experience across global
+organisations, specialising in HR Operations, Employee Lifecycle Management, Joiners-Movers-Leavers (JML),
+Talent Acquisition support, and HR service delivery. Proven expertise in Leave of Absence (LOA), Absence
+Management, Attendance Management, Timesheet Management and HR Case Management within fast-paced,
+high-volume environments. Skilled in handling escalations, streamlining HR processes, improving SLA adherence and
+partnering with cross-functional stakeholders to deliver seamless employee experiences. Strong background in HR
+analytics, compliance, process optimisation, onboarding, workforce coordination and operational governance.
+
+ SKILLS
+ 
+ End-to-end HR Operations
+ 
+ Employee Lifecycle Management
+ 
+ Leave of Absen
+==============================
+2026-08-13 17:29:06 | RAW_RESUME_TEXT
+evlyn janet
+
+ people operations lead | hr operations | employee lifecycle & jml excellence
+phone: 7022384920 | email: evjane@myyahoo.com
+
+ professional summary
+
+ experienced people operations and hr professional with 5+ years of progressive experience across global
+organisations, specialising in hr operations, employee lifecycle management, joiners-movers-leavers (jml),
+talent acquisition support, and hr service delivery. proven expertise in leave of absence (loa), absence
+management, attendance management, timesheet management and hr case management within fast-paced,
+high-volume environments. skilled in handling escalations, streamlining hr processes, improving sla adherence and
+partnering with cross-functional stakeholders to deliver seamless employee experiences. strong background in hr
+analytics, compliance, process optimisation, onboarding, workforce coordination and operational governance.
+
+ skills
+ 
+ end-to-end hr operations
+ 
+ employee lifecycle management
+ 
+ leave of absence (loa)
+ 
+ absence management
+ 
+ attendance management
+ 
+ timesheet management
+ 
+ hr case management
+ 
+ onboarding & offboarding
+ 
+ ticketing process handling
+ 
+ hris tools – workday, greyhr, keka, servicenow
+ 
+ sop documentation & process improvement
+ 
+ stakeholder & escalation management
+ 
+ hr reporting & analytics
+ professional experience
+ smith and howard – senior talent & operations specialist | march 2025 – october 2025
+ 
+
+ managed end-to-end employee lifecycle operations including onboarding, internal transfers, promotions,
+compensation revisions, leave administration, exits and hr documentation while ensuring complete compliance
+and process accuracy.
+ 
+
+ handled leave of absence (loa), attendance management and timesheet management activities for employees
+across multiple business functions while maintaining sla adherence and operational efficiency.
+ 
+ acted as the primary escalation point for complex hr operational issues, hr case management queries and
+emp
+==============================
+2026-08-13 17:29:06 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => aug 2024
+                    [to] => feb 2025
+                    [years] => 0
+                    [months] => 6
+                )
+
+            [1] => Array
+                (
+                    [from] => april 2022
+                    [to] => june 2024
+                    [years] => 2
+                    [months] => 2
+                )
+
+            [2] => Array
+                (
+                    [from] => march 2021
+                    [to] => april 2022
+                    [years] => 1
+                    [months] => 1
+                )
+
+        )
+
+    [total] => 3 Years 9 Months
+)
+
+==============================
+2026-08-13 17:29:06 | Email
+evjane@myyahoo.com
+==============================
+2026-08-13 17:29:06 | Name
+Evlyn Janet
+==============================
+2026-08-13 17:29:06 | Mobile
+7022384920
+==============================
+2026-08-13 17:29:06 | ExperienceYears
+3.8
+==============================
+2026-08-13 17:29:06 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 2
+    [requiredSkillsCount] => 4
+    [candidateExp] => 3.8
+    [minExpRequired] => 2.5
+    [eduMatch] => 1
+)
+
+==============================
+2026-08-13 17:29:06 | RECOMMENDATION
+Recommended
+==============================
+2026-08-13 17:29:06 | RECOMMENDATION_REASON
+The candidate's profile aligns well with the requirements of HUMAN RESOURCES. They possess 3.8 years of relevant experience and demonstrate key skills in Communication, Time Management. Their background provides concrete evidence for strong candidate suitability.
+============================
+2026-08-13 17:29:06 | vacancy
+Array
+(
+    [Jid] => 31
+    [JobCode] => JOB-2026-0003
+    [JobTitle] => HUMAN RESOURCES
+    [RoleSummary] => HR RECUIRTER
+    [Did] => 3
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => MBA,BBA,Behavioral Science,MHRM
+    [ExpMin] => 2.50
+    [ExpMax] => 3.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => We are seeking an energetic and detail-oriented HR Recruiter to manage our full-cycle recruitment process. In this role, you will be responsible for sourcing, attracting, interviewing, and onboarding top-tier talent to meet our business growth goals. You will collaborate closely with department heads and hiring managers to understand staffing needs, create effective hiring strategies, and deliver an exceptional candidate experience.
+    [Responsibilities] => Sourcing & Candidate Attraction
+Post and manage open positions on job boards, professional networks (e.g., LinkedIn), social media platforms, and university career portals.
+
+Use advanced sourcing techniques (Boolean search, passive networking, employee referrals) to discover hidden talent for specialized or hard-to-fill roles.
+
+Attend job fairs, virtual hiring events, and industry conferences to build proactive talent pools.
+
+2. Screening & Evaluation
+Review incoming resumes, portfolios, and job applications against role specifications.
+
+Conduct initial phone screenings and video interviews to assess candidates' technical fit, communication skills, and alignment with company culture.
+
+Coordinate and schedule interviews between qualified candidates and hiring managers or technical evaluation panels.
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => hindi,English,Tamil
+    [PostedOn] => 2026-08-13 15:31:15
+    [UpdatedOn] => 2026-08-13 17:28:47
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 3
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 17
+    [AssignedRecruiterManagerId] => 
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => Communication,Negotiation & Pitching,Stakeholder Management,Time Management
+    [NiceToHaveSkills] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-13 17:29:06 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Recommended
+    [recommendation_reason] => The candidate's profile aligns well with the requirements of HUMAN RESOURCES. They possess 3.8 years of relevant experience and demonstrate key skills in Communication, Time Management. Their background provides concrete evidence for strong candidate suitability.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 3.8 Years total experience (Vacancy Required: Min 2.5 Years)
+            [1] => Matched Core Skills: Communication, Time Management
+            [2] => Education: Matches required level (BE)
+            [3] => Domain Fit: Background in Human Resources
+            [4] => Extracted Resume Skills: Recruitment, Payroll, Onboarding, Attendance, Exit Process, Audit, Communication, Leadership
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Negotiation & Pitching, Stakeholder Management
+        )
+
+    [status] => Recommended
+    [email] => evjane@myyahoo.com
+    [name] => Evlyn Janet
+    [mobileNumbers] => 7022384920
+    [expyrs] => 3.8
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => aug 2024
+                            [to] => feb 2025
+                            [years] => 0
+                            [months] => 6
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => april 2022
+                            [to] => june 2024
+                            [years] => 2
+                            [months] => 2
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => march 2021
+                            [to] => april 2022
+                            [years] => 1
+                            [months] => 1
+                        )
+
+                )
+
+            [total] => 3 Years 9 Months
+        )
+
+    [domain] => Human Resources
+    [matched_skills] => Communication, Time Management
+    [missing_skills] => Negotiation & Pitching, Stakeholder Management
+    [all_extracted_skills] => Recruitment, Payroll, Onboarding, Attendance, Exit Process, Audit, Communication, Leadership, Documentation
+    [education_match] => Yes
+    [experience] => Yes
+    [detected_degree] => BE
+)
+
+============================
+
+============================
+2026-08-17 18:17:20 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '31'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-17 18:17:20 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND31_20260817181720181.pdf
+    [vacancyId] => 31
+    [jobTitle] => HUMAN RESOURCES
+)
+
+==============================
+2026-08-17 18:17:21 | PDF_EXTRACT_SUCCESS
+Mohamed Fazil
+Full Stack Developer — MERN & PHP Specialist Chennai, Tamil Nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+Professional Summary BCA Graduate (2025) and Full Stack Developer with hands-on experience building scalable web applications using
+MERN stack and PHP. Skilled in REST API development, JWT authentication, Docker-based deployment, and
+responsive UI design. Passionate about clean architecture, performance optimization, and production-ready systems.
+Core Competencies •Languages:JavaScript (ES6+), PHP
+•Frontend:React.js, Next.js, AngularJS, HTML5, CSS3, Bootstrap, Tailwind CSS
+•Backend:Node.js, Express.js, PHP
+•Databases:MongoDB, MySQL
+•API & Security:RESTful APIs, JWT Authentication, bcrypt, Middleware
+•DevOps & Tools:Docker, Git, GitHub, VS Code
+•Concepts:MVC Architecture, Responsive Design, Performance Optimization, Component-Based Architecture
+Work Experience Inet Secure Labs Pvt Ltd – Software D
+==============================
+2026-08-17 18:17:21 | RAW_RESUME_TEXT
+mohamed fazil
+full stack developer — mern & php specialist chennai, tamil nadu — +91 7200110489
+fazil721655@gmail.com — linkedin.com/in/mohamed-fazil — github.com/fazil
+professional summary bca graduate (2025) and full stack developer with hands-on experience building scalable web applications using
+mern stack and php. skilled in rest api development, jwt authentication, docker-based deployment, and
+responsive ui design. passionate about clean architecture, performance optimization, and production-ready systems.
+core competencies •languages:javascript (es6+), php
+•frontend:react.js, next.js, angularjs, html5, css3, bootstrap, tailwind css
+•backend:node.js, express.js, php
+•databases:mongodb, mysql
+•api & security:restful apis, jwt authentication, bcrypt, middleware
+•devops & tools:docker, git, github, vs code
+•concepts:mvc architecture, responsive design, performance optimization, component-based architecture
+work experience inet secure labs pvt ltd – software developerpresent
+•contributing to full stack development using mern stack and php
+•building rest apis and responsive ui components for real-world applications
+•working with docker and git for efficient development workflow
+featured pro jects langmaster – full stack e-learning platform
+•developed a mern-based platform with lessons, quizzes, and progress tracking
+•implemented jwt authentication, bcrypt password security, and protected routes
+•designed rest apis for course and user management
+•built responsive ui using tailwind css with animations
+agri 360 – smart agriculture platform
+•built a react.js marketplace for farmers to manage product listings
+•integrated weather api for real-time environmental insights
+•implemented advanced filtering, search, and location-based features
+•optimized performance using react hooks and memoization
+resume insight analyzer
+•built a custom ats scoring system using php with rule-based nlp logic
+•implemented keyword extraction
+==============================
+2026-08-17 18:17:21 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+        )
+
+    [total] => 0 Years 0 Months
+)
+
+==============================
+2026-08-17 18:17:21 | Email
+fazil721655@gmail.com
+==============================
+2026-08-17 18:17:21 | Name
+Mohamed Fazil
+==============================
+2026-08-17 18:17:21 | Mobile
++91 7200110489
+==============================
+2026-08-17 18:17:21 | ExperienceYears
+0
+==============================
+2026-08-17 18:17:21 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 1
+    [requiredSkillsCount] => 4
+    [candidateExp] => 0
+    [minExpRequired] => 2.5
+    [eduMatch] => 1
+)
+
+==============================
+2026-08-17 18:17:21 | RECOMMENDATION
+Review Required
+==============================
+2026-08-17 18:17:21 | RECOMMENDATION_REASON
+The candidate has a relevant background for HUMAN RESOURCES, but specific requirements need verification during screening. Skill(s) like Negotiation & Pitching, Stakeholder Management, Time Management were not clearly identified in the resume text. Total experience (0 Yrs) is slightly below the preferred minimum (2.5 Yrs). Recruiter review and phone screening are recommended.
+============================
+2026-08-17 18:17:21 | vacancy
+Array
+(
+    [Jid] => 31
+    [JobCode] => JOB-2026-0003
+    [JobTitle] => HUMAN RESOURCES
+    [RoleSummary] => HR RECUIRTER
+    [Did] => 3
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => MBA,BBA,Behavioral Science,MHRM
+    [ExpMin] => 2.50
+    [ExpMax] => 3.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => We are seeking an energetic and detail-oriented HR Recruiter to manage our full-cycle recruitment process. In this role, you will be responsible for sourcing, attracting, interviewing, and onboarding top-tier talent to meet our business growth goals. You will collaborate closely with department heads and hiring managers to understand staffing needs, create effective hiring strategies, and deliver an exceptional candidate experience.
+    [Responsibilities] => Sourcing & Candidate Attraction
+Post and manage open positions on job boards, professional networks (e.g., LinkedIn), social media platforms, and university career portals.
+
+Use advanced sourcing techniques (Boolean search, passive networking, employee referrals) to discover hidden talent for specialized or hard-to-fill roles.
+
+Attend job fairs, virtual hiring events, and industry conferences to build proactive talent pools.
+
+2. Screening & Evaluation
+Review incoming resumes, portfolios, and job applications against role specifications.
+
+Conduct initial phone screenings and video interviews to assess candidates' technical fit, communication skills, and alignment with company culture.
+
+Coordinate and schedule interviews between qualified candidates and hiring managers or technical evaluation panels.
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => hindi,English,Tamil
+    [PostedOn] => 2026-08-13 15:31:15
+    [UpdatedOn] => 2026-08-13 17:28:47
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-31
+    [Salary] => 3
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 17
+    [AssignedRecruiterManagerId] => 
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => Communication,Negotiation & Pitching,Stakeholder Management,Time Management
+    [NiceToHaveSkills] => 
+    [RequiredSkills] => 
+)
+
+============================
+
+============================
+2026-08-17 18:17:21 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for HUMAN RESOURCES, but specific requirements need verification during screening. Skill(s) like Negotiation & Pitching, Stakeholder Management, Time Management were not clearly identified in the resume text. Total experience (0 Yrs) is slightly below the preferred minimum (2.5 Yrs). Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Matched Core Skills: Communication
+            [1] => Education: Matches required level (BA)
+            [2] => Domain Fit: Background in Human Resources
+            [3] => Extracted Resume Skills: Php, Javascript, Html, Css, Bootstrap, Tailwind, React, Angular
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Negotiation & Pitching, Stakeholder Management, Time Management
+            [1] => Experience Shortfall: Candidate has 0 Years (Required: Min 2.5 Years)
+        )
+
+    [status] => Review Required
+    [email] => fazil721655@gmail.com
+    [name] => Mohamed Fazil
+    [mobileNumbers] => +91 7200110489
+    [expyrs] => 0
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                )
+
+            [total] => 0 Years 0 Months
+        )
+
+    [domain] => Human Resources
+    [matched_skills] => Communication
+    [missing_skills] => Negotiation & Pitching, Stakeholder Management, Time Management
+    [all_extracted_skills] => Php, Javascript, Html, Css, Bootstrap, Tailwind, React, Angular, Nextjs, Nodejs, Express, Rest Api, Mysql, Mongodb, Docker, Git, Communication
+    [education_match] => Yes
+    [experience] => No
+    [detected_degree] => BA
+)
+
+============================
+
+============================
+2026-08-18 10:37:12 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 10:37:12 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818103712937.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 10:37:12 | PDF_EXTRACT_SUCCESS
+SHIJI	 M	 K	 	
+MANAGER	 HUMAN	 RESOURCES	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+C O N T A C T	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+Padmam VSV Apartment, 
+Second	 Main	 Road,Gandhi 	
+Nagar, Adyar, Chennai.	 	
+ 	
+E X P E R I E N C E	 	
+ 	
+HR	 Management	 & Compliance 	
+Rewards and Recognition 
+Grievance	 Management	 	
+MIS	 Reporting	 & Documentation 	
+Pay Roll Management	 	
+Exit	 Interviews	 & Separation 	
+Training & Development 
+Employee	 Engagement 	
+Recruitment	 	
+Maintaining	 Employee	 Relation	 	
+L A N G U A G E S	 	
+English	 (Fluent) 	
+Tamil	 (Fl	uent) 	
+Malayalam(	 Fluent) 	
+Hindi	 (Intermediate)	 	
+ 
+ 	
+R E F E R E N C E	 	
+ 	
+Ms. Lakshmi	 	
+Chief	 Human	 Resource Officer	 	
+Phone:	 +91 97314 11772	 	
+ 	
+P R O F I L E	 	
+After  an  exhilarating  journey  as  a  medical  professional,  I  made  the  bold  leap 
+into	 Human	 Resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 Now,	 seven	 years	 into	 my	 HR	 career,	 I thrive	 on	 the	 challenges
+==============================
+2026-08-18 10:37:12 | RAW_RESUME_TEXT
+shiji	 m	 k	 	
+manager	 human	 resources	 	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 	
+c o n t a c t	 	
++91	 7550080350	 	
+ 	
+mkshiji0809@gmail.com	 	
+ 	
+padmam vsv apartment, 
+second	 main	 road,gandhi 	
+nagar, adyar, chennai.	 	
+ 	
+e x p e r i e n c e	 	
+ 	
+hr	 management	 & compliance 	
+rewards and recognition 
+grievance	 management	 	
+mis	 reporting	 & documentation 	
+pay roll management	 	
+exit	 interviews	 & separation 	
+training & development 
+employee	 engagement 	
+recruitment	 	
+maintaining	 employee	 relation	 	
+l a n g u a g e s	 	
+english	 (fluent) 	
+tamil	 (fl	uent) 	
+malayalam(	 fluent) 	
+hindi	 (intermediate)	 	
+ 
+ 	
+r e f e r e n c e	 	
+ 	
+ms. lakshmi	 	
+chief	 human	 resource officer	 	
+phone:	 +91 97314 11772	 	
+ 	
+p r o f i l e	 	
+after  an  exhilarating  journey  as  a  medical  professional,  i  made  the  bold  leap 
+into	 human	 resources,	 driven	 by	 my	 passion	 for	 learning	 and	 a desire	 to make 	
+an	 impact.	 now,	 seven	 years	 into	 my	 hr	 career,	 i thrive	 on	 the	 challenges	 and 	
+opportunities  that  come  my  way.  my  track  record  demonstrates  my  ability  to 
+achieve outstanding results, and my eagerness to learn and grow 	further fuels 	
+my excitement for the future in this dynamic field!	 	
+w o r k	 e x p e r i e n c e	 	
+sindoori	 management	 solutions	 private	 limited,	 chennai.	 	
+manager 	– human resources	 	sep’25	 - present 	
+hr strategy & leadership 	– driving hr strategy across 50 units pan india, 	
+leading 25 unit hrs and ensuring seamless coordination, guidance and	 	
+alignment with organizational goals.	 	
+payroll	 processing	 – managing	 end	-to-end	 payroll	 operations	 for	 8,000+ 	
+employees across pan india.	 	
+talent acquisition & workforce planning 
+compensation & benefit analysis 
+performance	 management	 	
+skilled	 in personnel	 management	 	
+employee	 engagement	 & retention	 (across	 pan	 india) 	
+hr analytics & reporting	 	
+hxplain	 digital	 health	 technology	 solutions	 private	 limited,	 tn. 	
+assistant manager
+==============================
+2026-08-18 10:37:12 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2022 jan
+                    [to] => 2024 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [1] => Array
+                (
+                    [from] => 2019 jan
+                    [to] => 2021 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [2] => Array
+                (
+                    [from] => 2008 jan
+                    [to] => 2011 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+            [3] => Array
+                (
+                    [from] => 2006 jan
+                    [to] => 2008 jan
+                    [years] => 2
+                    [months] => 0
+                )
+
+            [4] => Array
+                (
+                    [from] => 2005 jan
+                    [to] => 2006 jan
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 10 Years 0 Months
+)
+
+==============================
+2026-08-18 10:37:12 | Email
+mkshiji0809@gmail.com
+==============================
+2026-08-18 10:37:12 | Name
+Shiji M K
+==============================
+2026-08-18 10:37:12 | Mobile
+7550080350
+==============================
+2026-08-18 10:37:12 | ExperienceYears
+10
+==============================
+2026-08-18 10:37:12 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 1
+    [requiredSkillsCount] => 2
+    [candidateExp] => 10
+    [minExpRequired] => 1
+    [eduMatch] => 1
+)
+
+==============================
+2026-08-18 10:37:12 | RECOMMENDATION
+Recommended
+==============================
+2026-08-18 10:37:12 | RECOMMENDATION_REASON
+The candidate's profile aligns well with the requirements of executive. They possess 10 years of relevant experience and demonstrate key skills in Excel. Their background provides concrete evidence for strong candidate suitability.
+============================
+2026-08-18 10:37:12 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 10:37:12 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Recommended
+    [recommendation_reason] => The candidate's profile aligns well with the requirements of executive. They possess 10 years of relevant experience and demonstrate key skills in Excel. Their background provides concrete evidence for strong candidate suitability.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 10 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Matched Core Skills: Excel
+            [2] => Education: Matches required level (BSC)
+            [3] => Domain Fit: Background in Human Resources
+            [4] => Extracted Resume Skills: Recruitment, Payroll, Healthcare, Patient Care, Communication, Leadership, Documentation
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Powerbi
+        )
+
+    [status] => Recommended
+    [email] => mkshiji0809@gmail.com
+    [name] => Shiji M K
+    [mobileNumbers] => 7550080350
+    [expyrs] => 10
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => 2022 jan
+                            [to] => 2024 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2019 jan
+                            [to] => 2021 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => 2008 jan
+                            [to] => 2011 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                    [3] => Array
+                        (
+                            [from] => 2006 jan
+                            [to] => 2008 jan
+                            [years] => 2
+                            [months] => 0
+                        )
+
+                    [4] => Array
+                        (
+                            [from] => 2005 jan
+                            [to] => 2006 jan
+                            [years] => 1
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 10 Years 0 Months
+        )
+
+    [domain] => Human Resources
+    [matched_skills] => Excel
+    [missing_skills] => Powerbi
+    [all_extracted_skills] => Recruitment, Payroll, Healthcare, Patient Care, Communication, Leadership, Documentation
+    [education_match] => Yes
+    [experience] => Yes
+    [detected_degree] => BSC
+)
+
+============================
+
+============================
+2026-08-18 10:38:27 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 10:38:27 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818103827516.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 10:38:27 | PDF_EXTRACT_SUCCESS
+MUGELAN M	 	
+      Thiruvanmi  X U   & K H Q Q D L  	– 600041	 	
+    	 +91 6382837713	 	
+      	 muhilanmano04@gmail.com	 	
+    	 LinkedIn: linkedin.com/in/mugelan	-m-68525521b	 	
+ 	
+PROFESSIONAL SUMMARY	 	
+Results	-driven Talent Acquisition Professional with 5   H D U V  R I  H [ S H U L H Q F H  L Q  H Q d	-to-end recruitment, 	
+stakeholder management, team leadership, and client engagement across IT and non	-IT domains. Proven 	
+expertise in sourcing, screening, interviewing, offer n	egotiation, and onboarding. Demonstrated success in 	
+managing recruitment delivery, leading hiring teams, and closing critical positions for clients within 
+defined timelines. Skilled in building strong candidate pipelines through LinkedIn, Naukri, referrals	, and 	
+social networking platforms. Adept at handling multiple requirements simultaneousl   Z K L O H  P D L Q W D L Q L Q J  
+qualit   K L U L Q J  V W D Q G D U G V  D Q G  H [ F H O O H Q W  F O L H Q W  U H O D W L R Q V K L S 
+==============================
+2026-08-18 10:38:27 | RAW_RESUME_TEXT
+mugelan m	 	
+      thiruvanmi  x u   & k h q q d l  	– 600041	 	
+    	 +91 6382837713	 	
+      	 muhilanmano04@gmail.com	 	
+    	 linkedin: linkedin.com/in/mugelan	-m-68525521b	 	
+ 	
+professional summary	 	
+results	-driven talent acquisition professional with 5   h d u v  r i  h [ s h u l h q f h  l q  h q d	-to-end recruitment, 	
+stakeholder management, team leadership, and client engagement across it and non	-it domains. proven 	
+expertise in sourcing, screening, interviewing, offer n	egotiation, and onboarding. demonstrated success in 	
+managing recruitment delivery, leading hiring teams, and closing critical positions for clients within 
+defined timelines. skilled in building strong candidate pipelines through linkedin, naukri, referrals	, and 	
+social networking platforms. adept at handling multiple requirements simultaneousl   z k l o h  p d l q w d l q l q j  
+qualit   k l u l q j  v w d q g d u g v  d q g  h [ f h o o h q w  f o l h q w  u h o d w l r q v k l s v .	 	
+core competencies	 	
+end	-to-end recruitment, talent acquisition, it recruitment, non	-it recruitment, 	
+leadership hiring, team management, stakeholder management, client relationship 
+management, candidate sourcing, linkedin recruitment, naukri recruitment, screening & 
+interviewi	ng, rca, 	onboarding	 & orientation	, negotiation	 & offer	 management	, job	 posting	 & 	
+advertising	, team	 collaboration	 & communication, ai	 tools	, applicant	 tracking	 systems 	
+(ats)	, job	 market	 analysis,	 	
+ 
+professional experience	 	
+principal consultant 	– lead quess corp	( contract ended)	 	
+october 2025 	– april	 2026	 	
+• 	managed end	-to-end recruitment for multiple clients across various industries.	 	
+• 	led recruitment deliver   w h d p v  w r  d f k l h y h  k l u l q j  w d u j h w v  d q g  v h u y l f e	-level agreements.	 	
+• 	collaborated with stakeholders and hiring managers to understand workforce requirements.	 	
+• 	built and maintained strong candid
+==============================
+2026-08-18 10:38:27 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => june 2025
+                    [to] => august 2025
+                    [years] => 0
+                    [months] => 2
+                )
+
+            [1] => Array
+                (
+                    [from] => june 2024
+                    [to] => june 2025
+                    [years] => 1
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 1 Years 2 Months
+)
+
+==============================
+2026-08-18 10:38:27 | Email
+muhilanmano04@gmail.com
+==============================
+2026-08-18 10:38:27 | Name
+Mugelan M
+==============================
+2026-08-18 10:38:27 | Mobile
++91 6382837713
+==============================
+2026-08-18 10:38:27 | ExperienceYears
+1.2
+==============================
+2026-08-18 10:38:27 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 1
+    [requiredSkillsCount] => 2
+    [candidateExp] => 1.2
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 10:38:27 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 10:38:27 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 10:38:27 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 10:38:27 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 1.2 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Matched Core Skills: Excel
+            [2] => Domain Fit: Background in Human Resources
+            [3] => Extracted Resume Skills: Recruitment, Onboarding, Social Media, Negotiation, Communication, Leadership
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => muhilanmano04@gmail.com
+    [name] => Mugelan M
+    [mobileNumbers] => +91 6382837713
+    [expyrs] => 1.2
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => june 2025
+                            [to] => august 2025
+                            [years] => 0
+                            [months] => 2
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => june 2024
+                            [to] => june 2025
+                            [years] => 1
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 1 Years 2 Months
+        )
+
+    [domain] => Human Resources
+    [matched_skills] => Excel
+    [missing_skills] => Powerbi
+    [all_extracted_skills] => Recruitment, Onboarding, Social Media, Negotiation, Communication, Leadership
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BACHELOR OF COMMERCE
+)
+
+============================
+
+============================
+2026-08-18 11:08:40 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 11:08:40 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818110840303.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 11:08:40 | PDF_EXTRACT_SUCCESS
+AGILAN	 B                                                                     	  	
+Chennai, India | +91 	915	066	8484	 | agilanagi071@gmail.com	 | @linkedin: 	https://www.linkedin.com/in/agilan	-b 	
+ 
+PROFESSIONAL SUMMARY	 	 	
+Highly motivated and detail	-oriented Accounts Payable Analyst with 	2 years of proven experience in managing 	
+AP  operations  within  deadline	-driven  environments.  Demonstrated  expertise  in  invoice  processing,  vendor 	
+reconciliation, and resolving discrepancies in compliance with internal controls and financial policies. Skilled	 in 	
+leveraging ERP systems 	Streamline workflows, ensure data accuracy, and support month	-end closing activities. 	
+Adept at collaborating with cross	-functional teams to enhance process effic	iency and maintain strong vendor 	
+relationships.  Committed  to  continuous  improvement,  accuracy,  and  delivering  high	-quality  financial  support 	
+aligned with organizational goals.	 	
+ 
+CORE SKILLS	 	 	
+Accounting & Finance:	
+==============================
+2026-08-18 11:08:40 | RAW_RESUME_TEXT
+agilan	 b                                                                     	  	
+chennai, india | +91 	915	066	8484	 | agilanagi071@gmail.com	 | @linkedin: 	https://www.linkedin.com/in/agilan	-b 	
+ 
+professional summary	 	 	
+highly motivated and detail	-oriented accounts payable analyst with 	2 years of proven experience in managing 	
+ap  operations  within  deadline	-driven  environments.  demonstrated  expertise  in  invoice  processing,  vendor 	
+reconciliation, and resolving discrepancies in compliance with internal controls and financial policies. skilled	 in 	
+leveraging erp systems 	streamline workflows, ensure data accuracy, and support month	-end closing activities. 	
+adept at collaborating with cross	-functional teams to enhance process effic	iency and maintain strong vendor 	
+relationships.  committed  to  continuous  improvement,  accuracy,  and  delivering  high	-quality  financial  support 	
+aligned with organizational goals.	 	
+ 
+core skills	 	 	
+accounting & finance:	 accounts payable, procure	-to	-pay (p2p), vendor reconciliation, invoice processing, 	
+month	-end closing, audit & compliance	 	
+erp & tools: 	as400 	& 	oracle	  	
+productivity tools: 	microsoft office suite (word, powerpoint, outlook, visio, onenote)	 	
+ 
+professional experience	 	 	
+projects & developments	 	
+process executive 	– cognizant technology solutions                                                                                   	april 2024 	– present	   	
+          	 	
+– reviewed and processed vendor invoices, ensuring compliance with policies and accuracy of details.	 	
+– resolved vendor queries and requests via email/tickets within the agreed sla.	 	
+– performed 3	-way matching (invoice, purchase order, and goods receipt) in basware,	 	
+– maintained and managed over 1,000 utility accounts, including gas, electricity, and water services	 	
+– we will make utility payments on a daily basis, ensuring they are settled within the due dates 
+specified on the in
+==============================
+2026-08-18 11:08:40 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => april 2024
+                    [to] => present
+                    [years] => 2
+                    [months] => 4
+                )
+
+            [1] => Array
+                (
+                    [from] => 2020 jan
+                    [to] => 2023 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 5 Years 4 Months
+)
+
+==============================
+2026-08-18 11:08:40 | Email
+agilanagi071@gmail.com
+==============================
+2026-08-18 11:08:40 | Name
+Agilan B
+==============================
+2026-08-18 11:08:40 | Mobile
+
+==============================
+2026-08-18 11:08:40 | ExperienceYears
+5.3
+==============================
+2026-08-18 11:08:40 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 1
+    [requiredSkillsCount] => 2
+    [candidateExp] => 5.3
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 11:08:40 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 11:08:40 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 11:08:40 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 11:08:40 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 5.3 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Matched Core Skills: Excel
+            [2] => Domain Fit: Background in Finance & Accounts
+            [3] => Extracted Resume Skills: Oracle, Accounting, Billing, Audit, Tally, Accounts Payable, Purchase Order
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => agilanagi071@gmail.com
+    [name] => Agilan B
+    [mobileNumbers] => 
+    [expyrs] => 5.3
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => april 2024
+                            [to] => present
+                            [years] => 2
+                            [months] => 4
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2020 jan
+                            [to] => 2023 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 5 Years 4 Months
+        )
+
+    [domain] => Finance & Accounts
+    [matched_skills] => Excel
+    [missing_skills] => Powerbi
+    [all_extracted_skills] => Oracle, Accounting, Billing, Audit, Tally, Accounts Payable, Purchase Order
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BACHELOR OF COMMERCE
+)
+
+============================
+
+============================
+2026-08-18 11:09:05 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 11:09:05 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818110905589.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 11:09:05 | PDF_EXTRACT_SUCCESS
+SANJAYA SRIDHAR 	
+Chennai | 81483 14442 | sanjayajayanthi2001@gmail.com	 	
+ 
+PROFESSIONAL SUMMARY 	
+Detail-oriented Finance professional with over 2.5 years of experience in 	
+Disbursement Accounting, Revenue & Expense Accounting, Customer Invoicing, and Cash 
+Application. Demonstrated ability to manage high-volume transactions with 100% accuracy, 
+meet strict SLAs, and collaborate effectively with cross-functional and global stakeholders. 
+Known for analytical thinking, process improvement, and strong attention to detail. 
+CORE COMPETENCIES 
+ 
+ 
+ 
+ 
+PROFESSIONAL EXPERIENCE 	
+ 	
+Inchcape Shipping Services –Accounts Executive        Nov 2023 – Present 
+ 
+	 	Perform end-to-end accounting of supplier invoices after validating accuracy, approvals, 
+and compliance with company policies. 	
+	 	Coordinate with Operations and Sales teams to ensure timely submission of invoices and 
+resolve discrepancies 	
+	 	Work closely with Local Port Agents (LPA) and Operations to address invoic
+==============================
+2026-08-18 11:09:05 | RAW_RESUME_TEXT
+sanjaya sridhar 	
+chennai | 81483 14442 | sanjayajayanthi2001@gmail.com	 	
+ 
+professional summary 	
+detail-oriented finance professional with over 2.5 years of experience in 	
+disbursement accounting, revenue & expense accounting, customer invoicing, and cash 
+application. demonstrated ability to manage high-volume transactions with 100% accuracy, 
+meet strict slas, and collaborate effectively with cross-functional and global stakeholders. 
+known for analytical thinking, process improvement, and strong attention to detail. 
+core competencies 
+ 
+ 
+ 
+ 
+professional experience 	
+ 	
+inchcape shipping services –accounts executive        nov 2023 – present 
+ 
+	 	perform end-to-end accounting of supplier invoices after validating accuracy, approvals, 
+and compliance with company policies. 	
+	 	coordinate with operations and sales teams to ensure timely submission of invoices and 
+resolve discrepancies 	
+	 	work closely with local port agents (lpa) and operations to address invoice queries and 
+close issues promptly. 	
+	 	account revenues and expenses in line with contracted rates, pro-forma invoices, baseline 
+templates, and closed estimates. 	
+	 	generate and dispatch customer invoices while adhering to customer-specific billing 
+requirements. 	
+	 	track daily bank statements from banking portals and maintain accurate cash trackers. 	
+	 	perform daily cash application and bank reconciliation within 24-hour sla. 	
+	 	clear unallocated and unidentified payments with root cause analysis. 	
+	 	post customer receipts with 100% accuracy and support ar and collections teams. 	
+	 	prepare and circulate month-end accrual, pending, and rejection reports to stakeholders. 	
+	 	reconcile processed invoices against system reports to ensure zero variance. 	
+	 	support process transitions, knowledge sharing, and continuous improvement initiatives. 	
+	 	maintain strong working relationships with internal teams and external stakeholders 	
+disburse
+==============================
+2026-08-18 11:09:05 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => nov 2023
+                    [to] => present
+                    [years] => 2
+                    [months] => 10
+                )
+
+            [1] => Array
+                (
+                    [from] => jun 2022
+                    [to] => jan 2023
+                    [years] => 0
+                    [months] => 7
+                )
+
+        )
+
+    [total] => 3 Years 5 Months
+)
+
+==============================
+2026-08-18 11:09:05 | Email
+sanjayajayanthi2001@gmail.com
+==============================
+2026-08-18 11:09:05 | Name
+Sanjaya Sridhar
+==============================
+2026-08-18 11:09:05 | Mobile
+
+==============================
+2026-08-18 11:09:05 | ExperienceYears
+2.5
+==============================
+2026-08-18 11:09:05 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 1
+    [requiredSkillsCount] => 2
+    [candidateExp] => 2.5
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 11:09:05 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 11:09:05 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 11:09:05 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 11:09:05 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 2.5 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Matched Core Skills: Excel
+            [2] => Domain Fit: Background in Finance & Accounts
+            [3] => Extracted Resume Skills: Accounting, Billing, Sales, Communication, Analytical Skills, Time Management, Documentation
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => sanjayajayanthi2001@gmail.com
+    [name] => Sanjaya Sridhar
+    [mobileNumbers] => 
+    [expyrs] => 2.5
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => nov 2023
+                            [to] => present
+                            [years] => 2
+                            [months] => 10
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => jun 2022
+                            [to] => jan 2023
+                            [years] => 0
+                            [months] => 7
+                        )
+
+                )
+
+            [total] => 3 Years 5 Months
+        )
+
+    [domain] => Finance & Accounts
+    [matched_skills] => Excel
+    [missing_skills] => Powerbi
+    [all_extracted_skills] => Accounting, Billing, Sales, Communication, Analytical Skills, Time Management, Documentation
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BA
+)
+
+============================
+
+============================
+2026-08-18 11:09:23 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 11:09:23 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818110923480.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 11:09:23 | PDF_EXTRACT_SUCCESS
+AGILAN	 B                                                                     	  	
+Chennai, India | +91 	915	066	8484	 | agilanagi071@gmail.com	 | @linkedin: 	https://www.linkedin.com/in/agilan	-b 	
+ 
+PROFESSIONAL SUMMARY	 	 	
+Highly motivated and detail	-oriented Accounts Payable Analyst with 	2 years of proven experience in managing 	
+AP  operations  within  deadline	-driven  environments.  Demonstrated  expertise  in  invoice  processing,  vendor 	
+reconciliation, and resolving discrepancies in compliance with internal controls and financial policies. Skilled	 in 	
+leveraging ERP systems 	Streamline workflows, ensure data accuracy, and support month	-end closing activities. 	
+Adept at collaborating with cross	-functional teams to enhance process effic	iency and maintain strong vendor 	
+relationships.  Committed  to  continuous  improvement,  accuracy,  and  delivering  high	-quality  financial  support 	
+aligned with organizational goals.	 	
+ 
+CORE SKILLS	 	 	
+Accounting & Finance:	
+==============================
+2026-08-18 11:09:23 | RAW_RESUME_TEXT
+agilan	 b                                                                     	  	
+chennai, india | +91 	915	066	8484	 | agilanagi071@gmail.com	 | @linkedin: 	https://www.linkedin.com/in/agilan	-b 	
+ 
+professional summary	 	 	
+highly motivated and detail	-oriented accounts payable analyst with 	2 years of proven experience in managing 	
+ap  operations  within  deadline	-driven  environments.  demonstrated  expertise  in  invoice  processing,  vendor 	
+reconciliation, and resolving discrepancies in compliance with internal controls and financial policies. skilled	 in 	
+leveraging erp systems 	streamline workflows, ensure data accuracy, and support month	-end closing activities. 	
+adept at collaborating with cross	-functional teams to enhance process effic	iency and maintain strong vendor 	
+relationships.  committed  to  continuous  improvement,  accuracy,  and  delivering  high	-quality  financial  support 	
+aligned with organizational goals.	 	
+ 
+core skills	 	 	
+accounting & finance:	 accounts payable, procure	-to	-pay (p2p), vendor reconciliation, invoice processing, 	
+month	-end closing, audit & compliance	 	
+erp & tools: 	as400 	& 	oracle	  	
+productivity tools: 	microsoft office suite (word, powerpoint, outlook, visio, onenote)	 	
+ 
+professional experience	 	 	
+projects & developments	 	
+process executive 	– cognizant technology solutions                                                                                   	april 2024 	– present	   	
+          	 	
+– reviewed and processed vendor invoices, ensuring compliance with policies and accuracy of details.	 	
+– resolved vendor queries and requests via email/tickets within the agreed sla.	 	
+– performed 3	-way matching (invoice, purchase order, and goods receipt) in basware,	 	
+– maintained and managed over 1,000 utility accounts, including gas, electricity, and water services	 	
+– we will make utility payments on a daily basis, ensuring they are settled within the due dates 
+specified on the in
+==============================
+2026-08-18 11:09:23 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => april 2024
+                    [to] => present
+                    [years] => 2
+                    [months] => 4
+                )
+
+            [1] => Array
+                (
+                    [from] => 2020 jan
+                    [to] => 2023 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 5 Years 4 Months
+)
+
+==============================
+2026-08-18 11:09:23 | Email
+agilanagi071@gmail.com
+==============================
+2026-08-18 11:09:23 | Name
+Agilan B
+==============================
+2026-08-18 11:09:23 | Mobile
+
+==============================
+2026-08-18 11:09:23 | ExperienceYears
+5.3
+==============================
+2026-08-18 11:09:23 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 1
+    [requiredSkillsCount] => 2
+    [candidateExp] => 5.3
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 11:09:23 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 11:09:23 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 11:09:23 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 11:09:23 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 5.3 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Matched Core Skills: Excel
+            [2] => Domain Fit: Background in Finance & Accounts
+            [3] => Extracted Resume Skills: Oracle, Accounting, Billing, Audit, Tally, Accounts Payable, Purchase Order
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => agilanagi071@gmail.com
+    [name] => Agilan B
+    [mobileNumbers] => 
+    [expyrs] => 5.3
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => april 2024
+                            [to] => present
+                            [years] => 2
+                            [months] => 4
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => 2020 jan
+                            [to] => 2023 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 5 Years 4 Months
+        )
+
+    [domain] => Finance & Accounts
+    [matched_skills] => Excel
+    [missing_skills] => Powerbi
+    [all_extracted_skills] => Oracle, Accounting, Billing, Audit, Tally, Accounts Payable, Purchase Order
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BACHELOR OF COMMERCE
+)
+
+============================
+
+============================
+2026-08-18 11:09:37 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 11:09:37 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818110937764.pdf
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 11:09:37 | PDF_EXTRACT_SUCCESS
+SALESFORCE	 DEVELOPER	 	
+KAMBHAMPATI FRANCIS	 	
+☎	 9347001544	 	
+✉ francis6062@gmail.com	 	
+ 	 	
+Professional	 Summary	 	
+Having	 3+ years	 of hands	-on experience	 in Salesforce	 CRM	 implementations,	 including	 development, 	administration, and 	
+Lightning component development.	 	
+Strong	 experience	 working	 with	 Sales	 Cloud	 and	 Service	 Cloud,	 delivering	 customized	 business	 solutions.	 	
+Hands	-on expertise	 in developing	 Apex	 Classes,	 Triggers,	 Batch	 Apex,	 and	 Apex	 Schedulers	 to impleme	nt complex business 	
+logic.	 	
+Hands	 on Experience	 in writing	 optimized	 SOQL	 queries	 within	 Apex	 classes	 and	 triggers.	 	
+Implemented	 security	 and	 access	 controls	 using	 profiles,	 permission	 sets,	 object	-level,	 field	-level,	 and	 record	-level sharing 	
+rules, 	Experience using Postman to test and validate REST API integrations.	 	
+Strong	 experience	 working	 with	 Salesforce	 standard	 objects	 such	 as Accounts,	 Contacts,	 Leads,	 and 	Opportunities.
+==============================
+2026-08-18 11:09:37 | RAW_RESUME_TEXT
+salesforce	 developer	 	
+kambhampati francis	 	
+☞	 9347001544	 	
+✉ francis6062@gmail.com	 	
+ 	 	
+professional	 summary	 	
+having	 3+ years	 of hands	-on experience	 in salesforce	 crm	 implementations,	 including	 development, 	administration, and 	
+lightning component development.	 	
+strong	 experience	 working	 with	 sales	 cloud	 and	 service	 cloud,	 delivering	 customized	 business	 solutions.	 	
+hands	-on expertise	 in developing	 apex	 classes,	 triggers,	 batch	 apex,	 and	 apex	 schedulers	 to impleme	nt complex business 	
+logic.	 	
+hands	 on experience	 in writing	 optimized	 soql	 queries	 within	 apex	 classes	 and	 triggers.	 	
+implemented	 security	 and	 access	 controls	 using	 profiles,	 permission	 sets,	 object	-level,	 field	-level,	 and	 record	-level sharing 	
+rules, 	experience using postman to test and validate rest api integrations.	 	
+strong	 experience	 working	 with	 salesforce	 standard	 objects	 such	 as accounts,	 contacts,	 leads,	 and 	opportunities.	 	
+developed dynamic and reusable lightning components	 using lightning	 web co	mponents	 (lwc). 	developed	 	
+rest	 apis	 using	 apex	 and	 successfully	 integrated	 third	-party rest	 apis	 with	 salesforce.	 	
+strong	 understanding	 of server	-side	 business	 logic	 implementation	 using	 apex	 to support	 enterprise	-level 	
+requirements, solid knowledge of 	javascript for handling client	-side logic in lightning components.	 	
+proficient	 in html,	 css,	 and	 salesforce	 lightning	 design	 system (slds)	 to build	 responsive	 and	 user	-friendly custom uis.	 	
+worked	 with	 lightning	 data	 service	 (lds)	 to perform	 efficient	 crud	 operations	 and	 ensure	 data	 consistency. hands	-	
+on	 experience	 using	 lightning	 message	 service	 (lms)	 and	 pubsub.js	 for	 component	 communication.	 	
+technical	 skills	 	
+• salesforce	 development:	 apex	 (classes,	 triggers,	 batch,	 scheduled,	 future),	 soql,	 sosl,	 rest/soap 	apis, 	
+custom objects, lds	 	
+• omnistudio	 (vlocity
+==============================
+2026-08-18 11:09:37 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => 2013 jan
+                    [to] => 2017 jan
+                    [years] => 4
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 4 Years 0 Months
+)
+
+==============================
+2026-08-18 11:09:37 | Email
+francis6062@gmail.com
+==============================
+2026-08-18 11:09:37 | Name
+Salesforce Developer
+==============================
+2026-08-18 11:09:37 | Mobile
+9347001544
+==============================
+2026-08-18 11:09:37 | ExperienceYears
+4
+==============================
+2026-08-18 11:09:37 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 0
+    [requiredSkillsCount] => 2
+    [candidateExp] => 4
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 11:09:37 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 11:09:37 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 11:09:37 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 11:09:37 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 4 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Domain Fit: Background in Human Resources
+            [2] => Extracted Resume Skills: Javascript, Html, Css, React, Rest Api, Onboarding, Accounting, Crm
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Excel, Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => francis6062@gmail.com
+    [name] => Salesforce Developer
+    [mobileNumbers] => 9347001544
+    [expyrs] => 4
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => 2013 jan
+                            [to] => 2017 jan
+                            [years] => 4
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 4 Years 0 Months
+        )
+
+    [domain] => Human Resources
+    [matched_skills] => 
+    [missing_skills] => Excel, Powerbi
+    [all_extracted_skills] => Javascript, Html, Css, React, Rest Api, Onboarding, Accounting, Crm, Sales, Communication
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BACHELOR OF TECHNOLOGY
+)
+
+============================
+
+============================
+2026-08-18 11:13:09 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 11:13:09 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818111309217.docx
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 11:13:09 | RAW_RESUME_TEXT
+﻿marimuthu p salesforce developer +91 96007 42358 | ✉ marimuthu.vlk@gmail.com |  tiruvarur, tamil nadu https://www.linkedin.com/in/marimuthu-palanivel-017192344/ professional summary salesforce certified developer with 3.5+ years of experience in salesforce development and administration. skilled in apex, lightning web components (lwc), soql/sosl, and automation tools like flows and process builder. proven track record in delivering scalable, efficient solutions across sales cloud, service cloud, and experience cloud. strong grasp of data migration, security models, and integration via rest apis. committed to agile methodologies and continuous improvement. certifications • salesforce certified platform developer i • salesforce certified administrator • salesforce ai associate • salesforce ai specialist • salesforce certified associate technical skills • salesforce technologies: apex, lwc, visualforce, soql, sosl, flows, process builder, approvals, dashboards • tools: visual studio code, developer console, data loader, workbench, git, jira, postman • web technologies: html, javascript, css • salesforce features: sso, salesforce connect, big objects, platform events, cdc • cloud experience: sales cloud, service cloud, experience cloud • data migration: import wizard, data loader, bulk api • other: integration using rest apis, security model, sharing rules, profiles, and roles work experience salesforce admin &amp; developer subsel tech solution pvt. ltd. — april 2022 – present • developed and deployed custom applications using apex, visualforce, lwc, and lightning components.• built and maintained automation using flows, process builder, and approval processes. • worked with standard/custom objects including accounts, contacts, opportunities, cases, leads, etc. • implemented security at organization, object, field, and record levels. • migrated data using data loader and workbench. • designed dashboards and reports to suppor
+==============================
+2026-08-18 11:13:09 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => april 2022
+                    [to] => present
+                    [years] => 4
+                    [months] => 5
+                )
+
+            [1] => Array
+                (
+                    [from] => apr 2022
+                    [to] => may 2023
+                    [years] => 1
+                    [months] => 1
+                )
+
+            [2] => Array
+                (
+                    [from] => jun 2023
+                    [to] => nov 2024
+                    [years] => 1
+                    [months] => 5
+                )
+
+            [3] => Array
+                (
+                    [from] => dec 2023
+                    [to] => may 2024
+                    [years] => 0
+                    [months] => 5
+                )
+
+            [4] => Array
+                (
+                    [from] => jun 2024
+                    [to] => present
+                    [years] => 2
+                    [months] => 2
+                )
+
+        )
+
+    [total] => 9 Years 6 Months
+)
+
+==============================
+2026-08-18 11:13:09 | Email
+marimuthu.vlk@gmail.com
+==============================
+2026-08-18 11:13:09 | Name
+
+==============================
+2026-08-18 11:13:09 | Mobile
+
+==============================
+2026-08-18 11:13:09 | ExperienceYears
+3.5
+==============================
+2026-08-18 11:13:09 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 0
+    [requiredSkillsCount] => 2
+    [candidateExp] => 3.5
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 11:13:09 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 11:13:09 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 11:13:09 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 11:13:09 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 3.5 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Domain Fit: Background in Finance & Accounts
+            [2] => Extracted Resume Skills: Javascript, Html, Css, Rest Api, Git, Accounting, Taxation, Crm
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Excel, Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => marimuthu.vlk@gmail.com
+    [name] => 
+    [mobileNumbers] => 
+    [expyrs] => 3.5
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => april 2022
+                            [to] => present
+                            [years] => 4
+                            [months] => 5
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => apr 2022
+                            [to] => may 2023
+                            [years] => 1
+                            [months] => 1
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => jun 2023
+                            [to] => nov 2024
+                            [years] => 1
+                            [months] => 5
+                        )
+
+                    [3] => Array
+                        (
+                            [from] => dec 2023
+                            [to] => may 2024
+                            [years] => 0
+                            [months] => 5
+                        )
+
+                    [4] => Array
+                        (
+                            [from] => jun 2024
+                            [to] => present
+                            [years] => 2
+                            [months] => 2
+                        )
+
+                )
+
+            [total] => 9 Years 6 Months
+        )
+
+    [domain] => Finance & Accounts
+    [matched_skills] => 
+    [missing_skills] => Excel, Powerbi
+    [all_extracted_skills] => Javascript, Html, Css, Rest Api, Git, Accounting, Taxation, Crm, Sales, Inventory Management, Agile
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BACHELOR OF ENGINEERING
+)
+
+============================
+
+============================
+2026-08-18 11:13:21 | vacancy
+SELECT jl.*, GROUP_CONCAT(s.SkillName ORDER BY s.SkillName SEPARATOR ', ') AS RequiredSkills
+FROM `IHRJobsList` `jl`
+LEFT JOIN `JobSkills` `js` ON `js`.`Jid` = `jl`.`Jid`
+LEFT JOIN `IHSkills` `s` ON `s`.`SkillId` = `js`.`SkillId`
+WHERE `jl`.`Jid` = '30'
+GROUP BY `jl`.`Jid`
+============================
+
+==============================
+2026-08-18 11:13:21 | START
+Array
+(
+    [resumePath] => D:/xampp/htdocs/REC/atscheck/modal/CAND30_20260818111321960.docx
+    [vacancyId] => 30
+    [jobTitle] => executive
+)
+
+==============================
+2026-08-18 11:13:21 | RAW_RESUME_TEXT
+﻿vijay kit &amp; network support engineer (l1)phone: 7867070840 | email: vijaykumaresan92@gmail.com952500141605professional summarydedicated it support &amp; l1 network engineer with hands-on experience in desktop support, hardware troubleshooting, network basics, o365, vpn support, and it asset management. strong ability to resolve user issues efficiently and ensure smooth it operations.952500258445key skillstechnical skillsnetworking fundamentalsccna course completed  tcp/ip, osi model, ip addressing &amp; subnetting, vlan config, routing protocol, nat, dhcp, dns, stp and wan connectivity.network devices &amp; installationswitch &amp; router installation and mounting, patch panel &amp; rack management, structured cabling, access point mounting &amp; configuration, network hardware troubleshooting.configuration &amp; managementcisco routers &amp; switches, vlan configuration, inter vlan routing, wireless access point setup and vpn configuration.network switch aclaccess control lists (acls), vpn setup, basic intrusion prevention techniques.monitoring &amp; troubleshootingit supportswitch movement, it asset maintenance and tracking, o365, laptop &amp; desktop configuration &amp; troubleshooting, printer setup (hp&amp; zebra barcode printer), &amp; application installation.soft skillsstrong problem-solving and analytical abilities.hands-on experience in device installation &amp; network cabling.ability to learn quickly and adapt to new technologies, team collaboration and support coordination.professional experience it supportengineer(l1)sentinel technology pvt ltd(client: tata electronics products &amp; solutions), hosur dec 2024 – presentcctv hardware engineer networking952500186690ipqc – in process quality controlbangalore datacom pvt ltd(client: tata electronics pvt. ltd.), hosur jul 2023 – nov 2024id card printing data maintained access control help desk952500182880education b.a economicssacred heart college (autonomous) tirupattur dist. tamil nadu2018 �
+==============================
+2026-08-18 11:13:21 | EXPERIENCE_DETAILS
+Array
+(
+    [jobs] => Array
+        (
+            [0] => Array
+                (
+                    [from] => dec 2024
+                    [to] => present
+                    [years] => 1
+                    [months] => 8
+                )
+
+            [1] => Array
+                (
+                    [from] => jul 2023
+                    [to] => nov 2024
+                    [years] => 1
+                    [months] => 4
+                )
+
+            [2] => Array
+                (
+                    [from] => 2018 jan
+                    [to] => 2021 jan
+                    [years] => 3
+                    [months] => 0
+                )
+
+        )
+
+    [total] => 6 Years 0 Months
+)
+
+==============================
+2026-08-18 11:13:21 | Email
+vijaykumaresan92@gmail.com
+==============================
+2026-08-18 11:13:21 | Name
+
+==============================
+2026-08-18 11:13:21 | Mobile
+7867070840, 9525001416, 9525002584, 9525001866, 9525001828, 9525002933, 9525002889
+==============================
+2026-08-18 11:13:21 | ExperienceYears
+6
+==============================
+2026-08-18 11:13:21 | RECOMMENDATION_ANALYSIS
+Array
+(
+    [matchedSkillsCount] => 0
+    [requiredSkillsCount] => 2
+    [candidateExp] => 6
+    [minExpRequired] => 1
+    [eduMatch] => 
+)
+
+==============================
+2026-08-18 11:13:21 | RECOMMENDATION
+Review Required
+==============================
+2026-08-18 11:13:21 | RECOMMENDATION_REASON
+The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+============================
+2026-08-18 11:13:21 | vacancy
+Array
+(
+    [Jid] => 30
+    [JobCode] => JOB-2026-0002
+    [JobTitle] => executive
+    [RoleSummary] => Data engineer
+    [Did] => 1
+    [EmploymentType] => Full-Time
+    [WorkMode] => Onsite
+    [EducationRequired] => bca,bsc,btech
+    [ExpMin] => 1.00
+    [ExpMax] => 2.00
+    [SalMin] => 0
+    [SalMax] => 0
+    [Currency] => INR
+    [NoofOpenings] => 1
+    [JobStatus] => Open
+    [JobDescription] => ssssssssssssssssssssssssssss
+    [Responsibilities] => ssssssssssssssssssssssssssss
+    [Qualifications] => 
+    [JobLocation] => chennai
+    [CommunicationLang] => english,hindi
+    [PostedOn] => 2026-08-13 11:20:59
+    [UpdatedOn] => 2026-08-17 17:37:29
+    [ExpiryDate] => 
+    [TargetOnboardingDate] => 2026-08-21
+    [Salary] => 5 - 10 LPA
+    [PostedBy] => 17
+    [SkillScore] => 0
+    [EducationScore] => 0
+    [ExperienceScore] => 0
+    [ProjectScore] => 0
+    [CertificationScore] => 0
+    [ResumeQualityScore] => 0
+    [DomainKnowledgeScore] => 0
+    [CtcApproverId] => 18
+    [AssignedRecruiterManagerId] => 17
+    [HoldUntilDate] => 
+    [HoldReminderSentDate] => 
+    [MustHaveSkills] => React, Node.js, MongoDB, REST API
+    [NiceToHaveSkills] => Docker, AWS
+    [RequiredSkills] => excel, powerbi
+)
+
+============================
+
+============================
+2026-08-18 11:13:21 | FINAL RESULT RETURN
+Array
+(
+    [recommendation] => Review Required
+    [recommendation_reason] => The candidate has a relevant background for executive, but specific requirements need verification during screening. Skill(s) like Excel, Powerbi were not clearly identified in the resume text. Recruiter review and phone screening are recommended.
+    [relevant_evidence] => Array
+        (
+            [0] => Work Experience: 6 Years total experience (Vacancy Required: Min 1 Years)
+            [1] => Domain Fit: Background in Software & IT
+            [2] => Extracted Resume Skills: Analytical Skills
+        )
+
+    [missing_requirements] => Array
+        (
+            [0] => Required Skills Not Found: Excel, Powerbi
+            [1] => Education Gap: Required qualification (bca,bsc,btech) not clearly identified in resume
+        )
+
+    [status] => Review Required
+    [email] => vijaykumaresan92@gmail.com
+    [name] => 
+    [mobileNumbers] => 7867070840, 9525001416, 9525002584, 9525001866, 9525001828, 9525002933, 9525002889
+    [expyrs] => 6
+    [experience_details] => Array
+        (
+            [jobs] => Array
+                (
+                    [0] => Array
+                        (
+                            [from] => dec 2024
+                            [to] => present
+                            [years] => 1
+                            [months] => 8
+                        )
+
+                    [1] => Array
+                        (
+                            [from] => jul 2023
+                            [to] => nov 2024
+                            [years] => 1
+                            [months] => 4
+                        )
+
+                    [2] => Array
+                        (
+                            [from] => 2018 jan
+                            [to] => 2021 jan
+                            [years] => 3
+                            [months] => 0
+                        )
+
+                )
+
+            [total] => 6 Years 0 Months
+        )
+
+    [domain] => Software & IT
+    [matched_skills] => 
+    [missing_skills] => Excel, Powerbi
+    [all_extracted_skills] => Analytical Skills
+    [education_match] => No
+    [experience] => Yes
+    [detected_degree] => BA
+)
+
+============================

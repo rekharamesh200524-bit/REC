@@ -141,22 +141,21 @@ Rejected
 
 </div>
 
-
-<table id="example1" class="table table-bordered table-striped">
+<table id="example1" class="table table-bordered table-striped align-middle mb-0" style="width: 100% !important;">
 
 <thead class="bg-success text-white">
 <tr>
-<th>S.No</th>
+<th style="width: 4%;">S.No</th>
 <th>Code</th>
 <th>Name</th>
 <th>Mobile No</th>
 <th>Email</th>
-<th>Score</th>
-<th>Mode</th>
+<th class="text-center">Score</th>
+<th class="text-center">Mode</th>
 <th>Scheduled Time</th>
-<th>Current Status</th>
+<th class="text-center">Current Status</th>
 <th>Verified On</th>
-<th>Action</th>
+<th class="text-center">Action</th>
 </tr>
 </thead>
 
@@ -170,34 +169,36 @@ Rejected
 ?>
 
 <tr <?= $trClass ?>>
-<td><?= $i++; ?></td>
+<td class="text-center font-weight-bold"><?= $i++; ?></td>
 <td>
-<a href="<?= base_url('admin/viewResume/'.$cl['CandidateId']); ?>"
-target="_blank"
-class="text-warning font-weight-bold">
-<?= $cl['CandidateCode']; ?>
-</a>
+  <a href="<?= base_url('admin/viewResume/'.$cl['CandidateId']); ?>" target="_blank" class="badge badge-pill badge-primary px-2 py-1 font-weight-bold" style="font-size: 11.5px;">
+    <?= $cl['CandidateCode']; ?>
+  </a>
 </td>
 
 <td>
-<a href="javascript:void(0);"
-class="viewCandidateDetails text-primary font-weight-bold"
-data-id="<?= $cl['CandidateId']; ?>">
-<?= $cl['Fullname']; ?>
-</a>
+  <a href="javascript:void(0);" class="viewCandidateDetails text-primary font-weight-bold" data-id="<?= $cl['CandidateId']; ?>">
+    <?= htmlspecialchars($cl['Fullname']); ?>
+  </a>
 </td>
 
-<td><?= $cl['PhoneNo']; ?></td>
-<td><?= $cl['Email']; ?></td>
 <td>
+  <span class="text-dark font-weight-bold"><i class="fas fa-phone text-muted mr-1"></i><?= htmlspecialchars($cl['PhoneNo']); ?></span>
+</td>
+
+<td>
+  <span class="text-muted small"><i class="fas fa-envelope text-primary mr-1"></i><?= htmlspecialchars($cl['Email']); ?></span>
+</td>
+
+<td class="text-center">
     <?php 
     $recVal = !empty($cl['ProfileMatchPer']) ? $cl['ProfileMatchPer'] : 'Review Required';
     $badgeClass = (stripos($recVal, 'Recommended') !== false && stripos($recVal, 'Not') === false) ? 'badge-success' : (stripos($recVal, 'Not') !== false ? 'badge-danger' : 'badge-warning');
     ?>
-    <span class="badge <?= $badgeClass ?> font-weight-bold p-1"><?= htmlspecialchars($recVal) ?></span>
+    <span class="badge <?= $badgeClass ?> font-weight-bold px-2 py-1"><?= htmlspecialchars($recVal) ?></span>
 </td>
 
-<td>
+<td class="text-center">
     <?php
     $mode = !empty($cl['InterviewType']) ? trim($cl['InterviewType']) : '';
     $meetLink = !empty($cl['MeetLink']) ? trim($cl['MeetLink']) : '';
@@ -205,7 +206,7 @@ data-id="<?= $cl['CandidateId']; ?>">
     ?>
         <span class="badge badge-primary"><i class="fas fa-video mr-1"></i>Online</span>
         <?php if (!empty($meetLink) && !$isRescheduledRow): ?>
-            <br><a href="<?= htmlspecialchars($meetLink) ?>" target="_blank" class="btn btn-xs btn-outline-primary mt-1"><i class="fas fa-video mr-1"></i>Join Meet</a>
+            <a href="<?= htmlspecialchars($meetLink) ?>" target="_blank" class="btn btn-xs btn-outline-primary ml-1" title="Join Video Meeting"><i class="fas fa-video mr-1"></i>Join</a>
         <?php endif; ?>
     <?php elseif (strtolower($mode) === 'offline'): ?>
         <span class="badge badge-secondary"><i class="fas fa-building mr-1"></i>Offline</span>
@@ -223,15 +224,15 @@ data-id="<?= $cl['CandidateId']; ?>">
         if ($isRescheduledRow) {
             echo '<del class="text-muted">' . $dateFormatted . '</del> <span class="badge badge-warning text-dark ml-1"><i class="fas fa-history mr-1"></i>Rescheduled</span>';
         } else {
-            echo $dateFormatted;
+            echo '<span class="text-dark font-weight-bold"><i class="fas fa-calendar-alt text-info mr-1"></i>' . $dateFormatted . '</span>';
         }
     } else {
-        echo 'Not Scheduled';
+        echo '<span class="text-muted small">Not Scheduled</span>';
     }
     ?>
 </td>
 
-<td>
+<td class="text-center">
     <?php
     if ($isRescheduledRow) {
         echo '<span class="badge badge-warning text-dark px-2 py-1"><i class="fas fa-history mr-1"></i>Rescheduled</span>';
@@ -247,47 +248,22 @@ data-id="<?= $cl['CandidateId']; ?>">
     ?>
 </td>
 
-<td><?= $cl['AppliedOn']; ?></td>
-
 <td>
+    <span class="small text-muted"><?= !empty($cl['AppliedOn']) ? date('d M Y, h:i A', strtotime($cl['AppliedOn'])) : '-'; ?></span>
+</td>
 
-<button type="button"
-class="btn btn-sm btn-info viewCandidateDetails mr-1 mb-1"
-data-id="<?= $cl['CandidateId']; ?>"
-title="View Candidate Total Track">
-<i class="fas fa-eye"></i> View Track
-</button>
-
-<?php
-if(($resultLower == '' || $resultLower == 'assigned' || $resultLower == 'on hold') && !$isRescheduledRow){
-?>
-
-<button type="button"
-class="btn btn-sm btn-warning openInterviewUpdate mb-1"
-data-interview="<?= $cl['InterviewId']; ?>">
-<i class="fas fa-edit"></i> Update Status
-</button>
-
-<?php
-} else {
-
-$badge = 'badge-secondary';
-
-if($result == 'selected'){
-$badge = 'badge-success';
-}elseif($result == 'rejected'){
-$badge = 'badge-danger';
-}elseif($result == 'on hold'){
-$badge = 'badge-warning';
-}
-?>
-
-<span class="badge <?= $badge ?>">
-<?= $cl['Result']; ?>
-</span>
-
-<?php } ?>
-
+<td class="text-center">
+    <button type="button" class="btn btn-xs btn-info viewCandidateDetails mr-1 mb-1" data-id="<?= $cl['CandidateId']; ?>" title="View Candidate Track Timeline">
+      <i class="fas fa-eye mr-1"></i> View Track
+    </button>
+    <button type="button" class="btn btn-xs btn-primary openAiQuestionsModal mr-1 mb-1" data-interview="<?= (int)($cl['InterviewId'] ?? 0); ?>" data-candidate="<?= htmlspecialchars($cl['Fullname'] ?? ''); ?>" data-job="<?= htmlspecialchars($cl['JobTitle'] ?? ''); ?>" data-score="<?= htmlspecialchars($cl['ProfileMatchPer'] ?? 'N/A'); ?>" title="AI Personalized Interview Questions">
+      <i class="fas fa-brain mr-1"></i> AI Questions
+    </button>
+    <?php if(($resultLower == '' || $resultLower == 'assigned' || $resultLower == 'on hold') && !$isRescheduledRow): ?>
+      <button type="button" class="btn btn-xs btn-warning openInterviewUpdate mb-1" data-interview="<?= $cl['InterviewId']; ?>" title="Update Interview Status">
+        <i class="fas fa-edit mr-1"></i> Update Status
+      </button>
+    <?php endif; ?>
 </td>
 </tr>
 
@@ -367,49 +343,60 @@ Save
 <script>
 
 var base_url = "<?= base_url(); ?>";
-var interviewTable;
+var interviewTable = null;
+
+function initInterviewDataTable() {
+    if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
+        $('#example1').DataTable().destroy();
+    }
+    if ($.fn.DataTable) {
+        interviewTable = $('#example1').DataTable({
+            responsive: true,
+            autoWidth: false,
+            columnDefs: [
+                { orderable: false, targets: 0 }
+            ]
+        });
+    }
+}
 
 $(document).ready(function () {
 
-    // ✅ Delay to ensure theme's DataTable init runs first, then we take over
     setTimeout(function () {
-
-        if ($.fn.DataTable.isDataTable('#example1')) {
-            $('#example1').DataTable().destroy();
-        }
-
-        interviewTable = $('#example1').DataTable({
-            responsive: true,
-            autoWidth: false
-        });
-$('.interviewFilter.active').click();
+        initInterviewDataTable();
     }, 100);
 
-
-$(document).on('click', '.interviewFilter', function (e) {
-
-    e.preventDefault();
-
-    $('.interviewFilter').removeClass('active');
-    $(this).addClass('active');
-
-    let status = $(this).data('status');
-
-    $.ajax({
-        url: "<?= base_url('admin/filterAssignedInterviews') ?>",
-        type: "POST",
-        data: { status: status },
-success: function (res) {
-
-    $('#example1 tbody').html(res);
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-},
-        error: function (xhr) {
-            console.log('ERROR:', xhr.responseText);
+    // Re-adjust DataTables columns and recalc responsive status on window resize (Maximize / Minimize)
+    $(window).on('resize orientationchange', function () {
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
+            $('#example1').DataTable().columns.adjust().responsive.recalc();
         }
     });
-});
+
+    $(document).on('click', '.interviewFilter', function (e) {
+        e.preventDefault();
+
+        $('.interviewFilter').removeClass('active');
+        $(this).addClass('active');
+
+        let status = $(this).data('status');
+
+        $.ajax({
+            url: "<?= base_url('admin/filterAssignedInterviews') ?>",
+            type: "POST",
+            data: { status: status },
+            success: function (res) {
+                if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
+                    $('#example1').DataTable().destroy();
+                }
+                $('#example1 tbody').html(res);
+                initInterviewDataTable();
+            },
+            error: function (xhr) {
+                console.log('ERROR:', xhr.responseText);
+            }
+        });
+    });
     /* ===== Save Interview Result ===== */
     $(document).on('click', '#saveInterviewResult', function () {
 
@@ -562,5 +549,486 @@ success: function (res) {
         });
     });
 
+    // ============================================================
+    // AI PERSONALIZED INTERVIEW QUESTIONS ENGINE
+    // ============================================================
+    let activeInterviewId = null;
+    let loadedQuestions = [];
+
+    function updateSkillCoverageAndSource(res) {
+        if (res.source) {
+            const isAi = (res.source === 'ai');
+            $('#aiSourceBadge')
+                .toggleClass('badge-success', isAi)
+                .toggleClass('badge-secondary', !isAi)
+                .html(`<i class="fas ${isAi ? 'fa-robot' : 'fa-cog'} mr-1"></i> Source: ${isAi ? 'AI Engine' : 'Fallback Engine'}`)
+                .show();
+        } else {
+            $('#aiSourceBadge').hide();
+        }
+
+        const covered   = res.covered_must_have_skills || [];
+        const uncovered = res.uncovered_must_have_skills || [];
+
+        if (covered.length > 0 || uncovered.length > 0) {
+            let tagsHtml = '';
+            covered.forEach(s => {
+                tagsHtml += `<span class="badge badge-success px-2 py-1 font-weight-bold mr-1"><i class="fas fa-check mr-1"></i>${s}</span>`;
+            });
+            $('#aiSkillCoverageTags').html(tagsHtml || '<span class="text-muted small">None specified</span>');
+
+            if (uncovered.length > 0) {
+                let unTags = '';
+                uncovered.forEach(s => {
+                    unTags += `<span class="badge badge-danger px-2 py-1 font-weight-bold mr-1">${s}</span>`;
+                });
+                $('#aiUncoveredTags').html(unTags);
+                $('#aiUncoveredWarnWrap').show();
+            } else {
+                $('#aiUncoveredWarnWrap').hide();
+            }
+            $('#aiSkillCoverageBar').show();
+        } else {
+            $('#aiSkillCoverageBar').hide();
+        }
+    }
+
+    function updateCategoryCounts() {
+        if (!loadedQuestions) return;
+        const total = loadedQuestions.length;
+        const must  = loadedQuestions.filter(q => {
+            const t = (q.question_type || '').toLowerCase();
+            return t === 'must_have_skill' || t === 'technical';
+        }).length;
+        const cand  = loadedQuestions.filter(q => (q.question_type || '').toLowerCase() === 'candidate_specific').length;
+        const scen  = loadedQuestions.filter(q => (q.question_type || '').toLowerCase() === 'scenario').length;
+        const beh   = loadedQuestions.filter(q => (q.question_type || '').toLowerCase() === 'behavioral').length;
+
+        $('#tabCatAll').html(`<i class="fas fa-layer-group mr-1"></i> All Questions (${total})`);
+        $('#tabCatMustHave').html(`<i class="fas fa-star mr-1 text-warning"></i> Must-Have Skills (${must})`);
+        $('#tabCatCand').html(`<i class="fas fa-user-check mr-1 text-success"></i> Candidate-Specific (${cand})`);
+        $('#tabCatScen').html(`<i class="fas fa-lightbulb mr-1 text-info"></i> Scenario (${scen})`);
+        $('#tabCatBeh').html(`<i class="fas fa-users mr-1 text-purple" style="color:#7c3aed;"></i> Behavioral (${beh})`);
+    }
+
+    function renderQuestionsList(catFilter = 'all') {
+        const listEl = $('#aiQuestionsList');
+        if (!loadedQuestions || loadedQuestions.length === 0) {
+            listEl.html(`<div class="text-center py-5 text-muted font-weight-bold">No AI interview questions available for this candidate.</div>`);
+            return;
+        }
+
+        let filtered = loadedQuestions;
+        if (catFilter !== 'all') {
+            filtered = loadedQuestions.filter(q => {
+                const t = (q.question_type || '').toLowerCase();
+                if (catFilter === 'must_have_skill') return t === 'must_have_skill' || t === 'technical';
+                return t === catFilter.toLowerCase();
+            });
+        }
+
+        if (filtered.length === 0) {
+            listEl.html(`<div class="text-center py-4 text-muted font-weight-bold">No questions found under this category.</div>`);
+            return;
+        }
+
+        let html = '';
+        filtered.forEach((q, idx) => {
+            const type = (q.question_type || 'technical').toLowerCase();
+            let typeBadgeClass = 'badge-primary';
+            let typeLabel = 'Technical';
+            if (type === 'must_have_skill') {
+                typeBadgeClass = 'badge-warning text-dark';
+                typeLabel = 'Must-Have Skill';
+            } else if (type === 'candidate_specific') {
+                typeBadgeClass = 'badge-success';
+                typeLabel = 'Candidate-Specific';
+            } else if (type === 'scenario') {
+                typeBadgeClass = 'badge-info';
+                typeLabel = 'Scenario';
+            } else if (type === 'behavioral') {
+                typeBadgeClass = 'badge-purple';
+                typeLabel = 'Behavioral';
+            }
+
+            const diff = (q.difficulty || 'medium').toLowerCase();
+            let diffBadgeClass = 'badge-info';
+            if (diff.includes('beginner')) diffBadgeClass = 'badge-light border text-muted';
+            else if (diff.includes('advanced') || diff.includes('hard')) diffBadgeClass = 'badge-danger';
+            else if (diff.includes('intermediate')) diffBadgeClass = 'badge-warning text-dark';
+
+            const status = (q.status_notes || 'unasked').toLowerCase();
+            let statusBtnUnasked  = status === 'unasked' ? 'btn-secondary active' : 'btn-outline-secondary';
+            let statusBtnAsked    = status === 'asked' ? 'btn-info active' : 'btn-outline-info';
+            let statusBtnAnswered = status === 'answered' ? 'btn-success active' : 'btn-outline-success';
+            let statusBtnSkipped  = status === 'skipped' ? 'btn-danger active' : 'btn-outline-danger';
+
+            html += `
+            <div class="card mb-3 border shadow-sm style="border-radius:10px; overflow:hidden;">
+              <div class="card-header bg-white d-flex align-items-center justify-content-between py-2 px-3">
+                <div>
+                  <span class="badge ${typeBadgeClass} font-weight-bold mr-2 px-2 py-1">${typeLabel}</span>
+                  <span class="badge ${diffBadgeClass} font-weight-bold px-2 py-1">${q.difficulty || 'Medium'}</span>
+                  ${q.skill ? `<span class="badge badge-light border text-primary font-weight-bold ml-2 px-2 py-1"><i class="fas fa-tag mr-1"></i>${q.skill}</span>` : ''}
+                </div>
+                <small class="text-muted font-weight-bold">#${idx + 1}</small>
+              </div>
+              <div class="card-body p-3">
+                <p class="font-weight-bold text-dark mb-2" style="font-size:14.5px; line-height:1.45;">
+                  ${q.question}
+                </p>
+                ${q.reason ? `<div class="p-2 mb-2 bg-light border-left border-primary rounded text-muted small"><i class="fas fa-info-circle text-primary mr-1"></i><strong>Reasoning:</strong> ${q.reason}</div>` : ''}
+                <div class="d-flex align-items-center justify-content-between mt-3 pt-2 border-top flex-wrap gap-2">
+                  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <button type="button" class="btn btn-xs ${statusBtnUnasked} q-status-btn" data-qid="${q.id}" data-status="unasked">Unasked</button>
+                    <button type="button" class="btn btn-xs ${statusBtnAsked} q-status-btn" data-qid="${q.id}" data-status="asked">Asked</button>
+                    <button type="button" class="btn btn-xs ${statusBtnAnswered} q-status-btn" data-qid="${q.id}" data-status="answered">Answered</button>
+                    <button type="button" class="btn btn-xs ${statusBtnSkipped} q-status-btn" data-qid="${q.id}" data-status="skipped">Skipped</button>
+                  </div>
+                </div>
+              </div>
+            </div>`;
+        });
+
+        listEl.html(html);
+    }
+
+    function fetchAndLoadQuestions(interviewId, version = null, triggerBtn = null) {
+        $('#aiQuestionsList').html(`
+          <div class="text-center py-5 text-muted">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+            <p class="font-weight-bold mb-0">Loading AI questions...</p>
+          </div>
+        `);
+
+        $.ajax({
+            url: '<?= base_url('admin/getAiInterviewQuestions'); ?>',
+            type: 'POST',
+            data: { interviewId: interviewId, version: version },
+            success: function (rawRes) {
+                let res;
+                try { res = (typeof rawRes === 'object') ? rawRes : JSON.parse(rawRes); }
+                catch(e) {
+                    $('#aiQuestionsList').html(`<div class="alert alert-danger font-weight-bold"><strong>Parse Error:</strong><pre style="font-size:11px;">${rawRes.substring(0,500)}</pre></div>`);
+                    return;
+                }
+                if (res.status === 'success') {
+                    loadedQuestions = res.questions || [];
+
+                    if (loadedQuestions.length === 0 && version === null) {
+                        generateAiQuestions(interviewId, false, triggerBtn);
+                        return;
+                    }
+
+                    if (res.candidate_name) $('#aiCandName').text(res.candidate_name);
+                    if (res.job_title) $('#aiCandJob').text(res.job_title);
+                    if (res.ats_score) $('#aiAtsBadge').text(`ATS Fit Match: ${res.ats_score}`);
+
+                    if (res.available_versions && res.available_versions.length > 1) {
+                        $('#aiVerDropdownWrap').show();
+                        let vMenu = '';
+                        res.available_versions.forEach(v => {
+                            vMenu += `<a class="dropdown-item ai-ver-item font-weight-bold" href="javascript:void(0);" data-ver="${v}">Version ${v}</a>`;
+                        });
+                        $('#aiVerMenu').html(vMenu);
+                    } else {
+                        $('#aiVerDropdownWrap').hide();
+                    }
+
+                    updateSkillCoverageAndSource(res);
+                    updateCategoryCounts();
+                    renderQuestionsList('all');
+                    $('#aiCategoryTabs a[data-cat="all"]').tab('show');
+                } else {
+                    $('#aiQuestionsList').html(`<div class="alert alert-danger font-weight-bold">${res.message || 'Failed to load questions.'}</div>`);
+                }
+            },
+            error: function (xhr) {
+                $('#aiQuestionsList').html(`<div class="alert alert-danger font-weight-bold"><strong>HTTP Error ${xhr.status}:</strong><pre style="font-size:11px;">${xhr.responseText ? xhr.responseText.substring(0,500) : 'No response'}</pre></div>`);
+            }
+        });
+    }
+
+    function generateAiQuestions(interviewId, isRegeneration = false, triggerBtn = null) {
+        $('#aiQuestionsList').html(`
+          <div class="text-center py-5 text-muted">
+            <i class="fas fa-brain fa-pulse fa-3x mb-3 text-warning"></i>
+            <h5 class="font-weight-bold text-dark mb-1">Generating Candidate-Personalized Questions...</h5>
+            <p class="text-muted small">Parsing resume claims, vacancy criteria, ATS analysis, and verifying cross-candidate non-duplication rules...</p>
+          </div>
+        `);
+
+        $.ajax({
+            url: '<?= base_url('admin/generateAiInterviewQuestions'); ?>',
+            type: 'POST',
+            data: { interviewId: interviewId, isRegeneration: isRegeneration ? 1 : 0 },
+            success: function (rawRes) {
+                let res;
+                try { res = (typeof rawRes === 'object') ? rawRes : JSON.parse(rawRes); }
+                catch(e) {
+                    $('#aiQuestionsList').html(`<div class="alert alert-danger font-weight-bold"><strong>Parse Error:</strong><pre style="font-size:11px;">${rawRes.substring(0,500)}</pre></div>`);
+                    return;
+                }
+                if (res.status === 'success') {
+                    loadedQuestions = res.questions || [];
+                    if (res.candidate_name) $('#aiCandName').text(res.candidate_name);
+                    if (res.job_title) $('#aiCandJob').text(res.job_title);
+                    if (res.ats_score) $('#aiAtsBadge').text(`ATS Fit Match: ${res.ats_score}`);
+
+                    updateSkillCoverageAndSource(res);
+                    updateCategoryCounts();
+                    renderQuestionsList('all');
+
+                    if (triggerBtn) {
+                        triggerBtn.removeClass('btn-outline-primary btn-primary').addClass('btn-success').html('<i class="fas fa-list-ol mr-1"></i> View AI Questions');
+                    } else if (activeInterviewId) {
+                        $(`.openAiQuestionsModal[data-interview="${activeInterviewId}"]`).removeClass('btn-outline-primary btn-primary').addClass('btn-success').html('<i class="fas fa-list-ol mr-1"></i> View AI Questions');
+                    }
+                } else {
+                    $('#aiQuestionsList').html(`<div class="alert alert-danger font-weight-bold">${res.message || 'Failed to generate AI questions.'}</div>`);
+                }
+            },
+            error: function (xhr) {
+                $('#aiQuestionsList').html(`<div class="alert alert-danger font-weight-bold"><strong>HTTP Error ${xhr.status}:</strong><pre style="font-size:11px;">${xhr.responseText ? xhr.responseText.substring(0,500) : 'No response'}</pre></div>`);
+            }
+        });
+    }
+
+
+    // CLICK: OPEN AI QUESTIONS MODAL
+    $(document).on('click', '.openAiQuestionsModal', function () {
+        const btn = $(this);
+        activeInterviewId = btn.attr('data-interview');
+        const candName = btn.attr('data-candidate');
+        const jobTitle = btn.attr('data-job');
+        const atsScore = btn.attr('data-score');
+
+        $('#aiCandName').text(candName || 'Candidate');
+        $('#aiCandJob').text(jobTitle || 'Job Title');
+        $('#aiAtsBadge').text(`ATS Fit Match: ${atsScore || 'N/A'}`);
+
+        $('#aiQuestionsModal').modal('show');
+        fetchAndLoadQuestions(activeInterviewId, null, btn);
+    });
+
+    // CATEGORY TAB FILTERING
+    $(document).on('click', '#aiCategoryTabs a[data-cat]', function () {
+        $('#aiCategoryTabs a').removeClass('active');
+        $(this).addClass('active');
+        const cat = $(this).attr('data-cat');
+        renderQuestionsList(cat);
+    });
+
+    // REGENERATE BUTTON CLICK
+    $(document).on('click', '#btnRegenerateAi', function () {
+        if (activeInterviewId && confirm("Are you sure you want to generate a fresh candidate-personalized question set? Previous versions will remain in audit history.")) {
+            generateAiQuestions(activeInterviewId, true);
+        }
+    });
+
+    // VERSION ITEM CLICK
+    $(document).on('click', '.ai-ver-item', function () {
+        const ver = $(this).attr('data-ver');
+        $('#aiVerBtn').text(`Version ${ver}`);
+        fetchAndLoadQuestions(activeInterviewId, ver);
+    });
+
+    // QUESTION STATUS BUTTON CLICK
+    $(document).on('click', '.q-status-btn', function () {
+        const btn = $(this);
+        const qid = btn.attr('data-qid');
+        const status = btn.attr('data-status');
+
+        btn.siblings().removeClass('active btn-secondary btn-info btn-success btn-danger')
+             .addClass(function() {
+                const s = $(this).attr('data-status');
+                if (s === 'unasked') return 'btn-outline-secondary';
+                if (s === 'asked') return 'btn-outline-info';
+                if (s === 'answered') return 'btn-outline-success';
+                if (s === 'skipped') return 'btn-outline-danger';
+             });
+
+        btn.removeClass('btn-outline-secondary btn-outline-info btn-outline-success btn-outline-danger')
+           .addClass('active');
+        if (status === 'unasked') btn.addClass('btn-secondary');
+        else if (status === 'asked') btn.addClass('btn-info');
+        else if (status === 'answered') btn.addClass('btn-success');
+        else if (status === 'skipped') btn.addClass('btn-danger');
+
+        $.ajax({
+            url: '<?= base_url('admin/updateQuestionStatus'); ?>',
+            type: 'POST',
+            data: { questionId: qid, status: status },
+            dataType: 'json'
+        });
+    });
+
+    // PRINT QUESTION SHEET
+    $(document).on('click', '#btnPrintAiQuestions', function () {
+        const printWindow = window.open('', '_blank');
+        const candName = $('#aiCandName').text();
+        const jobTitle = $('#aiCandJob').text();
+        const atsScore = $('#aiAtsBadge').text();
+
+        let qHtml = '';
+        loadedQuestions.forEach((q, idx) => {
+            qHtml += `
+            <div style="margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid #e2e8f0; page-break-inside:avoid;">
+              <div style="font-weight:bold; font-size:12px; color:#2563eb; text-transform:uppercase;">
+                Question #${idx + 1} &bull; ${q.question_type ? q.question_type.toUpperCase() : 'TECHNICAL'} [${q.difficulty ? q.difficulty.toUpperCase() : 'MEDIUM'}]
+              </div>
+              <div style="font-size:14px; font-weight:bold; color:#0f172a; margin:6px 0;">
+                ${q.question}
+              </div>
+              ${q.reason ? `<div style="font-size:11px; color:#64748b; font-style:italic;">Reasoning: ${q.reason}</div>` : ''}
+              <div style="margin-top:8px; font-size:11px; color:#334155;">
+                [ ] Asked &nbsp;&nbsp;&nbsp;&nbsp; [ ] Answered &nbsp;&nbsp;&nbsp;&nbsp; [ ] Skipped &nbsp;&nbsp;&nbsp;&nbsp; Rating/Notes: ____________________
+              </div>
+            </div>`;
+        });
+
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <title>AI Interview Questions - ${candName}</title>
+            <style>
+              body { font-family: 'Segoe UI', Arial, sans-serif; padding: 25px; color: #1f2937; }
+              .header { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 20px; }
+              .header h2 { margin: 0 0 6px 0; color: #0f172a; }
+              .header p { margin: 0; color: #475569; font-size: 13px; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h2>AI Personalized Interview Questions</h2>
+              <p><strong>Candidate:</strong> ${candName} &bull; <strong>Position:</strong> ${jobTitle} &bull; <strong>${atsScore}</strong></p>
+            </div>
+            ${qHtml}
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        printWindow.focus();
+        setTimeout(function () { printWindow.print(); }, 400);
+    });
+
 });
 </script>
+
+<!-- ===== AI INTERVIEW QUESTIONS MODAL ===== -->
+<div class="modal fade" id="aiQuestionsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content border-0 shadow-lg" style="border-radius:12px; overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header text-white px-4 py-3 align-items-center" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: none;">
+        <div>
+          <h5 class="modal-title font-weight-bold mb-0 text-white" id="aiModalTitle">
+            <i class="fas fa-brain text-warning mr-2"></i> AI Personalized Interview Questions Engine
+          </h5>
+          <small class="text-white-50" id="aiModalSubtitle">Candidate-Tailored Competency & Non-Duplicative Assessment Set</small>
+        </div>
+        <button type="button" class="close text-white opacity-100" data-dismiss="modal" aria-label="Close" style="color:#ffffff !important; opacity:1 !important; font-size:26px;">
+          <span aria-hidden="true" style="color:#ffffff !important;">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4" style="background:#f8fafc;">
+        <!-- Candidate Summary Bar -->
+        <div class="d-flex align-items-center justify-content-between mb-3 p-3 bg-white border rounded shadow-sm flex-wrap gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="p-2 bg-light border rounded text-center" style="min-width:45px;">
+              <i class="fas fa-user-tie fa-2x text-primary"></i>
+            </div>
+            <div>
+              <h6 class="font-weight-bold mb-0 text-dark" id="aiCandName">-</h6>
+              <small class="text-muted" id="aiCandJob">-</small>
+            </div>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge badge-success px-3 py-2 font-weight-bold" id="aiSourceBadge" style="border-radius:12px; font-size:12px; display:none;">
+              <i class="fas fa-robot mr-1"></i> Source: AI
+            </span>
+            <span class="badge badge-info px-3 py-2 font-weight-bold" id="aiAtsBadge" style="border-radius:12px; font-size:12px;">
+              ATS Match: N/A
+            </span>
+            <div class="dropdown ml-2" id="aiVerDropdownWrap" style="display:none;">
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle font-weight-bold" type="button" id="aiVerBtn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Version 1
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" id="aiVerMenu"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Must-Have Skill Coverage Bar -->
+        <div id="aiSkillCoverageBar" class="mb-3 p-3 bg-white border rounded shadow-sm" style="display:none;">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="font-weight-bold text-dark style="font-size:13px;">
+              <i class="fas fa-check-circle text-success mr-1"></i> Must-Have Skill Coverage:
+            </div>
+            <div id="aiSkillCoverageTags" class="d-flex flex-wrap gap-1"></div>
+          </div>
+          <div id="aiUncoveredWarnWrap" class="mt-2 text-danger small font-weight-bold" style="display:none;">
+            <i class="fas fa-exclamation-triangle mr-1"></i> Uncovered Must-Have Skills: <span id="aiUncoveredTags"></span>
+          </div>
+        </div>
+
+        <!-- Filter / Category Tabs -->
+        <ul class="nav nav-pills mb-3 bg-white p-2 border rounded shadow-sm" id="aiCategoryTabs">
+          <li class="nav-item">
+            <a class="nav-link active font-weight-bold py-1 px-3 rounded-pill" href="javascript:void(0);" data-cat="all" id="tabCatAll">
+              <i class="fas fa-layer-group mr-1"></i> All Questions
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold py-1 px-3 rounded-pill" href="javascript:void(0);" data-cat="must_have_skill" id="tabCatMustHave">
+              <i class="fas fa-star mr-1 text-warning"></i> Must-Have Skills
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold py-1 px-3 rounded-pill" href="javascript:void(0);" data-cat="candidate_specific" id="tabCatCand">
+              <i class="fas fa-user-check mr-1 text-success"></i> Candidate-Specific
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold py-1 px-3 rounded-pill" href="javascript:void(0);" data-cat="scenario" id="tabCatScen">
+              <i class="fas fa-lightbulb mr-1 text-info"></i> Scenario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link font-weight-bold py-1 px-3 rounded-pill" href="javascript:void(0);" data-cat="behavioral" id="tabCatBeh">
+              <i class="fas fa-users mr-1 text-purple" style="color:#7c3aed;"></i> Behavioral
+            </a>
+          </li>
+        </ul>
+
+        <!-- Questions List Container -->
+        <div id="aiQuestionsList" style="min-height:220px;">
+          <div class="text-center py-5 text-muted">
+            <i class="fas fa-spinner fa-spin fa-2x mb-2 text-primary"></i>
+            <p class="font-weight-bold mb-0">Loading candidate-personalized questions...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-white px-4 py-3 justify-content-between">
+        <div>
+          <button type="button" id="btnRegenerateAi" class="btn btn-warning font-weight-bold px-3" style="border-radius:6px;">
+            <i class="fas fa-sync-alt mr-1"></i> Regenerate Fresh Questions
+          </button>
+        </div>
+        <div class="d-flex gap-2">
+          <button type="button" id="btnPrintAiQuestions" class="btn btn-outline-secondary font-weight-bold px-3" style="border-radius:6px;">
+            <i class="fas fa-print mr-1"></i> Print Question Sheet
+          </button>
+          <button type="button" class="btn btn-secondary font-weight-bold px-4 ml-2" data-dismiss="modal" style="border-radius:6px;">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

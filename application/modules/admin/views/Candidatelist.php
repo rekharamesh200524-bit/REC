@@ -16,10 +16,10 @@
     
       <div class="card-header">
 
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
 
-          <h3 class="card-title mb-0">
-            Candidate Details
+          <h3 class="card-title mb-0 mr-3 my-1">
+            <i class="fas fa-user-tie text-primary mr-2"></i> Candidate Directory
 
             <a href="javascript:void(0)"
                class="viewVacancyBtn badge badge-pill badge-warning text-dark ml-2"
@@ -28,8 +28,22 @@
             </a>
           </h3>
 
+          <!-- Compare Candidates Selection Controls -->
+          <div class="d-flex align-items-center my-1 mr-auto">
+            <span class="badge badge-pill badge-light border text-dark font-weight-bold mr-2 px-3 py-2" id="compareCountBadge" style="font-size: 13px;">
+              <i class="fas fa-user-check text-primary mr-1"></i> <span id="compareSelectedCount">0</span> Selected
+            </span>
+            <button type="button" 
+                    id="btnCompareCandidates" 
+                    class="btn btn-secondary disabled btn-sm font-weight-bold px-3 py-2" 
+                    data-vacancy-id="<?= $jobdetails['Jid']; ?>"
+                    title="Please select at least 2 candidates using the checkboxes below to compare">
+              <i class="fas fa-balance-scale mr-1"></i> Compare Candidates
+            </button>
+          </div>
+
           <!-- Breadcrumb aligned right -->
-          <ol class="breadcrumb mb-0">
+          <ol class="breadcrumb mb-0 my-1">
             <li class="breadcrumb-item">
               <a href="<?= base_url('admin/dashboard'); ?>">
                 Dashboard
@@ -104,6 +118,7 @@
                   <table id="example1" class="table table-bordered table-striped">
                   <thead class="bg-success text-white">
                   <tr>
+                    <th style="width: 40px;" class="text-center"><input type="checkbox" id="selectAllCandidates" title="Select All"></th>
                     <th>S.No</th>
                     <th>Code</th>
                     <th>Name</th>
@@ -124,7 +139,8 @@
                                 $i = 1;
                                 foreach ($Candidatelist as $cl) {
                             ?>
-                                <tr>
+                                <tr data-candidate-id="<?= $cl['CandidateId']; ?>">
+                                    <td class="text-center"><input type="checkbox" class="candidate-select-chk" data-candidate-id="<?= $cl['CandidateId']; ?>" value="<?= $cl['CandidateId']; ?>"></td>
                                     <td><?= $i++; ?></td>
                                <td>
 <!-- <a href="javascript:void(0)"
@@ -333,9 +349,49 @@ if ($showOffer): ?>
                     </table>
               </div>
                   
-         </div>
       </div>
-    </section>
+    </div>
+  </section>
+
+<!-- Candidate Comparison Side-by-Side Modal -->
+<div class="modal fade" id="candidateComparisonModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document" style="max-width: 92%;">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header text-white py-3 px-4 d-flex align-items-center justify-content-between" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+        <div>
+          <h5 class="modal-title font-weight-bold mb-0">
+            <i class="fas fa-balance-scale mr-2"></i> Side-by-Side Candidate Comparison Engine
+          </h5>
+          <small class="text-white-50">
+            Vacancy: <span id="compJobCode" class="badge badge-warning text-dark font-weight-bold ml-1">JOB</span> 
+            <span id="compJobTitle" class="font-weight-bold ml-1">Title</span>
+          </small>
+        </div>
+        <button type="button" class="close text-white opacity-100" data-dismiss="modal" aria-label="Close" style="font-size:24px;">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body p-4 bg-light" id="candidateComparisonModalBody" style="max-height: 80vh; overflow-y: auto;">
+        <div class="text-center py-5 text-muted">
+          <i class="fas fa-spinner fa-spin fa-3x mb-3 text-primary"></i>
+          <h5 class="font-weight-bold text-dark mb-1">Generating Candidate Comparison Matrix...</h5>
+          <p class="small text-muted mb-0">Comparing ATS fit match, competencies, experience, and extracted skills side-by-side.</p>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-white py-2 px-4 d-flex justify-content-between">
+        <small class="text-muted"><i class="fas fa-robot text-primary mr-1"></i> Multi-Candidate Comparative Analytics Powered by HRMS AI Engine</small>
+        <button type="button" class="btn btn-secondary btn-sm px-4 font-weight-bold" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
    
 
 
@@ -1850,7 +1906,15 @@ $(document).ready(function() {
         }
         $('#example1').DataTable({
             "responsive": true,
-            "autoWidth": false
+            "autoWidth": false,
+            "columnDefs": [
+                { "orderable": false, "targets": 0 }
+            ],
+            "drawCallback": function() {
+                if (typeof reapplyCheckboxStates === 'function') {
+                    reapplyCheckboxStates();
+                }
+            }
         });
         $(window).on('resize orientationchange', function() {
             if ($.fn.DataTable && $.fn.DataTable.isDataTable('#example1')) {
@@ -1859,4 +1923,320 @@ $(document).ready(function() {
         });
     }, 100);
 });
+</script>
+
+<script>
+// Candidate Comparison Feature - Phase 1 Selection Engine
+var selectedCandidateIds = new Set();
+
+function updateCompareUI() {
+    var count = selectedCandidateIds.size;
+    $('#compareSelectedCount').text(count);
+
+    if (count >= 2) {
+        $('#btnCompareCandidates')
+            .removeClass('btn-secondary disabled')
+            .addClass('btn-primary')
+            .css('cursor', 'pointer')
+            .attr('title', 'Click to compare ' + count + ' selected candidates');
+        $('#compareCountBadge')
+            .removeClass('badge-light text-dark')
+            .addClass('badge-primary text-white');
+    } else {
+        $('#btnCompareCandidates')
+            .removeClass('btn-primary')
+            .addClass('btn-secondary disabled')
+            .css('cursor', 'not-allowed')
+            .attr('title', 'Please select at least 2 candidates using the checkboxes below to compare');
+        $('#compareCountBadge')
+            .removeClass('badge-primary text-white')
+            .addClass('badge-light text-dark');
+    }
+    syncSelectAllCheckbox();
+}
+
+function syncSelectAllCheckbox() {
+    var visibleChks = $('.candidate-select-chk');
+    if (visibleChks.length === 0) {
+        $('#selectAllCandidates').prop('checked', false);
+        return;
+    }
+    var allChecked = true;
+    visibleChks.each(function() {
+        if (!$(this).prop('checked')) {
+            allChecked = false;
+            return false;
+        }
+    });
+    $('#selectAllCandidates').prop('checked', allChecked);
+}
+
+function reapplyCheckboxStates() {
+    $('.candidate-select-chk').each(function() {
+        var cid = $(this).val();
+        if (selectedCandidateIds.has(cid)) {
+            $(this).prop('checked', true);
+        } else {
+            $(this).prop('checked', false);
+        }
+    });
+    syncSelectAllCheckbox();
+}
+
+$(document).ready(function() {
+    // Individual Checkbox Click - Unlimited selection allowed
+    $(document).on('click change', '.candidate-select-chk', function(e) {
+        var cid = $(this).val();
+        if ($(this).is(':checked')) {
+            selectedCandidateIds.add(cid);
+        } else {
+            selectedCandidateIds.delete(cid);
+        }
+        updateCompareUI();
+    });
+
+    // Select All Checkbox Click - Selects all visible candidates without limit
+    $(document).on('click change', '#selectAllCandidates', function(e) {
+        var isChecked = $(this).is(':checked');
+        var visibleChks = $('.candidate-select-chk');
+
+        if (!isChecked) {
+            visibleChks.each(function() {
+                var cid = $(this).val();
+                $(this).prop('checked', false);
+                selectedCandidateIds.delete(cid);
+            });
+        } else {
+            visibleChks.each(function() {
+                var cid = $(this).val();
+                selectedCandidateIds.add(cid);
+                $(this).prop('checked', true);
+            });
+        }
+        updateCompareUI();
+    });
+
+    // Compare Candidates Button Click -> Opens Side-by-Side Comparison Modal
+    $(document).on('click', '#btnCompareCandidates', function(e) {
+        e.preventDefault();
+        var selectedArray = Array.from(selectedCandidateIds);
+        var vacancyId = $(this).data('vacancy-id') || '<?= $jobdetails['Jid']; ?>';
+
+        if (selectedArray.length < 2) {
+            if (typeof toastr !== 'undefined') {
+                toastr.warning('Please select at least 2 candidates using the checkboxes below to compare.');
+            } else {
+                alert('Please select at least 2 candidates using the checkboxes below to compare.');
+            }
+            return false;
+        }
+
+        // Show Modal and Loading State
+        $('#candidateComparisonModalBody').html(`
+          <div class="text-center py-5 text-muted">
+            <i class="fas fa-spinner fa-spin fa-3x mb-3 text-primary"></i>
+            <h5 class="font-weight-bold text-dark mb-1">Generating Candidate Comparison Matrix...</h5>
+            <p class="small text-muted mb-0">Comparing ATS fit match, competencies, experience, and extracted skills side-by-side.</p>
+          </div>
+        `);
+        $('#candidateComparisonModal').modal('show');
+
+        // Fetch Comparison Data
+        $.ajax({
+            url: '<?= base_url('admin/compareCandidates'); ?>',
+            type: 'POST',
+            data: {
+                candidate_ids: selectedArray,
+                vacancy_id: vacancyId
+            },
+            success: function(rawRes) {
+                var res;
+                try { res = (typeof rawRes === 'object') ? rawRes : JSON.parse(rawRes); }
+                catch(err) {
+                    $('#candidateComparisonModalBody').html('<div class="alert alert-danger font-weight-bold">Error parsing comparison response.</div>');
+                    return;
+                }
+                if (res.status === 'success') {
+                    renderComparisonView(res);
+                } else {
+                    $('#candidateComparisonModalBody').html('<div class="alert alert-danger font-weight-bold">' + (res.message || 'Failed to compare candidates.') + '</div>');
+                }
+            },
+            error: function(xhr) {
+                $('#candidateComparisonModalBody').html('<div class="alert alert-danger font-weight-bold">HTTP Error ' + xhr.status + ': Failed to connect to server.</div>');
+            }
+        });
+    });
+
+    // Reapply checkbox states on AJAX complete (e.g. status tab filtering)
+    $(document).ajaxComplete(function() {
+        setTimeout(function() {
+            reapplyCheckboxStates();
+        }, 50);
+    });
+});
+
+function renderComparisonView(res) {
+    if (!res || res.status !== 'success' || !res.candidates || res.candidates.length === 0) {
+        $('#candidateComparisonModalBody').html('<div class="alert alert-danger font-weight-bold">Failed to load candidate comparison details.</div>');
+        return;
+    }
+
+    $('#compJobCode').text(res.job_code || 'JOB');
+    $('#compJobTitle').text(res.job_title || 'Vacancy');
+
+    var cList = res.candidates;
+    var colWidth = Math.max(18, Math.floor(82 / cList.length));
+
+    var html = '';
+
+    // 1. AI Summary Verdict Card
+    if (res.ai_summary) {
+        var ai = res.ai_summary;
+        html += `
+        <div class="card border-0 shadow-sm mb-4" style="border-radius:10px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 5px solid #0284c7 !important;">
+          <div class="card-body p-3">
+            <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
+              <span class="badge badge-success px-3 py-2 font-weight-bold mr-2" style="font-size:13.5px;">
+                <i class="fas fa-trophy mr-1"></i> Leading Fit: ${ai.top_choice}
+              </span>
+              <span class="text-muted small font-weight-bold"><i class="fas fa-robot text-primary mr-1"></i> AI Executive Differentiator Summary</span>
+            </div>
+            <p class="text-dark font-weight-bold mb-2" style="font-size:14px; line-height:1.4;">${ai.recommendation}</p>
+            <div class="row">
+              ${ai.differentiators ? ai.differentiators.map(function(d) { return '<div class="col-md-6 mb-1 text-muted small"><i class="fas fa-check-circle text-info mr-1"></i> ' + d + '</div>'; }).join('') : ''}
+            </div>
+          </div>
+        </div>`;
+    }
+
+    var tableMinWidth = Math.max(750, (cList.length * 240) + 180);
+
+    // 2. Side-by-Side Matrix Table
+    html += `
+    <div class="table-responsive bg-white rounded shadow-sm border p-2">
+      <table class="table table-bordered align-middle mb-0 comparison-matrix-table" style="table-layout: fixed; min-width: ${tableMinWidth}px;">
+        <thead>
+          <tr>
+            <th style="width: 18%; vertical-align: middle; background: #f1f5f9 !important; background-image: none !important; color: #0f172a !important;" class="font-weight-bold comparison-metrics-header">Comparison Metrics</th>
+            ${cList.map(function(c) {
+              var init = c.fullname ? c.fullname.charAt(0).toUpperCase() : 'C';
+              return `
+              <th style="width: ${colWidth}%; vertical-align: top; background-color: #ffffff !important; color: #1e293b !important;" class="text-center comparison-candidate-cell">
+                <div class="p-2">
+                  <div class="avatar-circle mx-auto mb-2 bg-primary text-white font-weight-bold rounded-circle d-flex align-items-center justify-content-center" style="width:46px; height:46px; margin:0 auto; font-size:18px; line-height:46px; box-shadow: 0 4px 10px rgba(59,130,246,0.3);">
+                    ${init}
+                  </div>
+                  <h6 class="font-weight-bold mb-1 text-truncate" style="font-size:15px; color:#1e3a8a !important;" title="${c.fullname}">${c.fullname}</h6>
+                  <span class="badge badge-pill badge-primary font-weight-bold mb-1 px-2 py-1" style="font-size:11px;">${c.candidate_code}</span>
+                  <div class="small font-weight-bold text-truncate mt-1" style="color:#334155 !important;"><i class="fas fa-envelope text-primary mr-1"></i>${c.email}</div>
+                  <div class="small font-weight-bold mt-1" style="color:#334155 !important;"><i class="fas fa-phone text-success mr-1"></i>${c.phone}</div>
+                </div>
+              </th>`;
+            }).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Row 1: ATS Recommendation & Match Score -->
+          <tr>
+            <td class="font-weight-bold" style="background-color: #f8fafc !important; color: #1e293b !important;"><i class="fas fa-chart-line text-info mr-2"></i>ATS Fit Match</td>
+            ${cList.map(function(c) {
+                var badgeCls = 'badge-success';
+                var scoreText = c.ats_score;
+                if (scoreText === 'Review Required') badgeCls = 'badge-warning';
+                else if (scoreText === 'Not Recommended') badgeCls = 'badge-danger';
+                else if (!isNaN(parseFloat(scoreText))) {
+                    var val = parseFloat(scoreText);
+                    if (val < 50) badgeCls = 'badge-danger';
+                    else if (val < 75) badgeCls = 'badge-warning';
+                    scoreText = val.toFixed(2) + '%';
+                }
+                return `
+                <td class="text-center" style="background-color: #ffffff !important;">
+                  <span class="badge ${badgeCls} px-3 py-2 font-weight-bold" style="font-size:13px;">${scoreText}</span>
+                </td>`;
+            }).join('')}
+          </tr>
+
+          <!-- Row 2: Total Experience -->
+          <tr>
+            <td class="font-weight-bold" style="background-color: #f8fafc !important; color: #1e293b !important;"><i class="fas fa-briefcase text-primary mr-2"></i>Total Experience</td>
+            ${cList.map(function(c) {
+              var expTot = (c.experience_details && c.experience_details.total) ? ' (' + c.experience_details.total + ')' : '';
+              return `
+              <td class="text-center font-weight-bold" style="background-color: #ffffff !important; color: #1e293b !important;">
+                ${c.experience_years} Years${expTot}
+              </td>`;
+            }).join('')}
+          </tr>
+
+          <!-- Row 3: Experience & Education Match -->
+          <tr>
+            <td class="font-weight-bold" style="background-color: #f8fafc !important; color: #1e293b !important;"><i class="fas fa-user-graduate text-success mr-2"></i>Requirement Fit</td>
+            ${cList.map(function(c) {
+              var expB = (c.experience_match === 'Yes') ? 'badge-success' : 'badge-secondary';
+              var eduB = (c.education_match === 'Yes') ? 'badge-success' : 'badge-secondary';
+              return `
+              <td class="text-center small" style="background-color: #ffffff !important; color: #1e293b !important;">
+                <div>Experience Match: <span class="badge ${expB}">${c.experience_match}</span></div>
+                <div class="mt-1">Education Match: <span class="badge ${eduB}">${c.education_match}</span></div>
+              </td>`;
+            }).join('')}
+          </tr>
+
+          <!-- Row 4: Must-Have Skills Match Matrix -->
+          <tr>
+            <td class="font-weight-bold" style="background-color: #f8fafc !important; color: #1e293b !important;"><i class="fas fa-star text-warning mr-2"></i>Must-Have Skills</td>
+            ${cList.map(function(c) {
+                var mHtml = '';
+                if (c.matched_must_have && c.matched_must_have.length > 0) {
+                    c.matched_must_have.forEach(function(s) {
+                        mHtml += '<span class="badge badge-success p-1 font-weight-bold mr-1 mb-1" style="font-size:11px;"><i class="fas fa-check mr-1"></i>' + s + '</span>';
+                    });
+                }
+                if (c.missing_must_have && c.missing_must_have.length > 0) {
+                    c.missing_must_have.forEach(function(s) {
+                        mHtml += '<span class="badge badge-warning text-dark p-1 font-weight-bold mr-1 mb-1" style="font-size:11px;"><i class="fas fa-exclamation-triangle mr-1"></i>' + s + '</span>';
+                    });
+                }
+                return '<td class="text-center" style="background-color: #ffffff !important;">' + (mHtml || '<span class="text-muted small">None evaluated</span>') + '</td>';
+            }).join('')}
+          </tr>
+
+          <!-- Row 5: Extracted Resume Skills -->
+          <tr>
+            <td class="font-weight-bold" style="background-color: #f8fafc !important; color: #1e293b !important;"><i class="fas fa-tags text-purple mr-2" style="color:#7c3aed;"></i>Extracted Skills</td>
+            ${cList.map(function(c) {
+                var sHtml = '';
+                if (c.all_candidate_skills && c.all_candidate_skills.length > 0) {
+                    c.all_candidate_skills.slice(0, 6).forEach(function(s) {
+                        sHtml += '<span class="badge badge-light border text-primary p-1 font-weight-bold mr-1 mb-1" style="font-size:10.5px;">' + s + '</span>';
+                    });
+                } else {
+                    sHtml = '<span class="text-muted small">None listed</span>';
+                }
+                return '<td class="text-center" style="background-color: #ffffff !important;">' + sHtml + '</td>';
+            }).join('')}
+          </tr>
+
+          <!-- Row 6: Quick Action Column -->
+          <tr>
+            <td class="font-weight-bold" style="background-color: #f8fafc !important; color: #1e293b !important;"><i class="fas fa-cogs text-secondary mr-2"></i>Candidate Actions</td>
+            ${cList.map(function(c) {
+                var resBtn = c.resume_path ? '<a href="<?= base_url(); ?>' + c.resume_path + '" target="_blank" class="btn btn-xs btn-outline-warning font-weight-bold mb-1"><i class="fas fa-file-pdf mr-1"></i> Resume</a>' : '';
+                return `
+                <td class="text-center" style="background-color: #ffffff !important;">
+                  <button type="button" class="btn btn-xs btn-info viewCandidateSimple mr-1 mb-1" data-id="${c.candidate_id}">
+                    <i class="fas fa-eye mr-1"></i> Profile
+                  </button>
+                  ${resBtn}
+                </td>`;
+            }).join('')}
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+
+    $('#candidateComparisonModalBody').html(html);
+}
 </script>

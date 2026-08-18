@@ -18,7 +18,7 @@
 
               <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0"></h3>
+                        <h3 class="card-title mb-0"><i class="fas fa-users-cog text-primary mr-2"></i>User Management</h3>
 
                         <a class="btn btn-sm btn-success"  id="openAddForm">
                             <i class="fas fa-users"></i> Add User

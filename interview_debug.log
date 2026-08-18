@@ -258,3 +258,73 @@
   CandidateMail = fazil721655@gmail.com
   InterviewerMail = 
 ---
+2026-08-17 16:29:37 saveCandidateStage POST:
+  action        = Shortlisted
+  interviewDate = 2026-08-17
+  interviewDate_normalized = 2026-08-17 00:00:00
+  interviewType = Online
+  interviewerId = 17
+  interviewLevel= 7
+---
+2026-08-17 16:29:37 saveCandidateStage DB Save Details:
+  Operation        = INSERT CandidateInterviews (ID: 34, Rescheduled)
+  ApplicationId    = 28
+  InterviewRound   = 2
+  InterviewType    = Online
+  ScheduledAt      = 2026-08-17 00:00:00
+  InterviewerId    = 17
+  MeetLink         = https://meet.jit.si/INETCSC-JOB20260002-CAND3020260813566-2EFF6B
+---
+2026-08-17 16:29:37 Interview Email:
+  Mode          = online
+  CandidateMail = fazil721655@gmail.com
+  InterviewerMail = reka@inetcsc.com
+  CandidateSend = OK
+  InterviewerSend = OK
+---
+2026-08-17 18:17:40 saveCandidateStage POST:
+  action        = 
+  interviewDate = 
+  interviewDate_normalized = 
+  interviewType = 
+  interviewerId = 
+  interviewLevel= 
+---
+2026-08-17 18:17:40 saveCandidateStage DB Save Details:
+  Operation        = INSERT CandidateInterviews (ID: 35, Rescheduled)
+  ApplicationId    = 31
+  InterviewRound   = 1
+  InterviewType    = 
+  ScheduledAt      = OMITTED/NULL
+  InterviewerId    = 
+  MeetLink         = N/A
+---
+2026-08-17 18:17:40 Interview Email:
+  Mode          = 
+  CandidateMail = fazil721655@gmail.com
+  InterviewerMail = 
+---
+2026-08-17 18:18:10 saveCandidateStage POST:
+  action        = Shortlisted
+  interviewDate = 2026-08-17
+  interviewDate_normalized = 2026-08-17 00:00:00
+  interviewType = Online
+  interviewerId = 17
+  interviewLevel= 7
+---
+2026-08-17 18:18:10 saveCandidateStage DB Save Details:
+  Operation        = INSERT CandidateInterviews (ID: 36, Rescheduled)
+  ApplicationId    = 31
+  InterviewRound   = 2
+  InterviewType    = Online
+  ScheduledAt      = 2026-08-17 00:00:00
+  InterviewerId    = 17
+  MeetLink         = https://meet.jit.si/INETCSC-JOB20260003-CAND3120260817412-1F854A
+---
+2026-08-17 18:18:10 Interview Email:
+  Mode          = online
+  CandidateMail = fazil721655@gmail.com
+  InterviewerMail = reka@inetcsc.com
+  CandidateSend = OK
+  InterviewerSend = OK
+---

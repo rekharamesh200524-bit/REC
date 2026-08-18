@@ -17,7 +17,7 @@
           <div class="card card-success card-outline">
               <div class="card-header">
                   <div class="d-flex justify-content-between align-items-center">
-                      <h3 class="card-title mb-0"></h3>
+                       <h3 class="card-title mb-0"><i class="fas fa-briefcase text-primary mr-2"></i> Vacancy List</h3>
 
                       <!-- <a class="btn btn-sm btn-warning" id="openVacancyPanel">
                           <i class="fas fa-plus-circle"></i> Request Resource

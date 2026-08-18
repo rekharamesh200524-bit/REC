@@ -406,6 +406,9 @@ public function dashboard()
     }
     $data["recruitment_stages"] = $stages;
 
+    // Auto-Unhold Engine Check (Restores expired On-Hold jobs to Open status)
+    $this->_checkAutoUnholdExpiredJobs();
+
     // 2. Job Statistics
     $data["total_vacancies"]  = $this->db->count_all_results("IHRJobsList");
     $data["onhold_vacancies"] = $this->db->where("JobStatus", "On-Hold")->count_all_results("IHRJobsList");
@@ -570,6 +573,124 @@ public function dashboard()
     // Render Master Dashboard for all roles
     $this->template->set_master_template("../../themes/" . $this->config->item("active_template") . "/bo_template.php");
     $this->template->write_view("content", "admin/Dashboard", $data);
+    $this->template->render();
+}
+
+public function Analytics()
+{
+    $Hrms_Session = $this->session->userdata("logged_in");
+
+    if (empty($Hrms_Session)) {
+        redirect($this->config->item("base_url") . "admin/index");
+        return;
+    }
+
+    $currentUrl = strtolower(uri_string());
+    $data["currentUrlArray"] = $this->admin_model->getBreadcrumb($currentUrl);
+
+    // 1. Total Overview Metrics (Whole History)
+    $data["total_jobs"]         = $this->db->count_all_results("IHRJobsList");
+    $data["total_candidates"]   = $this->db->count_all_results("IHrCandidates");
+    $data["total_applications"] = $this->db->count_all_results("JobApplications");
+    $data["total_requests"]     = $this->db->count_all_results("resource_requests");
+    
+    // Status Breakdowns
+    $data["open_jobs"]   = $this->db->where_in("JobStatus", ["Open", "Re-Open"])->count_all_results("IHRJobsList");
+    $data["closed_jobs"] = $this->db->where_in("JobStatus", ["Closed", "Dropped"])->count_all_results("IHRJobsList");
+    $data["hold_jobs"]   = $this->db->where_in("JobStatus", ["On-Hold", "On Hold"])->count_all_results("IHRJobsList");
+
+    $data["hired_candidates"] = $this->db->group_start()
+                                         ->like("CurrentStatus", "Selected")
+                                         ->or_like("CurrentStatus", "Accepted")
+                                         ->or_like("CurrentStatus", "Boarding")
+                                         ->or_like("CurrentStatus", "Hired")
+                                         ->group_end()
+                                         ->count_all_results("JobApplications");
+
+    $data["rejected_candidates"] = $this->db->like("CurrentStatus", "Rejected")
+                                             ->count_all_results("JobApplications");
+
+    // 2. Full History Stream / Master Explorer Data
+    // Jobs Full History
+    $this->db->select("jl.*, d.Departmentname, u.EmpName as RecruiterName");
+    $this->db->from("IHRJobsList jl");
+    $this->db->join("Departments d", "d.Did = jl.Did", "left");
+    $this->db->join("IHUsers u", "u.IUid = jl.AssignedRecruiterManagerId", "left");
+    $this->db->order_by("jl.PostedOn", "DESC");
+    $data["all_jobs_history"] = $this->db->get()->result_array();
+
+    // Candidate Applications Full History
+    $this->db->select("ja.ApplicationId, ja.CurrentStage, ja.CurrentStatus, ja.AppliedOn, c.CandidateId, c.Fullname, c.Email, c.PhoneNo as MobileNumber, c.ExpYrs as TotalExperience, c.ATS_Status, jl.JobTitle, jl.JobCode, d.Departmentname");
+    $this->db->from("JobApplications ja");
+    $this->db->join("IHrCandidates c", "c.CandidateId = ja.CandidateId", "inner");
+    $this->db->join("IHRJobsList jl", "jl.Jid = ja.Jid", "inner");
+    $this->db->join("Departments d", "d.Did = jl.Did", "left");
+    $this->db->order_by("ja.AppliedOn", "DESC");
+    $data["all_candidates_history"] = $this->db->get()->result_array();
+
+    // Resource Requests Full History
+    $this->db->select("rr.*, d.Departmentname, req_u.EmpName as RequestedByName, app_u.EmpName as ApproverName");
+    $this->db->from("resource_requests rr");
+    $this->db->join("Departments d", "d.Did = rr.Did", "left");
+    $this->db->join("IHUsers req_u", "req_u.IUid = rr.RequestedBy", "left");
+    $this->db->join("IHUsers app_u", "app_u.IUid = rr.ApproverId", "left");
+    $this->db->order_by("rr.CreatedAt", "DESC");
+    $data["all_requests_history"] = $this->db->get()->result_array();
+
+    // 3. Department Analytics Breakdown
+    $this->db->select("d.Did, d.Departmentname, COUNT(DISTINCT jl.Jid) as total_jobs, COUNT(DISTINCT ja.ApplicationId) as total_apps");
+    $this->db->from("Departments d");
+    $this->db->join("IHRJobsList jl", "jl.Did = d.Did", "left");
+    $this->db->join("JobApplications ja", "ja.Jid = jl.Jid", "left");
+    $this->db->group_by("d.Did");
+    $data["dept_analytics"] = $this->db->get()->result_array();
+
+    // 4. Recruiter / Manager Workload & Sources Analytics (Only recruiters with assigned jobs)
+    $sqlRec = "SELECT u.IUid, u.EmpName, u.EmpCode, u.EmpDesignation,
+                COUNT(DISTINCT jl.Jid) as assigned_jobs,
+                SUM(CASE WHEN jl.JobStatus IN ('Open','Re-Open') THEN 1 ELSE 0 END) as active_jobs,
+                SUM(CASE WHEN jl.JobStatus IN ('Closed') THEN 1 ELSE 0 END) as closed_jobs,
+                COUNT(DISTINCT ja.ApplicationId) as managed_candidates
+               FROM ihusers u
+               JOIN IHRJobsList jl ON jl.AssignedRecruiterManagerId = u.IUid
+               LEFT JOIN JobApplications ja ON ja.Jid = jl.Jid
+               GROUP BY u.IUid
+               HAVING assigned_jobs > 0
+               ORDER BY assigned_jobs DESC";
+    $data["recruiter_analytics"] = $this->db->query($sqlRec)->result_array();
+
+    // 5. Conducted Interviews Breakdown & Panel Interviewers
+    $sqlIntSummary = "SELECT u.IUid, u.EmpName, u.EmpCode, u.EmpDesignation,
+                        COUNT(ci.InterviewId) as total_interviews,
+                        SUM(CASE WHEN ci.Result IN ('Passed','Selected','Accepted') THEN 1 ELSE 0 END) as passed_interviews,
+                        SUM(CASE WHEN ci.Result IN ('Failed','Rejected') THEN 1 ELSE 0 END) as failed_interviews,
+                        SUM(CASE WHEN ci.Result IS NULL OR ci.Result = '' OR ci.Result = 'Scheduled' THEN 1 ELSE 0 END) as pending_interviews
+                       FROM ihusers u
+                       LEFT JOIN candidateinterviews ci ON ci.InterviewerId = u.IUid
+                       LEFT JOIN jobinterviewpanels p ON p.InterviewerId = u.IUid
+                       WHERE ci.InterviewId IS NOT NULL OR p.PanelId IS NOT NULL
+                       GROUP BY u.IUid
+                       ORDER BY total_interviews DESC";
+    $data["interviewer_summary"] = $this->db->query($sqlIntSummary)->result_array();
+
+    $sqlIntDetail = "SELECT ci.InterviewId, ci.InterviewRound, ci.InterviewType, ci.ScheduledAt, ci.CompletedAt, ci.Result, ci.Feedback, ci.MeetLink,
+                      u.EmpName as InterviewerName, u.EmpCode as InterviewerCode,
+                      c.Fullname as CandidateName, c.Email as CandidateEmail, c.PhoneNo as CandidatePhone, c.ExpYrs,
+                      jl.JobTitle, jl.JobCode, d.Departmentname
+                     FROM candidateinterviews ci
+                     JOIN ihusers u ON u.IUid = ci.InterviewerId
+                     JOIN JobApplications ja ON ja.ApplicationId = ci.ApplicationId
+                     JOIN IHrCandidates c ON c.CandidateId = ja.CandidateId
+                     JOIN IHRJobsList jl ON jl.Jid = ja.Jid
+                     LEFT JOIN Departments d ON d.Did = jl.Did
+                     ORDER BY ci.ScheduledAt DESC";
+    $data["interviewer_details"] = $this->db->query($sqlIntDetail)->result_array();
+
+    $data["departments"] = $this->admin_model->getDepartments();
+
+    // Render Master Template
+    $this->template->set_master_template("../../themes/" . $this->config->item("active_template") . "/bo_template.php");
+    $this->template->write_view("content", "admin/Analytics", $data);
     $this->template->render();
 }
 
@@ -1317,29 +1438,7 @@ public function updateJobStatus(){
 
         $this->db->where('Jid', $jid)->update('IHRJobsList', $updateData);
 
-        // Log status change in JobStatusHistory table
-        if (!$this->db->table_exists('JobStatusHistory')) {
-            $this->db->query("CREATE TABLE IF NOT EXISTS JobStatusHistory (
-                StatusHistoryId INT AUTO_INCREMENT PRIMARY KEY,
-                Jid INT NOT NULL,
-                Status VARCHAR(50) NOT NULL,
-                HoldUntilDate DATE NULL,
-                ChangedBy INT NULL,
-                ChangedAt DATETIME NOT NULL,
-                Remarks TEXT NULL
-            )");
-        }
-
-        $holdDateForLog = ($statusLower === 'on-hold' || $statusLower === 'on hold') ? ($updateData['HoldUntilDate'] ?? null) : null;
-        $this->db->insert('JobStatusHistory', [
-            'Jid'           => $jid,
-            'Status'        => $status,
-            'HoldUntilDate' => $holdDateForLog,
-            'ChangedBy'     => $Hrms_Session['IUid'] ?? null,
-            'ChangedAt'     => date('Y-m-d H:i:s')
-        ]);
-
-        // Insert into dedicated JobTracking table
+        // Log lifecycle event exclusively in the unified JobTracking table
         if ($statusLower === 'on-hold' || $statusLower === 'on hold') {
             $this->_addJobTrackingLog(
                 $jid,
@@ -1411,6 +1510,154 @@ private function _addJobTrackingLog($jid, $eventType, $eventTitle, $eventDescrip
         'HoldUntilDate'    => $holdUntilDate,
         'ActionBy'         => $actionBy,
         'ActionAt'         => date('Y-m-d H:i:s')
+    ]);
+}
+
+/**
+ * Automatic Unhold Engine
+ * Checks for vacancies whose HoldUntilDate has passed (< today). Automatically updates status to 'Open',
+ * clears HoldUntilDate, and logs a single JOB_UNHELD event in JobTracking without duplicates.
+ */
+private function _checkAutoUnholdExpiredJobs()
+{
+    if (!$this->db->table_exists('IHRJobsList') || !$this->db->field_exists('HoldUntilDate', 'IHRJobsList')) {
+        return;
+    }
+
+    $today = date('Y-m-d');
+    $expiredJobs = $this->db
+        ->group_start()
+            ->where('JobStatus', 'On-Hold')
+            ->or_where('JobStatus', 'On Hold')
+        ->group_end()
+        ->where('HoldUntilDate IS NOT NULL', null, false)
+        ->where('HoldUntilDate <', $today)
+        ->get('IHRJobsList')
+        ->result_array();
+
+    foreach ($expiredJobs as $job) {
+        $jid = (int)$job['Jid'];
+
+        // 1. Update job status to Open
+        $this->db->where('Jid', $jid)->update('IHRJobsList', [
+            'JobStatus'            => 'Open',
+            'HoldUntilDate'        => null,
+            'HoldReminderSentDate' => null,
+            'UpdatedOn'            => date('Y-m-d H:i:s')
+        ]);
+
+        // 2. Prevent duplicate JOB_UNHELD event for this automated transition
+        $latestTracking = $this->db
+            ->where('Jid', $jid)
+            ->where('EventType', 'JOB_UNHELD')
+            ->order_by('TrackId', 'DESC')
+            ->limit(1)
+            ->get('JobTracking')
+            ->row_array();
+
+        $alreadyLogged = false;
+        if (!empty($latestTracking) && strpos($latestTracking['EventDescription'], 'Hold date') !== false) {
+            $alreadyLogged = true;
+        }
+
+        if (!$alreadyLogged) {
+            $this->_addJobTrackingLog(
+                $jid,
+                'JOB_UNHELD',
+                'Job Automatically Unheld (Hold Period Expired)',
+                'Hold date (' . ($job['HoldUntilDate'] ?? 'Expired') . ') reached. Job status automatically restored from On-Hold back to Open.'
+            );
+        }
+    }
+}
+
+/**
+ * One-Time Historical Migration: JobStatusHistory -> JobTracking
+ * Migrates pre-existing historical rows from JobStatusHistory into JobTracking,
+ * skipping any events that already exist in JobTracking to prevent duplicate records.
+ */
+public function migrateJobStatusHistoryToTracking()
+{
+    $tableName = null;
+    if ($this->db->table_exists('JobStatusHistory')) {
+        $tableName = 'JobStatusHistory';
+    } elseif ($this->db->table_exists('jobstatushistory')) {
+        $tableName = 'jobstatushistory';
+    }
+
+    if (!$tableName) {
+        echo json_encode(['status' => 'info', 'message' => 'JobStatusHistory table does not exist.']);
+        return;
+    }
+
+    if (!$this->db->table_exists('JobTracking') && !$this->db->table_exists('jobtracking')) {
+        $this->_addJobTrackingLog(null, 'INIT', 'System Init');
+    }
+
+    $historyRows = $this->db->get($tableName)->result_array();
+    $migratedCount = 0;
+    $skippedCount  = 0;
+
+    foreach ($historyRows as $sh) {
+        $jid         = (int)$sh['Jid'];
+        $statusLower = strtolower(trim($sh['Status']));
+        $changedAt   = $sh['ChangedAt'] ?? date('Y-m-d H:i:s');
+        $changedBy   = !empty($sh['ChangedBy']) ? (int)$sh['ChangedBy'] : null;
+        $holdDate    = !empty($sh['HoldUntilDate']) ? $sh['HoldUntilDate'] : null;
+
+        $eventType   = 'JOB_STATUS_CHANGE';
+        $eventTitle  = 'Job Status Changed';
+        $eventDesc   = 'Status changed to: ' . $sh['Status'];
+
+        if (strpos($statusLower, 'hold') !== false && strpos($statusLower, 'unhold') === false) {
+            $eventType  = 'JOB_ON_HOLD';
+            $eventTitle = 'Job Placed On-Hold';
+            $eventDesc  = 'Job status updated to On-Hold until: ' . ($holdDate ?? 'Not specified');
+        } elseif ($statusLower === 'open' || $statusLower === 're-open' || $statusLower === 'unhold') {
+            $eventType  = 'JOB_UNHELD';
+            $eventTitle = 'Job Reopened / Unheld';
+            $eventDesc  = 'Job status updated from On-Hold back to Open / Active.';
+        } elseif ($statusLower === 'closed' || $statusLower === 'dropped' || $statusLower === 'drop') {
+            $eventType  = 'JOB_DROPPED';
+            $eventTitle = 'Job Dropped';
+            $eventDesc  = 'Job position dropped.';
+        }
+
+        // Duplicate check: check if an event with same Jid & EventType & ActionAt/HoldUntilDate exists in JobTracking
+        $exists = $this->db
+            ->where('Jid', $jid)
+            ->where('EventType', $eventType)
+            ->group_start()
+                ->where('ActionAt', $changedAt)
+                ->or_where('HoldUntilDate', $holdDate)
+            ->group_end()
+            ->get('JobTracking')
+            ->row_array();
+
+        if (empty($exists)) {
+            $this->db->insert('JobTracking', [
+                'Jid'              => $jid,
+                'RequestId'        => null,
+                'EventType'        => $eventType,
+                'EventTitle'       => $eventTitle,
+                'EventDescription' => $eventDesc,
+                'HoldUntilDate'    => $holdDate,
+                'ActionBy'         => $changedBy,
+                'ActionAt'         => $changedAt,
+                'CreatedOn'        => $changedAt
+            ]);
+            $migratedCount++;
+        } else {
+            $skippedCount++;
+        }
+    }
+
+    echo json_encode([
+        'status'         => 'success',
+        'message'        => 'Migration completed successfully.',
+        'migrated_rows'  => $migratedCount,
+        'skipped_rows'   => $skippedCount,
+        'total_analyzed' => count($historyRows)
     ]);
 }
 
@@ -2894,20 +3141,29 @@ public function filterAssignedInterviews()
             $mode     = !empty($cl['InterviewType']) ? trim($cl['InterviewType']) : '';
             $meetLink = !empty($cl['MeetLink']) ? trim($cl['MeetLink']) : '';
 
-            echo "<tr>";
-            echo "<td>".$i++."</td>";
-            echo "<td><a href='".base_url('admin/viewResume/'.$cl['CandidateId'])."' target='_blank' class='text-warning font-weight-bold'>".$cl['CandidateCode']."</a></td>";
-            echo "<td><a href='javascript:void(0);' class='viewCandidateDetails text-primary font-weight-bold' data-id='".$cl['CandidateId']."'>".$cl['Fullname']."</a></td>";
-            echo "<td>".$cl['PhoneNo']."</td>";
-            echo "<td>".$cl['Email']."</td>";
-            echo "<td>".$cl['ProfileMatchPer']."</td>";
+            $resultVal   = !empty($cl['Result']) ? trim($cl['Result']) : 'Assigned';
+            $resultLower = strtolower($resultVal);
+            $isRescheduledRow = ($resultLower === 'rescheduled');
+            $trClass = $isRescheduledRow ? 'style="background-color: #fff9e6;"' : '';
+
+            echo "<tr {$trClass}>";
+            echo "<td class='text-center font-weight-bold'>".$i++."</td>";
+            echo "<td style='white-space: nowrap;'><a href='".base_url('admin/viewResume/'.$cl['CandidateId'])."' target='_blank' class='badge badge-pill badge-primary px-2 py-1 font-weight-bold' style='font-size: 11.5px;'>".$cl['CandidateCode']."</a></td>";
+            echo "<td style='white-space: nowrap;'><a href='javascript:void(0);' class='viewCandidateDetails text-primary font-weight-bold' data-id='".$cl['CandidateId']."'>".htmlspecialchars($cl['Fullname'])."</a></td>";
+            echo "<td style='white-space: nowrap;'><span class='text-dark font-weight-bold'><i class='fas fa-phone text-muted mr-1'></i>".htmlspecialchars($cl['PhoneNo'])."</span></td>";
+            echo "<td style='white-space: nowrap;'><span class='text-muted small'><i class='fas fa-envelope text-primary mr-1'></i>".htmlspecialchars($cl['Email'])."</span></td>";
+
+            // Score column
+            $recVal = !empty($cl['ProfileMatchPer']) ? $cl['ProfileMatchPer'] : 'Review Required';
+            $badgeClass = (stripos($recVal, 'Recommended') !== false && stripos($recVal, 'Not') === false) ? 'badge-success' : (stripos($recVal, 'Not') !== false ? 'badge-danger' : 'badge-warning');
+            echo "<td class='text-center' style='white-space: nowrap;'><span class='badge {$badgeClass} font-weight-bold px-2 py-1'>".htmlspecialchars($recVal)."</span></td>";
 
             // Mode & Meet Link column
-            echo "<td>";
+            echo "<td class='text-center' style='white-space: nowrap;'>";
             if (strtolower($mode) === 'online') {
                 echo "<span class='badge badge-primary'><i class='fas fa-video mr-1'></i>Online</span>";
-                if (!empty($meetLink)) {
-                    echo "<br><a href='".htmlspecialchars($meetLink)."' target='_blank' class='btn btn-xs btn-outline-primary mt-1'><i class='fas fa-video mr-1'></i>Join Meet</a>";
+                if (!empty($meetLink) && !$isRescheduledRow) {
+                    echo " <a href='".htmlspecialchars($meetLink)."' target='_blank' class='btn btn-xs btn-outline-primary ml-1' title='Join Video Meeting'><i class='fas fa-video mr-1'></i>Join</a>";
                 }
             } elseif (strtolower($mode) === 'offline') {
                 echo "<span class='badge badge-secondary'><i class='fas fa-building mr-1'></i>Offline</span>";
@@ -2918,22 +3174,33 @@ public function filterAssignedInterviews()
 
             $sAt = $cl['ScheduledAt'] ?? '';
             $sTs = (!empty($sAt) && $sAt !== '0000-00-00 00:00:00') ? strtotime($sAt) : 0;
-            echo "<td>".($sTs > 0 ? date('d M Y, h:i A', $sTs) : 'Not Scheduled')."</td>";
-            echo "<td>".(!empty($cl['Result']) ? $cl['Result'] : 'Assigned')."</td>";
-            echo "<td>".$cl['AppliedOn']."</td>";
-            echo "<td>";
+            $dateFormatted = ($sTs > 0) ? date('d M Y, h:i A', $sTs) : 'Not Scheduled';
+            echo "<td style='white-space: nowrap;'>".($sTs > 0 ? "<span class='text-dark font-weight-bold'><i class='fas fa-calendar-alt text-info mr-1'></i>{$dateFormatted}</span>" : "<span class='text-muted small'>Not Scheduled</span>")."</td>";
 
-            // View Candidate Track Button
-            echo "<button type='button' class='btn btn-sm btn-info viewCandidateDetails mr-1 mb-1' data-id='".$cl['CandidateId']."' title='View Candidate Total Track'><i class='fas fa-eye'></i> View Track</button>";
-
-            if($result == '' || $result == 'assigned' || $result == 'on hold'){
-                echo "<button type='button' class='btn btn-sm btn-warning openInterviewUpdate mb-1' data-interview='".$cl['InterviewId']."'><i class='fas fa-edit'></i> Update Status</button>";
+            // Status column
+            echo "<td class='text-center' style='white-space: nowrap;'>";
+            if ($isRescheduledRow) {
+                echo '<span class="badge badge-warning text-dark px-2 py-1"><i class="fas fa-history mr-1"></i>Rescheduled</span>';
+            } elseif ($resultLower === 'selected') {
+                echo '<span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i>Selected</span>';
+            } elseif ($resultLower === 'rejected') {
+                echo '<span class="badge badge-danger px-2 py-1"><i class="fas fa-times-circle mr-1"></i>Rejected</span>';
+            } elseif ($resultLower === 'on hold') {
+                echo '<span class="badge badge-warning px-2 py-1"><i class="fas fa-pause-circle mr-1"></i>On Hold</span>';
             } else {
-                $badge = 'badge-secondary';
-                if($result == 'selected') $badge = 'badge-success';
-                elseif($result == 'rejected') $badge = 'badge-danger';
-                elseif($result == 'on hold') $badge = 'badge-warning';
-                echo "<span class='badge ".$badge."'>".$cl['Result']."</span>";
+                echo '<span class="badge badge-primary px-2 py-1"><i class="fas fa-clock mr-1"></i>' . htmlspecialchars($resultVal) . '</span>';
+            }
+            echo "</td>";
+
+            // Verified / Applied date column
+            echo "<td style='white-space: nowrap;'><span class='small text-muted'>".(!empty($cl['AppliedOn']) ? date('d M Y, h:i A', strtotime($cl['AppliedOn'])) : '-')."</span></td>";
+
+            // Action column
+            echo "<td class='text-center'>";
+            echo "<button type='button' class='btn btn-xs btn-info viewCandidateDetails mr-1 mb-1' data-id='".$cl['CandidateId']."' title='View Candidate Track Timeline'><i class='fas fa-eye mr-1'></i> View Track</button>";
+            echo "<button type='button' class='btn btn-xs btn-primary openAiQuestionsModal mr-1 mb-1' data-interview='".(int)($cl['InterviewId'] ?? 0)."' data-candidate='".htmlspecialchars($cl['Fullname'] ?? '')."' data-job='' data-score='".htmlspecialchars($cl['ProfileMatchPer'] ?? 'N/A')."' title='AI Personalized Interview Questions'><i class='fas fa-brain mr-1'></i> AI Questions</button>";
+            if(($resultLower == '' || $resultLower == 'assigned' || $resultLower == 'on hold') && !$isRescheduledRow){
+                echo "<button type='button' class='btn btn-xs btn-warning openInterviewUpdate mb-1' data-interview='".$cl['InterviewId']."' title='Update Interview Status'><i class='fas fa-edit mr-1'></i> Update Status</button>";
             }
             echo "</td>";
             echo "</tr>";
@@ -2986,15 +3253,15 @@ public function filterCandidates()
         $data = $this->db->get()->result_array();
 
         if (empty($data)) {
-            echo "<tr><td colspan='9' class='text-center'>No Data Found</td></tr>";
+            echo "<tr><td colspan='10' class='text-center'>No Data Found</td></tr>";
             return;
         }
 
        $i = 1;
     foreach ($data as $cl) {
 
-        echo "<tr>";
-
+        echo "<tr data-candidate-id='".$cl['CandidateId']."'>";
+        echo "<td class='text-center'><input type='checkbox' class='candidate-select-chk' data-candidate-id='".$cl['CandidateId']."' value='".$cl['CandidateId']."'></td>";
         echo "<td>".$i++."</td>";
       echo "<td>
     <a href='".base_url($cl['ResumePath'])."'
@@ -5194,33 +5461,6 @@ public function mark_all_notifications_read() {
                 $job['PostedBy'] ?? null
             );
 
-            // Also backfill status history from JobStatusHistory if any exist
-            if ($this->db->table_exists('JobStatusHistory')) {
-                $statusHistory = $this->db->get_where('JobStatusHistory', ['Jid' => $jid])->result_array();
-                foreach ($statusHistory as $sh) {
-                    $shStatusLower = strtolower(trim($sh['Status']));
-                    if (strpos($shStatusLower, 'hold') !== false && strpos($shStatusLower, 'unhold') === false) {
-                        $this->_addJobTrackingLog(
-                            $jid,
-                            'JOB_ON_HOLD',
-                            'Job Placed On-Hold',
-                            'Job status updated to On-Hold. Hold-Until Date: ' . ($sh['HoldUntilDate'] ?? 'Not specified'),
-                            $sh['HoldUntilDate'] ?? null,
-                            $sh['ChangedBy'] ?? null
-                        );
-                    } elseif ($shStatusLower === 'open' || $shStatusLower === 're-open' || $shStatusLower === 'unhold') {
-                        $this->_addJobTrackingLog(
-                            $jid,
-                            'JOB_UNHELD',
-                            'Job Reopened / Unheld',
-                            'Job status updated from On-Hold back to Open / Active.',
-                            null,
-                            $sh['ChangedBy'] ?? null
-                        );
-                    }
-                }
-            }
-
             // If current status is On-Hold and still no tracking entry logged, log it
             $currentStatusLower = strtolower(trim($job['JobStatus'] ?? ''));
             if ($currentStatusLower === 'on-hold' || $currentStatusLower === 'on hold') {
@@ -5356,5 +5596,391 @@ public function mark_all_notifications_read() {
             'milestones'       => $milestones,
             'timeline'         => $timeline
         ]);
+    }
+
+    public function generateAiInterviewQuestions()
+    {
+        if (ob_get_length()) { @ob_clean(); }
+        header('Content-Type: application/json');
+
+        try {
+            $Hrms_Session = $this->session->userdata('logged_in');
+            if (empty($Hrms_Session)) {
+                echo json_encode(['status' => 'error', 'message' => 'Session expired. Please log in again.']);
+                return;
+            }
+
+            $interviewId    = (int)$this->input->post('interviewId');
+            $isRegeneration = (bool)$this->input->post('isRegeneration');
+
+            if (empty($interviewId)) {
+                echo json_encode(['status' => 'error', 'message' => 'Interview ID is required.']);
+                return;
+            }
+
+            $this->load->library('AiInterviewQuestionGenerator');
+            $result = $this->aiinterviewquestiongenerator->generateForInterview($interviewId, $Hrms_Session['IUid'], $isRegeneration);
+
+            echo json_encode($result);
+        } catch (\Throwable $e) {
+            log_message('error', '[generateAiInterviewQuestions Exception] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            echo json_encode(['status' => 'error', 'message' => 'AI question generation is temporarily unavailable. Please try again.']);
+        }
+    }
+
+    public function getAiInterviewQuestions()
+    {
+        if (ob_get_length()) { @ob_clean(); }
+        header('Content-Type: application/json');
+
+        try {
+            $Hrms_Session = $this->session->userdata('logged_in');
+            if (empty($Hrms_Session)) {
+                echo json_encode(['status' => 'error', 'message' => 'Session expired. Please log in again.']);
+                return;
+            }
+
+            $interviewId = (int)$this->input->post('interviewId');
+            $version     = $this->input->post('version') !== null ? (int)$this->input->post('version') : null;
+
+            if (empty($interviewId)) {
+                echo json_encode(['status' => 'error', 'message' => 'Interview ID is required.']);
+                return;
+            }
+
+            $this->load->library('AiInterviewQuestionGenerator');
+            $questions = $this->aiinterviewquestiongenerator->getQuestionsForInterview($interviewId, $version);
+
+            // Also fetch candidate name, job title, ATS score, MustHaveSkills, and all available versions
+            $interviewDetails = $this->db
+                ->select('c.Fullname as CandidateName, c.ProfileMatchPer, j.JobTitle, j.JobCode, j.MustHaveSkills')
+                ->from('CandidateInterviews ci')
+                ->join('JobApplications ja', 'ja.ApplicationId = ci.ApplicationId', 'left')
+                ->join('IHrCandidates c', 'c.CandidateId = ja.CandidateId', 'left')
+                ->join('IHRJobsList j', 'j.Jid = ja.Jid', 'left')
+                ->where('ci.InterviewId', $interviewId)
+                ->get()
+                ->row_array();
+
+            $versionsRes = $this->db
+                ->distinct()
+                ->select('generation_version')
+                ->where('interview_id', $interviewId)
+                ->order_by('generation_version', 'DESC')
+                ->get('ai_interview_questions')
+                ->result_array();
+
+            $versions = !empty($versionsRes) ? array_column($versionsRes, 'generation_version') : [];
+
+            // Determine source
+            $source = 'ai';
+            $latestGen = $this->db->select('reason')
+                ->where('interview_id', $interviewId)
+                ->where('is_active', 1)
+                ->limit(1)
+                ->get('ai_interview_questions')
+                ->row_array();
+            if (!empty($latestGen) && isset($latestGen['reason']) && stripos($latestGen['reason'], 'fallback') !== false) {
+                $source = 'fallback';
+            }
+
+            // Extract must-have skills from job
+            $mustHaveList = [];
+            if (!empty($interviewDetails['MustHaveSkills'])) {
+                $mustHaveList = array_values(array_unique(array_filter(array_map('trim', explode(',', $interviewDetails['MustHaveSkills'])))));
+            }
+
+            // Extract covered and uncovered skills from questions
+            $coveredLower = [];
+            if (!empty($questions)) {
+                foreach ($questions as $q) {
+                    if (!empty($q['skill'])) {
+                        foreach (explode(',', $q['skill']) as $s) {
+                            $c = strtolower(trim($s));
+                            if (!empty($c)) $coveredLower[] = $c;
+                        }
+                    }
+                    foreach ($mustHaveList as $ms) {
+                        $msClean = strtolower(trim($ms));
+                        if (!empty($msClean) && stripos($q['question'], $msClean) !== false) {
+                            $coveredLower[] = $msClean;
+                        }
+                    }
+                }
+            }
+
+            $coveredMustHave   = [];
+            $uncoveredMustHave = [];
+            foreach ($mustHaveList as $ms) {
+                $msClean = strtolower(trim($ms));
+                if (in_array($msClean, $coveredLower)) {
+                    $coveredMustHave[] = $ms;
+                } else {
+                    $uncoveredMustHave[] = $ms;
+                }
+            }
+
+            echo json_encode([
+                'status'                   => 'success',
+                'interview_id'             => $interviewId,
+                'candidate_name'           => is_array($interviewDetails) ? ($interviewDetails['CandidateName'] ?? 'Candidate') : 'Candidate',
+                'job_title'                => is_array($interviewDetails) ? ($interviewDetails['JobTitle'] ?? '') : '',
+                'ats_score'                => is_array($interviewDetails) ? ($interviewDetails['ProfileMatchPer'] ?? 'N/A') : 'N/A',
+                'source'                   => $source,
+                'covered_must_have_skills' => array_values(array_unique($coveredMustHave)),
+                'uncovered_must_have_skills' => array_values(array_unique($uncoveredMustHave)),
+                'available_versions'       => $versions,
+                'questions'                => $questions
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', '[getAiInterviewQuestions Exception] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            echo json_encode(['status' => 'error', 'message' => 'Unable to load AI questions. Please try again.']);
+        }
+    }
+
+    public function updateQuestionStatus()
+    {
+        if (ob_get_length()) { @ob_clean(); }
+        header('Content-Type: application/json');
+
+        try {
+            $Hrms_Session = $this->session->userdata('logged_in');
+            if (empty($Hrms_Session)) {
+                echo json_encode(['status' => 'error', 'message' => 'Session expired. Please log in again.']);
+                return;
+            }
+
+            $questionId = (int)$this->input->post('questionId');
+            $status     = strtolower(trim($this->input->post('status') ?? 'unasked'));
+            $notes      = trim($this->input->post('notes') ?? '');
+
+            if (empty($questionId)) {
+                echo json_encode(['status' => 'error', 'message' => 'Question ID is required.']);
+                return;
+            }
+
+            $updateData = ['status_notes' => $status];
+            if (!empty($notes)) {
+                $updateData['interviewer_notes'] = $notes;
+            }
+
+            $this->db->where('id', $questionId)->update('ai_interview_questions', $updateData);
+
+            echo json_encode(['status' => 'success', 'message' => 'Question status updated successfully.']);
+        } catch (\Throwable $e) {
+            log_message('error', '[updateQuestionStatus Exception] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            echo json_encode(['status' => 'error', 'message' => 'Unable to update status. Please try again.']);
+        }
+    }
+
+    public function compareCandidates()
+    {
+        if (ob_get_length()) { @ob_clean(); }
+        header('Content-Type: application/json');
+
+        try {
+            $Hrms_Session = $this->session->userdata('logged_in');
+            if (empty($Hrms_Session)) {
+                echo json_encode(['status' => 'error', 'message' => 'Session expired. Please log in again.']);
+                return;
+            }
+
+            $candidateIds = $this->input->post('candidate_ids');
+            $vacancyId    = (int)$this->input->post('vacancy_id');
+
+            if (empty($candidateIds) || !is_array($candidateIds) || count($candidateIds) < 2) {
+                echo json_encode(['status' => 'error', 'message' => 'Please select at least 2 candidates to compare.']);
+                return;
+            }
+
+            $candidateIds = array_values(array_unique(array_map('intval', $candidateIds)));
+
+            $vacancy = $this->db->where('Jid', $vacancyId)->get('IHRJobsList')->row_array();
+            if (empty($vacancy)) {
+                echo json_encode(['status' => 'error', 'message' => 'Job vacancy record not found.']);
+                return;
+            }
+
+            $candidates = $this->db
+                ->select('CandidateId, CandidateCode, Fullname, Email, PhoneNo, ProfileMatchPer, ScoreBreakdown, MatchedSkills, ExpYrs, ExperienceMatch, EducationMatch, ResumePath, ExperienceDetails')
+                ->where_in('CandidateId', $candidateIds)
+                ->get('IHrCandidates')
+                ->result_array();
+
+            if (empty($candidates)) {
+                echo json_encode(['status' => 'error', 'message' => 'No candidate records found for comparison.']);
+                return;
+            }
+
+            $mustHaveSkills = array_values(array_unique(array_filter(array_map('trim', explode(',', $vacancy['MustHaveSkills'] ?? '')))));
+            $niceHaveSkills = array_values(array_unique(array_filter(array_map('trim', explode(',', $vacancy['NiceToHaveSkills'] ?? '')))));
+
+            $comparisonList = [];
+
+            foreach ($candidates as $cand) {
+                $scoreBreakdown = [];
+                if (!empty($cand['ScoreBreakdown'])) {
+                    $decoded = json_decode($cand['ScoreBreakdown'], true);
+                    if (is_array($decoded)) $scoreBreakdown = $decoded;
+                }
+
+                $expDetails = [];
+                if (!empty($cand['ExperienceDetails'])) {
+                    $decoded = json_decode($cand['ExperienceDetails'], true);
+                    if (is_array($decoded)) $expDetails = $decoded;
+                }
+
+                $candSkills = [];
+                if (!empty($scoreBreakdown['relevant_evidence'])) {
+                    foreach ($scoreBreakdown['relevant_evidence'] as $ev) {
+                        if (preg_match('/Extracted Resume Skills:\s*(.+)/i', $ev, $m)) {
+                            $candSkills = array_merge($candSkills, array_map('trim', explode(',', $m[1])));
+                        }
+                    }
+                }
+                if (!empty($cand['MatchedSkills'])) {
+                    $candSkills = array_merge($candSkills, array_map('trim', explode(',', $cand['MatchedSkills'])));
+                }
+
+                // Extract directly from Resume PDF text
+                $resumeText = '';
+                if (!empty($cand['ResumePath'])) {
+                    $pdfFile = FCPATH . $cand['ResumePath'];
+                    if (file_exists($pdfFile)) {
+                        try {
+                            require_once FCPATH . 'vendor/autoload.php';
+                            $parser = new \Smalot\PdfParser\Parser();
+                            $pdfObj = $parser->parseFile($pdfFile);
+                            $resumeText = $pdfObj->getText();
+                        } catch (\Throwable $ex) {}
+                    }
+                }
+
+                if (!empty($resumeText)) {
+                    $allCheckSkills = array_merge($mustHaveSkills, $niceHaveSkills, [
+                        'React', 'React.js', 'Node.js', 'Node', 'MongoDB', 'REST API', 'Express',
+                        'PHP', 'MERN', 'JavaScript', 'HTML', 'CSS', 'Docker', 'AWS', 'Git', 'SQL',
+                        'Recruitment', 'Payroll', 'Onboarding', 'Attendance', 'Exit Process', 'Audit', 'Excel', 'PowerBI'
+                    ]);
+                    foreach ($allCheckSkills as $kw) {
+                        if (!empty($kw) && stripos($resumeText, $kw) !== false) {
+                            $candSkills[] = $kw;
+                        }
+                    }
+                }
+                $candSkills = array_values(array_unique(array_filter($candSkills)));
+
+                $matchedMustHave = [];
+                $missingMustHave = [];
+                $candSkillsLower = array_map('strtolower', $candSkills);
+
+                foreach ($mustHaveSkills as $ms) {
+                    $msLower = strtolower(trim($ms));
+                    if (empty($msLower)) continue;
+                    $found = false;
+                    foreach ($candSkillsLower as $cs) {
+                        if (strpos($cs, $msLower) !== false || strpos($msLower, $cs) !== false) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if ($found) {
+                        $matchedMustHave[] = $ms;
+                    } else {
+                        $missingMustHave[] = $ms;
+                    }
+                }
+
+                $comparisonList[] = [
+                    'candidate_id'       => $cand['CandidateId'],
+                    'candidate_code'     => $cand['CandidateCode'],
+                    'fullname'           => $cand['Fullname'],
+                    'email'              => $cand['Email'],
+                    'phone'              => $cand['PhoneNo'],
+                    'ats_score'          => $cand['ProfileMatchPer'] ?? 'N/A',
+                    'experience_years'   => (float)($cand['ExpYrs'] ?? 0),
+                    'experience_match'   => $cand['ExperienceMatch'] ?? 'N/A',
+                    'education_match'    => $cand['EducationMatch'] ?? 'N/A',
+                    'matched_must_have'  => $matchedMustHave,
+                    'missing_must_have'  => $missingMustHave,
+                    'all_candidate_skills'=> $candSkills,
+                    'experience_details' => $expDetails,
+                    'score_breakdown'    => $scoreBreakdown,
+                    'resume_path'        => $cand['ResumePath'] ?? '',
+                ];
+            }
+
+            $aiSummary = $this->generateAiComparisonSummary($vacancy, $comparisonList);
+
+            echo json_encode([
+                'status'           => 'success',
+                'vacancy_id'       => $vacancyId,
+                'job_title'        => $vacancy['JobTitle'] ?? '',
+                'job_code'         => $vacancy['JobCode'] ?? '',
+                'must_have_skills' => $mustHaveSkills,
+                'nice_have_skills' => $niceHaveSkills,
+                'candidates'       => $comparisonList,
+                'ai_summary'       => $aiSummary,
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', '[compareCandidates Exception] ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
+            echo json_encode(['status' => 'error', 'message' => 'Failed to generate candidate comparison: ' . $e->getMessage()]);
+        }
+    }
+
+    private function generateAiComparisonSummary($vacancy, $comparisonList)
+    {
+        $topChoice = '';
+        $highestCompositeScore = -1;
+        $differentiators = [];
+        $mustHaveList = array_values(array_unique(array_filter(array_map('trim', explode(',', $vacancy['MustHaveSkills'] ?? '')))));
+        $totalMustHave = count($mustHaveList);
+
+        $hasAnySkillMatch = false;
+
+        foreach ($comparisonList as $c) {
+            $matchedCount = count($c['matched_must_have']);
+            if ($matchedCount > 0) {
+                $hasAnySkillMatch = true;
+            }
+
+            // Skill Score (60% weight)
+            $skillScore = ($totalMustHave > 0) ? (($matchedCount / $totalMustHave) * 100) : 50;
+
+            // ATS Fit Score (20% weight)
+            $atsVal = (float)preg_replace('/[^0-9\.]/', '', $c['ats_score']);
+            if ($c['ats_score'] === 'Recommended') $atsVal = 90;
+            elseif ($c['ats_score'] === 'Review Required') $atsVal = 40;
+            elseif ($c['ats_score'] === 'Not Recommended') $atsVal = 20;
+
+            // Experience Score (20% weight)
+            $expVal = ($c['experience_match'] === 'Yes') ? 100 : min(100, $c['experience_years'] * 20);
+
+            $composite = ($skillScore * 0.60) + ($atsVal * 0.20) + ($expVal * 0.20);
+
+            if ($composite > $highestCompositeScore) {
+                $highestCompositeScore = $composite;
+                $topChoice = $c['fullname'];
+            }
+
+            $diffStr = "<strong>{$c['fullname']}</strong>: Matches {$matchedCount}/{$totalMustHave} Must-Have skill(s) with {$c['experience_years']} yrs experience.";
+            if (!empty($c['all_candidate_skills'])) {
+                $diffStr .= " Core Skills: " . implode(', ', array_slice($c['all_candidate_skills'], 0, 5)) . ".";
+            }
+            $differentiators[] = $diffStr;
+        }
+
+        if (!$hasAnySkillMatch) {
+            $topChoice = "No Strong Competency Match";
+            $recommendation = "<strong>Competency Warning:</strong> None of the selected candidates match the vacancy's Must-Have Skills (" . implode(', ', $mustHaveList) . ") for <strong>{$vacancy['JobTitle']}</strong>. Sourcing or screening candidates with direct competency alignment is strongly advised.";
+        } else {
+            $recommendation = "Based on Must-Have skill alignment, ATS fit match, and competency evaluation, <strong>{$topChoice}</strong> is identified as the leading candidate for <strong>{$vacancy['JobTitle']}</strong>.";
+        }
+
+        return [
+            'top_choice'      => $topChoice,
+            'recommendation'  => $recommendation,
+            'differentiators' => $differentiators,
+        ];
     }
 }

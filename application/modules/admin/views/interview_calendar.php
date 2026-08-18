@@ -209,7 +209,11 @@ function openInterviewDetail(candidateName, email, phone, jobTitle, scheduledAtS
         '<tr><th>Scheduled At</th><td>' + timeStr               + '</td></tr>' +
         '<tr><th>Interview Round</th><td>' + (round   || 1)  + '</td></tr>' +
         '<tr><th>Result</th><td>'       + resultBadge           + '</td></tr>' +
-        '</table>';
+        '</table>' +
+        '<div class="mt-3 text-right">' +
+        '<a href="<?= base_url('admin/MyInterviews'); ?>" class="btn btn-sm btn-success font-weight-bold">' +
+        '<i class="fas fa-brain mr-1"></i> View AI Personalized Questions' +
+        '</a></div>';
 
     document.getElementById('interviewDetailBody').innerHTML = html;
     $('#interviewDetailModal').modal('show');
