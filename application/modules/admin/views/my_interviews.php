@@ -191,8 +191,11 @@ data-id="<?= $cl['CandidateId']; ?>">
 <td><?= $cl['Email']; ?></td>
 <td>
     <?php 
-    $recVal = !empty($cl['ProfileMatchPer']) ? $cl['ProfileMatchPer'] : 'Review Required';
-    $badgeClass = (stripos($recVal, 'Recommended') !== false && stripos($recVal, 'Not') === false) ? 'badge-success' : (stripos($recVal, 'Not') !== false ? 'badge-danger' : 'badge-warning');
+    $recVal = !empty($cl['ProfileMatchPer']) ? $cl['ProfileMatchPer'] : 'Potential Match';
+    if ($recVal === 'Recommended') $recVal = 'Strong Match';
+    if ($recVal === 'Review Required') $recVal = 'Potential Match';
+    if ($recVal === 'Not Recommended') $recVal = 'Low Match';
+    $badgeClass = (in_array($recVal, ['Strong Match', 'Strongly Match', 'Recommended'])) ? 'badge-success' : (in_array($recVal, ['Low Match', 'Not Recommended']) ? 'badge-danger' : 'badge-warning');
     ?>
     <span class="badge <?= $badgeClass ?> font-weight-bold p-1"><?= htmlspecialchars($recVal) ?></span>
 </td>
@@ -491,7 +494,7 @@ success: function (res) {
                             </div>
                             <div class="col-md-6">
                                 <p class="mb-1"><strong>Experience:</strong> ${c.ExpYrs ?? 0} Years</p>
-                                <p class="mb-1"><strong>ATS Recommendation:</strong> <span class="badge ${ (c.ProfileMatchPer && c.ProfileMatchPer.includes('Recommended') && !c.ProfileMatchPer.includes('Not')) ? 'badge-success' : ((c.ProfileMatchPer && c.ProfileMatchPer.includes('Not')) ? 'badge-danger' : 'badge-warning') }">${c.ProfileMatchPer ?? 'Review Required'}</span></p>
+                                <p class="mb-1"><strong>ATS Recommendation:</strong> <span class="badge ${ (c.ProfileMatchPer === 'Strong Match' || c.ProfileMatchPer === 'Strongly Match' || c.ProfileMatchPer === 'Recommended') ? 'badge-success' : ((c.ProfileMatchPer === 'Low Match' || c.ProfileMatchPer === 'Not Recommended') ? 'badge-danger' : 'badge-warning') }">${c.ProfileMatchPer === 'Recommended' ? 'Strong Match' : (c.ProfileMatchPer === 'Review Required' ? 'Potential Match' : (c.ProfileMatchPer === 'Not Recommended' ? 'Low Match' : (c.ProfileMatchPer ?? 'Potential Match')))}</span></p>
                                 <p class="mb-1"><strong>Current Status:</strong> <span class="badge badge-info">${c.CurrentStatus ?? '-'}</span></p>
                                 <p class="mb-1"><strong>Applied Date:</strong> ${c.AppliedOn ?? '-'}</p>
                             </div>

@@ -15,7 +15,28 @@ class ATS_Engine {
 
         // 1. EXTRACT RAW RESUME TEXT
         $rawText = (string)$this->extractText($file);
-        $text    = strtolower($rawText);
+        
+        // Normalize PDF font artifacts:
+        // A. Fix date range separators like '{' => '-' (e.g., Oct 2023 { Present => Oct 2023 - Present)
+        $rawText = str_replace('{', '-', $rawText);
+        $rawText = preg_replace('/(\d{4}|\bjan|\bfeb|\bmar|\bapr|\bmay|\bjun|\bjul|\baug|\bsep|\bsept|\boct|\bnov|\bdec)\s*\{+\s*(present|current|now|\d{4}|\bjan|\bfeb|\bmar|\bapr|\bmay|\bjun|\bjul|\baug|\bsep|\bsept|\boct|\bnov|\bdec)/i', '$1 - $2', $rawText);
+        // B. Fix form-feed/ligature characters \x0C => fi
+        $rawText = str_replace("\x0C", "fi", $rawText);
+        // C. Fix font kerning spaces inside common words
+        $rawText = preg_replace('/\b(dev)\s+(elop\s*er[s]?)\b/i', 'Developer', $rawText);
+        $rawText = preg_replace('/\b(prese)\s*(n)\s*(t)\b/i', 'Present', $rawText);
+        $rawText = preg_replace('/\b(in)\s+(tern[s]?)\b/i', 'Intern', $rawText);
+        $rawText = preg_replace('/\b(pro)\s+(ject[s]?)\b/i', 'Projects', $rawText);
+        $rawText = preg_replace('/\b(certi)\s*(fica\s*tion[s]?)\b/i', 'Certifications', $rawText);
+        $rawText = preg_replace('/\b(sci)\s+(ence)\b/i', 'Science', $rawText);
+        $rawText = preg_replace('/\b(y)\s+(ears?)\b/i', '$1$2', $rawText);
+        $rawText = preg_replace('/\b(exp)\s+(erience[s]?)\b/i', '$1$2', $rawText);
+        $rawText = preg_replace('/\b(hand)\s*-\s*(s)\b/i', 'hands', $rawText);
+        $rawText = preg_replace('/\b(l)\s*(w)\s*(c)\b/i', 'LWC', $rawText);
+        $rawText = preg_replace('/\b(b)\s*\.\s*(sc|tech|ca|e|com|ba)\b/i', 'B.$2', $rawText);
+        $rawText = preg_replace('/\b(m)\s*\.\s*(tech|ca|e|com|ba|sc)\b/i', 'M.$2', $rawText);
+
+        $text = strtolower($rawText);
 
         $this->logStage('RAW_RESUME_TEXT', substr($text, 0, 2000));
 
@@ -59,9 +80,9 @@ class ATS_Engine {
         // 4. EXTRACT TOTAL YEARS OF EXPERIENCE
         $candidateExp = 0.0;
         $expPatterns = [
-            '/overall\s+(\d+(?:\.\d+)?)\+?\s*years?\s+of\s+experience/i',
-            '/total\s+(\d+(?:\.\d+)?)\+?\s*years?\s+of\s+experience/i',
-            '/(\d+(?:\.\d+)?)\+?\s*years?\s+of\s+experience/i',
+            '/overall\s+(\d+(?:\.\d+)?)\+?\s*years?\s+(?:of\s+)?(?:hands?\s*-\s*on\s+)?experience/i',
+            '/total\s+(\d+(?:\.\d+)?)\+?\s*years?\s+(?:of\s+)?(?:hands?\s*-\s*on\s+)?experience/i',
+            '/(\d+(?:\.\d+)?)\+?\s*years?\s+(?:of\s+)?(?:hands?\s*-\s*on\s+)?experience/i',
             '/experience\s*[:\-]?\s*(\d+(?:\.\d+)?)/i'
         ];
         foreach ($expPatterns as $pattern) {
@@ -173,7 +194,9 @@ class ATS_Engine {
         }
 
         // 8. ANALYZE DOMAIN / ROLE FIT
-        $domainName = $this->detectDomain($text, $vacancy);
+        $candidateDomain = $this->detectCandidateDomain($text, $allExtractedSkills, $vacancy);
+        $jobDomain = $this->detectJobDomain($vacancy);
+        $domainAnalysis = $this->analyzeDomainMismatch($candidateDomain, $jobDomain, $text, $allExtractedSkills, $vacancy);
 
         // 9. EXPERIENCE COMPARISON
         $minExpRequired = (float)($vacancy['ExpMin'] ?? 0.0);
@@ -198,8 +221,8 @@ class ATS_Engine {
             $relevantEvidence[] = "Education: Matches required level" . ($detectedDegree !== 'Not Found' ? " ({$detectedDegree})" : "");
         }
 
-        if ($domainName && $domainName !== 'General') {
-            $relevantEvidence[] = "Domain Fit: Background in {$domainName}";
+        if ($candidateDomain && $candidateDomain !== 'General' && $candidateDomain !== 'Other / General') {
+            $relevantEvidence[] = "Domain Fit: Background in {$candidateDomain}";
         }
 
         if (!empty($allExtractedSkills)) {
@@ -239,7 +262,7 @@ class ATS_Engine {
         }
 
         if (($expMatch || $minExpRequired <= 1.0) && ($skillMatchRatio >= 0.5 || $totalReqCount == 0) && ($eduMatch || $eduRequired === 'any')) {
-            $recommendation = 'Recommended';
+            $recommendation = 'Strong Match';
             $recommendationReason = "The candidate's profile aligns well with the requirements of " . ($vacancy['JobTitle'] ?? 'the position') . ". ";
             if ($expyrs > 0) {
                 $recommendationReason .= "They possess {$expyrs} years of relevant experience" . (!empty($matchedSkills) ? " and demonstrate key skills in " . implode(', ', array_map('ucwords', array_slice($matchedSkills, 0, 4))) : "") . ". ";
@@ -248,7 +271,7 @@ class ATS_Engine {
             }
             $recommendationReason .= "Their background provides concrete evidence for strong candidate suitability.";
         } elseif (($skillMatchRatio > 0 || $expyrs >= ($minExpRequired * 0.7) || $roleMatch) && count($missingRequirements) <= 2) {
-            $recommendation = 'Review Required';
+            $recommendation = 'Potential Match';
             $recommendationReason = "The candidate has a relevant background for " . ($vacancy['JobTitle'] ?? 'this role') . ", but specific requirements need verification during screening. ";
             if (!empty($missingSkills)) {
                 $recommendationReason .= "Skill(s) like " . implode(', ', array_map('ucwords', array_slice($missingSkills, 0, 3))) . " were not clearly identified in the resume text. ";
@@ -258,7 +281,7 @@ class ATS_Engine {
             }
             $recommendationReason .= "Recruiter review and phone screening are recommended.";
         } else {
-            $recommendation = 'Not Recommended';
+            $recommendation = 'Low Match';
             $recommendationReason = "The candidate's resume does not provide sufficient evidence of meeting core requirements for " . ($vacancy['JobTitle'] ?? 'this vacancy') . ". ";
             if (!empty($missingSkills)) {
                 $recommendationReason .= "Key required skills (" . implode(', ', array_map('ucwords', array_slice($missingSkills, 0, 3))) . ") are missing. ";
@@ -269,15 +292,34 @@ class ATS_Engine {
             $recommendationReason .= "The profile is substantially unrelated or does not meet minimum thresholds.";
         }
 
+        if ($domainAnalysis['domain_status'] === 'WRONG_DOMAIN') {
+            $recommendation = 'Not Suitable';
+            $recommendationReason = $domainAnalysis['domain_reason'];
+        }
+
         $this->logStage('RECOMMENDATION_ANALYSIS', [
             'matchedSkillsCount' => $matchedCount,
             'requiredSkillsCount' => $totalReqCount,
             'candidateExp' => $candidateExp,
             'minExpRequired' => $minExpRequired,
-            'eduMatch' => $eduMatch
+            'eduMatch' => $eduMatch,
+            'domainStatus' => $domainAnalysis['domain_status'] ?? 'UNCLEAR',
+            'candidateDomain' => $candidateDomain,
+            'jobDomain' => $jobDomain
         ]);
         $this->logStage('RECOMMENDATION', $recommendation);
         $this->logStage('RECOMMENDATION_REASON', $recommendationReason);
+
+        // Extract Recruiter Candidate Profile (Informational Only - Zero impact on ATS decision)
+        $candidateProfile = $this->extractCandidateProfile(
+            $rawText,
+            $text,  
+            $allExtractedSkills,
+            $experienceDetails,
+            $expyrs,
+            $candidateDomain,
+            $detectedDegree
+        );
 
         // 12. RETURN STRICT NO-SCORE EVALUATION RESULT
         return [
@@ -291,13 +333,574 @@ class ATS_Engine {
             'mobileNumbers'         => $mobileNumbers,
             'expyrs'                => $expyrs,
             'experience_details'    => $experienceDetails,
-            'domain'                => $domainName ?: 'General',
+            'domain'                => $candidateDomain ?: 'General',
+            'job_domain'            => $jobDomain ?: 'General',
+            'candidate_domain'      => $candidateDomain ?: 'General',
+            'domain_status'         => $domainAnalysis['domain_status'] ?? 'UNCLEAR',
+            'domain_analysis'       => $domainAnalysis,
             'matched_skills'        => implode(', ', array_map('ucwords', $matchedSkills)),
             'missing_skills'        => implode(', ', array_map('ucwords', $missingSkills)),
             'all_extracted_skills'  => implode(', ', array_map('ucwords', array_unique($allExtractedSkills))),
             'education_match'       => $eduMatch ? 'Yes' : 'No',
             'experience'            => $expMatch ? 'Yes' : 'No',
-            'detected_degree'       => $detectedDegree
+            'detected_degree'       => $detectedDegree,
+            'candidate_profile'     => $candidateProfile
+        ];
+    }
+
+    private function extractCandidateProfile($rawText, $text, $allExtractedSkills, $experienceDetails, $expyrs, $candidateDomain, $detectedDegree)
+    {
+        // 1. Professional Headline Detection
+        $headline = 'Not specified in resume';
+        $roleKeywords = [
+            'Full Stack Developer', 'MERN Stack Developer', 'MEAN Stack Developer', 'Software Developer',
+            'Software Engineer', 'Frontend Developer', 'Backend Developer', 'Web Developer',
+            'PHP Developer', 'Python Developer', 'Java Developer', 'React Developer', 'Angular Developer',
+            'Node.js Developer', 'Accounts Executive', 'Senior Accountant', 'Junior Accountant',
+            'Finance Executive', 'HR Recruiter', 'HR Executive', 'HR Manager', 'Talent Acquisition Specialist',
+            'Project Manager', 'Data Analyst', 'DevOps Engineer', 'QA Engineer', 'Sales Executive',
+            'Business Development Executive', 'Customer Support Executive'
+        ];
+
+        foreach ($roleKeywords as $rk) {
+            if (stripos($rawText, $rk) !== false) {
+                $headline = $rk;
+                break;
+            }
+        }
+
+        if ($headline === 'Not specified in resume') {
+            if ($candidateDomain === 'Software & IT') {
+                $headline = 'Software / IT Professional';
+            } elseif ($candidateDomain === 'Finance & Accounting') {
+                $headline = 'Finance & Accounting Professional';
+            } elseif ($candidateDomain === 'Human Resources') {
+                $headline = 'Human Resources Professional';
+            } else {
+                $headline = ($candidateDomain !== 'General' && $candidateDomain !== 'Other / General' ? $candidateDomain : 'Professional') . ' Candidate';
+            }
+        }
+
+        // 2. Current / Recent Role and Company
+        $currentRole = 'Not specified in resume';
+        $currentCompany = 'Not specified in resume';
+
+        if (preg_match('/([A-Z0-9\.\&\-\s]{3,50}\s+(?:Pvt\.?\s*Ltd\.?|Ltd\.?|Inc\.?|Technologies|Labs|Solutions|Services|Software|Infotech|Systems|Corporation))/i', $rawText, $cm)) {
+            $companyLines = preg_split('/\r\n|\r|\n/', trim($cm[1]));
+            $currentCompany = trim(end($companyLines));
+        }
+
+        if ($headline !== 'Not specified in resume' && strpos($headline, 'Candidate') === false) {
+            $currentRole = $headline;
+        }
+
+        // 3. Education Details
+        $degree = $detectedDegree !== 'Not Found' ? $detectedDegree : 'Not identified';
+        $institution = 'Not specified in resume';
+        $gradYear = 'Not specified in resume';
+
+        if (preg_match('/(20\d{2}|19\d{2})/', $rawText, $ym)) {
+            if (preg_match('/(?:education|bca|mca|b\.tech|m\.tech|b\.e|m\.e|bba|mba|bsc|msc|bcom|mcom|degree|diploma)[\s\S]{0,100}?(20\d{2}|19\d{2})/i', $rawText, $eym)) {
+                $gradYear = $eym[1];
+            }
+        }
+
+        if (preg_match('/([A-Z][A-Za-z0-9\.\,\s]{3,60}\s+(?:University|College|Institute|Academy|School))/i', $rawText, $um)) {
+            $uLines = preg_split('/\r\n|\r|\n/', trim($um[1]));
+            $institution = trim(end($uLines));
+        }
+
+        // 4. Training / Courses / Specializations
+        $trainings = [];
+        $trainingKeywords = [
+            'MERN Full Stack', 'MEAN Stack', 'Python Full Stack', 'Java Full Stack', 'Full Stack Web Development',
+            'Full Stack Development', 'AWS Certified', 'Azure Certified', 'Digital Marketing', 'Data Science',
+            'Machine Learning', 'Tally GST', 'Tally Prime', 'SAP Certification', 'Agile Scrum'
+        ];
+        foreach ($trainingKeywords as $tk) {
+            if (stripos($rawText, $tk) !== false) {
+                $trainings[] = $tk;
+            }
+        }
+        $trainingStr = !empty($trainings) ? implode(', ', array_unique($trainings)) : 'Not specified in resume';
+
+        // 5. Categorized Technical Profile
+        $skillsList = array_map('strtolower', $allExtractedSkills);
+
+        $catMap = [
+            'Frontend' => ['react', 'angular', 'vue', 'nextjs', 'nuxtjs', 'redux', 'html', 'css', 'javascript', 'typescript', 'bootstrap', 'tailwind', 'jquery', 'sass', 'material ui'],
+            'Backend' => ['nodejs', 'express', 'php', 'laravel', 'codeigniter', 'python', 'django', 'flask', 'java', 'spring boot', 'c#', 'dotnet', 'golang', 'ruby', 'rest api', 'graphql'],
+            'Database' => ['mongodb', 'mysql', 'postgresql', 'sql server', 'oracle', 'sqlite', 'redis', 'firebase', 'sql'],
+            'API / Security' => ['rest api', 'graphql', 'jwt'],
+            'DevOps / Tools' => ['docker', 'kubernetes', 'aws', 'azure', 'gcp', 'jenkins', 'git', 'ci/cd', 'linux'],
+            'HR / Operations' => ['recruitment', 'payroll', 'hrms', 'onboarding', 'attendance', 'performance management', 'employee relations', 'exit process'],
+            'Finance & Accounts' => ['accounting', 'billing', 'gst', 'taxation', 'audit', 'tally', 'financial reporting', 'accounts payable', 'accounts receivable'],
+            'Sales & Marketing' => ['business development', 'lead generation', 'client acquisition', 'crm', 'sales', 'marketing', 'digital marketing', 'seo', 'sem', 'negotiation']
+        ];
+
+        $categorizedSkills = [];
+        $assignedSkills = [];
+
+        foreach ($catMap as $catName => $catSkills) {
+            $foundInCat = [];
+            foreach ($catSkills as $cs) {
+                if (in_array($cs, $skillsList)) {
+                    $foundInCat[] = ucwords($cs);
+                    $assignedSkills[] = $cs;
+                }
+            }
+            if (!empty($foundInCat)) {
+                $categorizedSkills[$catName] = implode(', ', array_unique($foundInCat));
+            }
+        }
+
+        $otherSkills = [];
+        foreach ($skillsList as $sk) {
+            if (!in_array($sk, $assignedSkills)) {
+                $otherSkills[] = ucwords($sk);
+            }
+        }
+        if (!empty($otherSkills)) {
+            $categorizedSkills['Other Skills'] = implode(', ', array_unique($otherSkills));
+        }
+
+        // 6. Professional Summary (Strictly Factual)
+        $summary = '';
+        if ($headline !== 'Not specified in resume') {
+            $summary .= $headline;
+        } else {
+            $summary .= 'Candidate';
+        }
+        if ($expyrs > 0) {
+            $summary .= " with {$expyrs} years of total professional experience";
+        }
+        if (!empty($allExtractedSkills)) {
+            $topSkills = array_slice(array_map('ucwords', array_unique($allExtractedSkills)), 0, 10);
+            $summary .= " and hands-on exposure to " . implode(', ', $topSkills) . ".";
+        } else {
+            $summary .= ".";
+        }
+
+        // 7. Work History
+        $workHistory = [];
+        if (!empty($experienceDetails['jobs'])) {
+            foreach ($experienceDetails['jobs'] as $j) {
+                $period = $j['from'] . ' - ' . $j['to'];
+                $workHistory[] = [
+                    'role' => $currentRole !== 'Not specified in resume' ? $currentRole : 'Role',
+                    'company' => $currentCompany !== 'Not specified in resume' ? $currentCompany : 'Company',
+                    'period' => $period,
+                    'duration' => $j['years'] . ' Yrs ' . $j['months'] . ' Mos'
+                ];
+            }
+        }
+
+        // 8. Projects
+        $projects = [];
+        if (preg_match_all('/project[s]?\s*[:\-]?\s*([A-Za-z0-9\s\.\-]{3,50})/i', $rawText, $pm)) {
+            $uniqueProjects = array_unique(array_map('trim', $pm[1]));
+            foreach (array_slice($uniqueProjects, 0, 4) as $pName) {
+                if (strlen($pName) > 3 && !preg_match('/work|history|experience|skills|education/i', $pName)) {
+                    $projects[] = [
+                        'title' => ucwords($pName)
+                    ];
+                }
+            }
+        }
+
+        return [
+            'headline'           => $headline,
+            'current_role'       => $currentRole,
+            'current_company'    => $currentCompany,
+            'summary'            => $summary,
+            'degree'             => $degree,
+            'institution'        => $institution,
+            'grad_year'          => $gradYear,
+            'training'           => $trainingStr,
+            'categorized_skills' => $categorizedSkills,
+            'work_history'       => $workHistory,
+            'projects'           => $projects,
+            'domain'             => $candidateDomain ?: 'General'
+        ];
+    }
+
+    private function analyzeDomainMismatch($candidateDomain, $jobDomain, $text, $allExtractedSkills, $vacancy)
+    {
+        $candidateDomain = $this->normalizeDomainName($candidateDomain);
+        $jobDomain = $this->normalizeDomainName($jobDomain);
+
+        $candidateEvidence = $this->collectDomainEvidence($candidateDomain, $text, $allExtractedSkills, $vacancy, true);
+        $jobEvidence = $this->collectDomainEvidence($jobDomain, $text, $allExtractedSkills, $vacancy, false);
+
+        $candidateConfidence = $this->scoreDomainConfidence($candidateEvidence);
+        $jobConfidence = $this->scoreDomainConfidence($jobEvidence);
+
+        if (empty($candidateDomain) || $candidateDomain === 'General' || $candidateDomain === 'Other / General') {
+            return [
+                'candidate_domain' => $candidateDomain ?: 'Other / General',
+                'candidate_domain_confidence' => $candidateConfidence,
+                'job_domain' => $jobDomain ?: 'Other / General',
+                'job_domain_confidence' => $jobConfidence,
+                'domain_status' => 'UNCLEAR',
+                'domain_reason' => 'Candidate domain could not be confidently determined from the resume profile.',
+                'domain_evidence' => array_values(array_unique(array_merge($candidateEvidence, $jobEvidence)))
+            ];
+        }
+
+        if ($candidateDomain === $jobDomain) {
+            return [
+                'candidate_domain' => $candidateDomain,
+                'candidate_domain_confidence' => $candidateConfidence,
+                'job_domain' => $jobDomain,
+                'job_domain_confidence' => $jobConfidence,
+                'domain_status' => 'MATCHED',
+                'domain_reason' => 'Candidate profile and vacancy belong to the same professional domain.',
+                'domain_evidence' => array_values(array_unique(array_merge($candidateEvidence, $jobEvidence)))
+            ];
+        }
+
+        $related = $this->isRelatedDomain($candidateDomain, $jobDomain);
+        if ($related) {
+            return [
+                'candidate_domain' => $candidateDomain,
+                'candidate_domain_confidence' => $candidateConfidence,
+                'job_domain' => $jobDomain,
+                'job_domain_confidence' => $jobConfidence,
+                'domain_status' => 'RELATED',
+                'domain_reason' => 'Candidate profile is broadly related to the vacancy domain but not a direct domain match.',
+                'domain_evidence' => array_values(array_unique(array_merge($candidateEvidence, $jobEvidence)))
+            ];
+        }
+
+        if ($candidateDomain !== 'Other / General' && $jobDomain !== 'Other / General' && $candidateDomain !== 'General' && $jobDomain !== 'General' && $candidateDomain !== $jobDomain && !$related && $candidateConfidence !== 'Low') {
+            return [
+                'candidate_domain' => $candidateDomain,
+                'candidate_domain_confidence' => $candidateConfidence,
+                'job_domain' => $jobDomain,
+                'job_domain_confidence' => $jobConfidence,
+                'domain_status' => 'WRONG_DOMAIN',
+                'domain_reason' => "Wrong domain: The candidate's resume indicates a {$candidateDomain} background, while this vacancy belongs to {$jobDomain}. The candidate's professional domain does not align with the requirements of this position.",
+                'domain_evidence' => array_values(array_unique(array_merge($candidateEvidence, $jobEvidence)))
+            ];
+        }
+
+        return [
+            'candidate_domain' => $candidateDomain,
+            'candidate_domain_confidence' => $candidateConfidence,
+            'job_domain' => $jobDomain,
+            'job_domain_confidence' => $jobConfidence,
+            'domain_status' => 'UNCLEAR',
+            'domain_reason' => 'Domain evidence is not strong enough to confirm a mismatch or a clear match.',
+            'domain_evidence' => array_values(array_unique(array_merge($candidateEvidence, $jobEvidence)))
+        ];
+    }
+
+    private function normalizeDomainName($domain)
+    {
+        if (empty($domain)) {
+            return 'Other / General';
+        }
+
+        $domain = trim((string)$domain);
+        $domainMap = [
+            'finance & accounts' => 'Finance & Accounting',
+            'finance and accounting' => 'Finance & Accounting',
+            'human resources' => 'Human Resources',
+            'hr' => 'Human Resources',
+            'software & it' => 'Software & IT',
+            'software and it' => 'Software & IT',
+            'sales & marketing' => 'Sales & Marketing',
+            'sales and marketing' => 'Sales & Marketing',
+            'operations & logistics' => 'Operations',
+            'operations and logistics' => 'Operations',
+            'supply chain / logistics' => 'Operations',
+            'supply chain' => 'Operations',
+            'customer support' => 'Customer Support',
+            'design / creative' => 'Design / Creative',
+            'design and creative' => 'Design / Creative',
+            'healthcare & medical' => 'Healthcare',
+            'healthcare and medical' => 'Healthcare',
+            'legal' => 'Legal',
+            'education' => 'Education',
+            'other / general' => 'Other / General',
+            'general' => 'Other / General',
+            'administration' => 'Administration',
+            'engineering' => 'Engineering'
+        ];
+
+        $lower = strtolower($domain);
+        return $domainMap[$lower] ?? $domain;
+    }
+
+    private function collectDomainEvidence($domain, $text, $allExtractedSkills, $vacancy, $isCandidateDomain)
+    {
+        $domain = $this->normalizeDomainName($domain);
+        $all = $this->getDomainCatalog();
+        if (!isset($all[$domain])) {
+            return [];
+        }
+
+        $evidence = [];
+        $keywordList = $all[$domain]['keywords'];
+
+        foreach ($keywordList as $keyword) {
+            if (stripos($text, $keyword) !== false) {
+                $evidence[] = $keyword;
+            }
+        }
+
+        foreach ((array)$allExtractedSkills as $skill) {
+            $skillLower = strtolower(trim($skill));
+            foreach ($keywordList as $keyword) {
+                if (strtolower($keyword) === $skillLower) {
+                    $evidence[] = $skill;
+                    break;
+                }
+            }
+        }
+
+        if ($isCandidateDomain && !empty($vacancy['JobTitle'] ?? '')) {
+            $jobTitleText = strtolower((string)$vacancy['JobTitle']);
+            if (strpos($jobTitleText, strtolower($domain)) !== false) {
+                $evidence[] = $vacancy['JobTitle'];
+            }
+        }
+
+        return array_values(array_unique(array_filter(array_map(function($v) {
+            return is_string($v) ? trim($v) : $v;
+        }, $evidence))));
+    }
+
+    private function scoreDomainConfidence($evidence)
+    {
+        $count = is_array($evidence) ? count($evidence) : 0;
+        if ($count >= 4) return 'High';
+        if ($count >= 2) return 'Medium';
+        return 'Low';
+    }
+
+    private function isRelatedDomain($candidateDomain, $jobDomain)
+    {
+        $relatedGroups = [
+            'Software & IT' => ['Software & IT', 'Engineering', 'Design / Creative'],
+            'Engineering' => ['Software & IT', 'Engineering'],
+            'Design / Creative' => ['Software & IT', 'Design / Creative'],
+            'Sales & Marketing' => ['Sales & Marketing'],
+            'Human Resources' => ['Human Resources'],
+            'Finance & Accounting' => ['Finance & Accounting'],
+            'Operations' => ['Operations'],
+            'Customer Support' => ['Customer Support'],
+            'Healthcare' => ['Healthcare'],
+            'Education' => ['Education'],
+            'Legal' => ['Legal'],
+            'Administration' => ['Administration']
+        ];
+
+        $candidateGroup = $relatedGroups[$candidateDomain] ?? [$candidateDomain];
+        $jobGroup = $relatedGroups[$jobDomain] ?? [$jobDomain];
+        foreach ($candidateGroup as $group) {
+            if (in_array($group, $jobGroup, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function detectCandidateDomain($text, $allExtractedSkills, $vacancy)
+    {
+        $resumeText = strtolower((string)$text);
+        $scoreTable = [
+            'Software & IT' => 0,
+            'Human Resources' => 0,
+            'Finance & Accounting' => 0,
+            'Sales & Marketing' => 0,
+            'Operations' => 0,
+            'Administration' => 0,
+            'Engineering' => 0,
+            'Customer Support' => 0,
+            'Healthcare' => 0,
+            'Legal' => 0,
+            'Design / Creative' => 0,
+            'Education' => 0,
+            'Other / General' => 0
+        ];
+
+        $domainRules = [
+            'Software & IT' => [
+                'frontend developer', 'full stack developer', 'mern stack developer', 'software developer', 'software engineer', 'php developer', 'java developer', 'python developer', 'devops engineer', 'backend developer', 'web developer', 'react', 'javascript', 'node.js', 'nodejs', 'mongodb', 'mysql', 'php', 'java', 'python', 'docker', 'kubernetes', 'aws', 'azure', 'html', 'css'
+            ],
+            'Human Resources' => [
+                'hr executive', 'hr recruiter', 'talent acquisition specialist', 'hr manager', 'recruitment executive', 'recruiter', 'recruitment', 'onboarding', 'payroll', 'employee relations', 'interviewing'
+            ],
+            'Finance & Accounting' => [
+                'accounts executive', 'accountant', 'finance executive', 'tax accountant', 'gst executive', 'audit executive', 'finance', 'accounting', 'accounts', 'gst', 'taxation', 'tally', 'audit', 'payroll', 'invoice'
+            ],
+            'Sales & Marketing' => [
+                'sales executive', 'business development executive', 'digital marketing', 'marketing', 'sales', 'crm', 'lead generation', 'business development'
+            ],
+            'Operations' => [
+                'operations executive', 'logistics', 'supply chain', 'inventory', 'warehouse', 'procurement'
+            ],
+            'Administration' => [
+                'admin executive', 'administration', 'front desk', 'receptionist', 'office assistant'
+            ],
+            'Engineering' => [
+                'mechanical engineer', 'civil engineer', 'electrical engineer', 'design engineer', 'engineering', 'manufacturing'
+            ],
+            'Customer Support' => [
+                'customer support executive', 'customer support', 'customer service', 'helpdesk', 'support executive', 'technical support'
+            ],
+            'Healthcare' => [
+                'doctor', 'nurse', 'healthcare', 'hospital', 'medical', 'pharmacy'
+            ],
+            'Legal' => [
+                'lawyer', 'advocate', 'legal', 'litigation', 'compliance'
+            ],
+            'Design / Creative' => [
+                'graphic designer', 'ui ux designer', 'product designer', 'designer', 'photoshop', 'figma', 'creative'
+            ],
+            'Education' => [
+                'teacher', 'lecturer', 'professor', 'academics', 'education', 'faculty'
+            ]
+        ];
+
+        foreach ($domainRules as $domain => $keywords) {
+            foreach ($keywords as $keyword) {
+                if (stripos($resumeText, $keyword) !== false) {
+                    $scoreTable[$domain] += 8;
+                }
+            }
+        }
+
+        foreach ((array)$allExtractedSkills as $skill) {
+            $skillLower = strtolower(trim((string)$skill));
+            foreach ($domainRules as $domain => $keywords) {
+                if (in_array($skillLower, $keywords, true)) {
+                    $scoreTable[$domain] += 5;
+                }
+            }
+        }
+
+        $bestDomain = 'Other / General';
+        $bestScore = 0;
+
+        foreach ($scoreTable as $domain => $score) {
+            if ($score > $bestScore) {
+                $bestDomain = $domain;
+                $bestScore = $score;
+            }
+        }
+
+        if ($bestScore < 5) {
+            return 'Other / General';
+        }
+
+        return $this->normalizeDomainName($bestDomain);
+    }
+
+    private function detectJobDomain($vacancy)
+    {
+        $jobText = strtolower(implode(' ', [
+            $vacancy['JobTitle'] ?? '',
+            $vacancy['Departmentname'] ?? $vacancy['Department'] ?? '',
+            $vacancy['RequiredSkills'] ?? '',
+            $vacancy['MustHaveSkills'] ?? '',
+            $vacancy['NiceToHaveSkills'] ?? '',
+            $vacancy['EducationRequired'] ?? '',
+            $vacancy['Description'] ?? '',
+            $vacancy['Responsibilities'] ?? ''
+        ]));
+
+        $catalog = $this->getDomainCatalog();
+        $scoreTable = [];
+        foreach ($catalog as $domain => $data) {
+            $scoreTable[$domain] = 0;
+            foreach ($data['keywords'] as $keyword) {
+                if (stripos($jobText, strtolower($keyword)) !== false) {
+                    $scoreTable[$domain] += 2;
+                }
+            }
+        }
+
+        $bestDomain = 'Other / General';
+        $bestScore = 0;
+        foreach ($scoreTable as $domain => $score) {
+            if ($score > $bestScore) {
+                $bestDomain = $domain;
+                $bestScore = $score;
+            }
+        }
+
+        return $bestScore > 0 ? $this->normalizeDomainName($bestDomain) : 'Other / General';
+    }
+
+    private function getDomainCatalog()
+    {
+        return [
+            'Software & IT' => [
+                'keywords' => [
+                    'frontend developer', 'react developer', 'full stack developer', 'mern stack developer', 'software engineer', 'software developer', 'php developer', 'java developer', 'python developer', 'devops engineer', 'backend developer', 'web developer', 'developer', 'engineer', 'software', 'programming', 'javascript', 'react', 'node.js', 'nodejs', 'php', 'java', 'python', 'mysql', 'mongodb', 'aws', 'azure', 'docker', 'kubernetes', 'git', 'qa', 'testing'
+                ]
+            ],
+            'Human Resources' => [
+                'keywords' => [
+                    'human resources', 'hr executive', 'hr recruiter', 'talent acquisition', 'recruitment executive', 'recruiter', 'recruitment', 'payroll', 'onboarding', 'employee relations', 'hr manager', 'hr operations', 'performance management', 'training', 'interview', 'employee engagement'
+                ]
+            ],
+            'Finance & Accounting' => [
+                'keywords' => [
+                    'accounts executive', 'accountant', 'finance executive', 'tax accountant', 'gst executive', 'audit executive', 'finance', 'accounting', 'accounts', 'gst', 'taxation', 'tally', 'audit', 'payroll', 'invoice', 'ledger', 'financial reporting'
+                ]
+            ],
+            'Sales & Marketing' => [
+                'keywords' => [
+                    'sales', 'marketing', 'business development', 'sales executive', 'bdm', 'digital marketing', 'lead generation', 'crm', 'branding', 'customer acquisition', 'social media marketing'
+                ]
+            ],
+            'Operations' => [
+                'keywords' => [
+                    'operations', 'warehouse', 'procurement', 'inventory', 'supply chain', 'logistics', 'vendor management', 'dispatch', 'distribution', 'facility management'
+                ]
+            ],
+            'Administration' => [
+                'keywords' => [
+                    'admin', 'administration', 'office assistant', 'front desk', 'receptionist', 'document management', 'clerical', 'executive assistant', 'secretarial'
+                ]
+            ],
+            'Engineering' => [
+                'keywords' => [
+                    'civil engineer', 'mechanical engineer', 'electrical engineer', 'production engineer', 'design engineer', 'engineering', 'manufacturing', 'maintenance'
+                ]
+            ],
+            'Customer Support' => [
+                'keywords' => [
+                    'customer support', 'customer service', 'helpdesk', 'technical support', 'call center', 'support executive', 'service desk', 'client support'
+                ]
+            ],
+            'Healthcare' => [
+                'keywords' => [
+                    'healthcare', 'hospital', 'medical', 'nurse', 'doctor', 'pharmacy', 'clinic', 'patient care', 'care coordinator'
+                ]
+            ],
+            'Legal' => [
+                'keywords' => [
+                    'legal', 'lawyer', 'advocate', 'litigation', 'compliance', 'contract review', 'legal drafting'
+                ]
+            ],
+            'Design / Creative' => [
+                'keywords' => [
+                    'designer', 'ui ux', 'graphic designer', 'web designer', 'photoshop', 'illustrator', 'creative', 'branding', 'figma', 'adobe'
+                ]
+            ],
+            'Education' => [
+                'keywords' => [
+                    'teacher', 'lecturer', 'professor', 'training', 'academics', 'education', 'school', 'faculty', 'student counselor'
+                ]
+            ],
+            'Other / General' => [
+                'keywords' => []
+            ]
         ];
     }
 
@@ -317,44 +920,6 @@ class ATS_Engine {
         return array_unique($foundSkills);
     }
 
-    private function detectDomain($text, $vacancy)
-    {
-        $vacancyDept = strtolower($vacancy['Departmentname'] ?? $vacancy['Department'] ?? '');
-        $jobTitle    = strtolower($vacancy['JobTitle'] ?? '');
-
-        $domains = [
-            'Human Resources' => ['recruitment', 'hiring', 'talent acquisition', 'payroll', 'employee', 'hrms', 'onboarding', 'hr executive', 'hr manager'],
-            'Finance & Accounts' => ['accounting', 'accounts', 'finance', 'billing', 'invoice', 'gst', 'taxation', 'audit', 'tally', 'accounts payable', 'accounts receivable'],
-            'Sales & Marketing' => ['sales', 'business development', 'bdm', 'lead generation', 'client acquisition', 'crm', 'marketing', 'digital marketing', 'seo', 'sem', 'branding'],
-            'Healthcare & Medical' => ['hospital', 'healthcare', 'medical', 'clinic', 'patient', 'pharmacy', 'ehr', 'emr', 'nursing', 'doctor'],
-            'Software & IT' => ['software', 'developer', 'engineer', 'programmer', 'web development', 'frontend', 'backend', 'fullstack', 'database', 'cloud', 'devops', 'testing', 'qa'],
-            'Operations & Logistics' => ['procurement', 'purchasing', 'supply chain', 'inventory', 'logistics', 'warehouse', 'operations manager', 'vendor management'],
-            'Administration' => ['admin', 'administration', 'office assistant', 'facility management', 'front desk', 'receptionist'],
-            'Customer Support' => ['customer support', 'customer service', 'call center', 'bpo', 'helpdesk', 'client support']
-        ];
-
-        // First check matching against vacancy department/title if available
-        foreach ($domains as $domain => $keywords) {
-            if (!empty($vacancyDept) && stripos($vacancyDept, strtolower(explode(' ', $domain)[0])) !== false) {
-                return $domain;
-            }
-            if (!empty($jobTitle) && stripos($jobTitle, strtolower(explode(' ', $domain)[0])) !== false) {
-                return $domain;
-            }
-        }
-
-        // Next check resume text content
-        foreach ($domains as $domain => $keywords) {
-            foreach ($keywords as $word) {
-                if (preg_match('/\b' . preg_quote($word, '/') . '\b/i', $text)) {
-                    return $domain;
-                }
-            }
-        }
-
-        return 'General';
-    }
-
     private function getSkillDictionary()
     {
         return [
@@ -370,6 +935,16 @@ class ATS_Engine {
             'ruby' => ['ruby'],
             'swift' => ['swift'],
             'kotlin' => ['kotlin'],
+
+            // Salesforce & Cloud CRM
+            'salesforce' => ['salesforce', 'salesforce.com', 'sfdc'],
+            'lwc' => ['lwc', 'lightning web components', 'lightning web component'],
+            'apex' => ['apex', 'apex code', 'apex trigger', 'apex class'],
+            'aura' => ['aura', 'aura components'],
+            'soql' => ['soql', 'sosl'],
+            'salesforce dx' => ['salesforce dx', 'sfdx'],
+            'copado' => ['copado'],
+            'gearset' => ['gearset'],
 
             // Frontend
             'html' => ['html', 'html5'],
@@ -532,9 +1107,18 @@ class ATS_Engine {
                     $this->logStage('PDF_ERROR', 'PDF file not found : ' . $file);
                     return '';
                 }
-                $parser = new \Smalot\PdfParser\Parser();
-                $pdf    = $parser->parseFile($file);
-                $text   = $pdf->getText();
+                $text = '';
+                try {
+                    $parser = new \Smalot\PdfParser\Parser();
+                    $pdf    = $parser->parseFile($file);
+                    $text   = $pdf->getText();
+                } catch (\Exception $e) {
+                    $this->logStage('PDF_SMALOT_EXCEPTION', $e->getMessage());
+                }
+
+                if (empty(trim($text))) {
+                    $text = $this->fallbackPdfText($file);
+                }
 
                 if (empty(trim($text))) {
                     $this->logStage('PDF_ERROR', 'No text extracted from PDF.');
@@ -550,6 +1134,56 @@ class ATS_Engine {
             $this->logStage('PDF_EXCEPTION', $e->getMessage());
             return '';
         }
+    }
+
+    private function fallbackPdfText($file)
+    {
+        $content = @file_get_contents($file);
+        if (!$content) return '';
+
+        $text = '';
+        if (preg_match_all('/stream[\r\n]+([\s\S]*?)[\r\n]+endstream/i', $content, $matches)) {
+            foreach ($matches[1] as $stream) {
+                $uncompressed = @gzuncompress($stream);
+                if ($uncompressed === false) {
+                    $uncompressed = @gzinflate($stream);
+                }
+                $dataToParse = ($uncompressed !== false) ? $uncompressed : $stream;
+
+                if (preg_match_all('/\((.*?)\)\s*Tj/i', $dataToParse, $tjMatches)) {
+                    foreach ($tjMatches[1] as $t) {
+                        $text .= $t . " ";
+                    }
+                }
+                if (preg_match_all('/\[\s*(.*?)\s*\]\s*TJ/i', $dataToParse, $tjMatches)) {
+                    foreach ($tjMatches[1] as $tArr) {
+                        if (preg_match_all('/\((.*?)\)/', $tArr, $subMatches)) {
+                            foreach ($subMatches[1] as $sub) {
+                                $text .= $sub . " ";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $text = preg_replace_callback('/\\\\([0-7]{1,3})/', function($m) {
+            return chr(octdec($m[1]));
+        }, $text);
+        $text = str_replace(['\\(', '\\)', '\\\\'], ['(', ')', '\\'], $text);
+
+        if (strlen(trim($text)) < 50) {
+            preg_match_all('/[\x20-\x7E]{3,}/', $content, $rawStrings);
+            $cleanWords = [];
+            foreach ($rawStrings[0] as $str) {
+                if (!preg_match('/^\/|^<|^>|Obj|endobj|stream|endstream|Catalog|Pages|Font|Length/i', $str)) {
+                    $cleanWords[] = $str;
+                }
+            }
+            $text = implode(" ", $cleanWords);
+        }
+
+        return trim($text);
     }
 
     private function readDocx($file)

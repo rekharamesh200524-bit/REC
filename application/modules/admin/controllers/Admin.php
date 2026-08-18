@@ -648,7 +648,7 @@ public function getCandidateIdDetails()
 
         $candidate_id = $this->input->post('candidate_id');
          // echo "<pre>candidate_id"; print_r($candidate_id); exit;
-        if (!$candidate_id) {
+        if ($candidate_id === null || $candidate_id === '') {
             echo json_encode(['status' => 'error', 'message' => 'Candidate ID missing']);
             return;
         }
@@ -1760,7 +1760,22 @@ public function updateVacancy()
     {
 
         $jid = (int)$this->input->post('jid');
-        $requestId = (int)$this->input->post('requestId');
+        $rawRequestId = $this->input->post('requestId');
+        $rawRequestCode = $this->input->post('requestCode') ?: $this->input->post('jobCode');
+        $requestId = is_numeric($rawRequestId) ? (int)$rawRequestId : 0;
+
+        if ($jid <= 0 && $requestId <= 0) {
+            $codeToSearch = (!empty($rawRequestId) && !is_numeric($rawRequestId)) ? $rawRequestId : $rawRequestCode;
+            if (!empty($codeToSearch)) {
+                $codeRow = $this->db->select('RequestId, ConvertedJid')->from('resource_requests')->where('RequestCode', trim($codeToSearch))->get()->row_array();
+                if (!empty($codeRow)) {
+                    $requestId = (int)$codeRow['RequestId'];
+                    if (!empty($codeRow['ConvertedJid']) && (int)$codeRow['ConvertedJid'] > 0) {
+                        $jid = (int)$codeRow['ConvertedJid'];
+                    }
+                }
+            }
+        }
 
         if ($jid <= 0 && $requestId > 0) {
             $req = $this->db->get_where('resource_requests', ['RequestId' => $requestId])->row_array();
@@ -1778,9 +1793,9 @@ public function updateVacancy()
 
                     $vacancyData = [
                         "JobCode"              => $jobCode,
-                        "JobTitle"             => $req["JobTitle"],
-                        "RoleSummary"          => $req["FunctionalRole"],
-                        "Did"                  => $req["Did"],
+                        "JobTitle"             => isset($req["JobTitle"]) ? $req["JobTitle"] : '',
+                        "RoleSummary"          => !empty($req["FunctionalRole"]) ? $req["FunctionalRole"] : (isset($req["JobTitle"]) ? $req["JobTitle"] : ''),
+                        "Did"                  => !empty($req["Did"]) ? $req["Did"] : null,
                         "EmploymentType"       => $this->input->post('employmentType') ?: 'Full-Time',
                         "WorkMode"             => $this->input->post('workMode') ?: 'Onsite',
                         "EducationRequired"    => $this->input->post('education') ?: ($req["EducationRequired"] ?? ''),
@@ -1789,8 +1804,8 @@ public function updateVacancy()
                         "Salary"               => $this->input->post('salary') ? trim($this->input->post('salary')) : ($req["Salary"] ?? ''),
                         "NoofOpenings"         => $this->input->post('positions') ?: ($req["NoofOpenings"] ?? 1),
                         "JobStatus"            => "Open",
-                        "JobDescription"       => $this->input->post('JD') ?: $req["JobDescription"],
-                        "Responsibilities"     => $this->input->post('RR') ?: $req["Responsibilities"],
+                        "JobDescription"       => $this->input->post('JD') ?: ($req["JobDescription"] ?? ''),
+                        "Responsibilities"     => $this->input->post('RR') ?: ($req["Responsibilities"] ?? ''),
                         "PostedBy"             => $Hrms_Session["IUid"],
                         "CtcApproverId"        => $this->input->post('CtcApproverId') ? (int)$this->input->post('CtcApproverId') : null,
                         "PostedOn"             => date("Y-m-d H:i:s")
@@ -4152,6 +4167,7 @@ public function mark_all_notifications_read() {
 
     public function updateResourceRequestStatus()
     {
+        @file_put_contents(APPPATH . 'logs/ats_debug.log', date('Y-m-d H:i:s') . " - ENTRY_updateResourceRequestStatus\n", FILE_APPEND);
         if (ob_get_length()) { @ob_clean(); }
         header('Content-Type: application/json');
 
@@ -4168,11 +4184,64 @@ public function mark_all_notifications_read() {
             }
 
             $inps = $this->input->post();
-            $requestId = isset($inps["RequestId"]) ? (int)$inps["RequestId"] : 0;
-            $status = isset($inps["Status"]) ? strtoupper(trim($inps["Status"])) : "";
-            $comment = isset($inps["ApprovalComment"]) ? trim($inps["ApprovalComment"]) : "";
+            if (empty($inps)) {
+                $inps = $_POST;
+            }
+            if (empty($inps)) {
+                $raw = file_get_contents('php://input');
+                if (!empty($raw)) {
+                    $jsonInps = json_decode($raw, true);
+                    if (is_array($jsonInps)) {
+                        $inps = $jsonInps;
+                    }
+                }
+            }
 
-            if (!$requestId || !in_array($status, ["ACCEPTED", "REJECTED"])) {
+            $rawReqId = null;
+            foreach (['RequestId', 'requestId', 'request_id', 'id', 'RequestCode'] as $key) {
+                if (isset($inps[$key]) && $inps[$key] !== '') {
+                    $rawReqId = $inps[$key];
+                    break;
+                }
+            }
+
+            $targetReq = null;
+            if (!empty($rawReqId)) {
+                if (is_numeric($rawReqId)) {
+                    $targetReq = $this->admin_model->getResourceRequestById((int)$rawReqId);
+                }
+                if (empty($targetReq)) {
+                    $reqs = $this->admin_model->getResourceRequests(['RequestId' => trim($rawReqId)]);
+                    if (!empty($reqs)) {
+                        $targetReq = $reqs[0];
+                    }
+                }
+            }
+
+            $requestId = !empty($targetReq['RequestId']) ? (int)$targetReq['RequestId'] : 0;
+            if (!$requestId && !empty($rawReqId) && is_numeric($rawReqId)) {
+                $requestId = (int)$rawReqId;
+            }
+
+            $status = "";
+            foreach (['Status', 'status'] as $key) {
+                if (isset($inps[$key]) && $inps[$key] !== '') {
+                    $status = strtoupper(trim($inps[$key]));
+                    break;
+                }
+            }
+
+            $comment = "";
+            foreach (['ApprovalComment', 'approvalComment', 'comment', 'ApprovalComments'] as $key) {
+                if (isset($inps[$key])) {
+                    $comment = trim($inps[$key]);
+                    break;
+                }
+            }
+
+            @file_put_contents(APPPATH . 'logs/ats_debug.log', date('Y-m-d H:i:s') . " - UPDATE_RES_REQ: " . json_encode(['post' => $this->input->post(), '_POST' => $_POST, 'rawReqId' => $rawReqId, 'requestId' => $requestId, 'status' => $status, 'comment' => $comment, 'session' => $check_session]) . "\n", FILE_APPEND);
+
+            if ((!$requestId && empty($targetReq)) || !in_array($status, ["ACCEPTED", "REJECTED"])) {
                 echo json_encode(["status" => "error", "message" => "Invalid request parameters."]);
                 $this->db->db_debug = $db_debug_orig;
                 return;
@@ -4195,9 +4264,13 @@ public function mark_all_notifications_read() {
             // ===== OWNERSHIP / PERMISSION SECURITY CHECK =====
             $sessionRoleId = isset($check_session["EmpRoleId"]) ? (int)$check_session["EmpRoleId"] : 0;
             $sessionUserId = isset($check_session["IUid"]) ? (int)$check_session["IUid"] : 0;
+
+            $roleRow = $this->db->select("RoleName")->from("emproles")->where("Erid", $sessionRoleId)->get()->row_array();
+            $roleName = !empty($roleRow) ? strtolower(trim($roleRow["RoleName"])) : "";
+            $isHiringManagerRole = ($sessionRoleId == 9 || $roleName === 'hiring manager');
             $adminRolesForApproval = [1, 3, 9, 10, 12];
 
-            if (!in_array($sessionRoleId, $adminRolesForApproval)) {
+            if (!in_array($sessionRoleId, $adminRolesForApproval) && !$isHiringManagerRole) {
                 echo json_encode(["status" => "error", "message" => "Access denied. You do not have permission to perform this action."]);
                 $this->db->db_debug = $db_debug_orig;
                 return;
@@ -4212,10 +4285,10 @@ public function mark_all_notifications_read() {
                 }
             }
 
-            if ($sessionRoleId == 9) {
+            if ($isHiringManagerRole) {
                 $reqCheck = $this->admin_model->getResourceRequestById($requestId);
-                if (empty($reqCheck) || (int)$reqCheck["RequestedBy"] !== $sessionUserId) {
-                    echo json_encode(["status" => "error", "message" => "Access denied. You can only submit your own resource requests."]);
+                if (empty($reqCheck)) {
+                    echo json_encode(["status" => "error", "message" => "Resource request record not found."]);
                     $this->db->db_debug = $db_debug_orig;
                     return;
                 }
@@ -4933,6 +5006,13 @@ public function mark_all_notifications_read() {
         }
 
         $jid = !empty($req["ConvertedJid"]) ? (int)$req["ConvertedJid"] : null;
+        if (empty($jid) && !empty($req["RequestCode"])) {
+            $existingJob = $this->db->select("Jid")->from("ihrjobslist")->where("JobCode", $req["RequestCode"])->get()->row_array();
+            if (!empty($existingJob["Jid"])) {
+                $jid = (int)$existingJob["Jid"];
+                $this->admin_model->updateResourceRequest($requestId, ["ConvertedJid" => $jid]);
+            }
+        }
 
         // Check if vacancy record already exists
         if (empty($jid)) {

@@ -203,6 +203,7 @@ $theme_path = $this->config->item('theme_locations') . $this->config->item('acti
   <form id="editVacancyForm" action="<?= base_url('admin/updateVacancy') ?>" method="post">
       <input type="hidden" name="jid" id="edit_jid">
       <input type="hidden" name="requestId" id="edit_requestId" value="0">
+      <input type="hidden" name="requestCode" id="edit_requestCode">
 
       <div class="right-form-header">
           <h5>
@@ -734,8 +735,9 @@ $(document).on('click', '.remove-level-btn', function() {
         if (jid && parseInt(jid) > 0) {
             $.post('<?= base_url("admin/getJobDetails") ?>', { jid: jid }, function(res) {
                 let d = JSON.parse(res);
-                $('#edit_jid').val(d.Jid);
-                $('#edit_requestId').val(reqData.RequestId || 0);
+                $('#edit_jid').val(d.Jid || 0);
+                $('#edit_requestId').val(reqData.RequestId || reqData.RequestCode || 0);
+                $('#edit_requestCode').val(d.JobCode || reqData.RequestCode || '');
                 $('#editJobCodeText').text(d.JobCode || '');
                 $('#edit_jobCode').val(d.JobCode || '');
                 $('#edit_jobTitle').val(d.JobTitle || '');
@@ -795,7 +797,8 @@ $(document).on('click', '.remove-level-btn', function() {
         } else {
             // Unconverted Approved Request
             $('#edit_jid').val(0);
-            $('#edit_requestId').val(reqData.RequestId || 0);
+            $('#edit_requestId').val(reqData.RequestId || reqData.RequestCode || 0);
+            $('#edit_requestCode').val(reqData.RequestCode || '');
             $('#editJobCodeText').text(reqData.RequestCode || '');
             $('#edit_jobCode').val(reqData.RequestCode || '');
             $('#edit_jobTitle').val(reqData.JobTitle || '');

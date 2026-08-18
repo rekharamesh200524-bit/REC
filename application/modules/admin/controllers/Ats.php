@@ -163,9 +163,11 @@ public function analyzeResumeModal()
 
                
 
+                $phoneNo = is_array($result['mobileNumbers']) ? implode(', ', $result['mobileNumbers']) : ($result['mobileNumbers'] ?? '');
+
                 $existingCandidate = $this->db
                     ->where('Jid', $vacancy['Jid'])
-                    ->where('PhoneNo', $result['mobileNumbers'])
+                    ->where('PhoneNo', $phoneNo)
                     ->get('IHrCandidates')
                     ->row_array();
 
@@ -176,20 +178,16 @@ public function analyzeResumeModal()
                     ]);
                     return;
                 }
- 
-               
- 
+
                 $this->db->trans_begin();
- 
-                
- 
+
                 $this->db->insert('IHrCandidates', [
                     'CandidateCode'   => 'CAND-' .$vacancy['Jid'].'-'. date('Ymd') . rand(100, 999),
                     'Jid'             => $vacancy['Jid'],
                     'JobCode'         => $vacancy['JobCode'],
                     'Fullname'        => $result['name'],
                     'Email'           => $result['email'],
-                    'PhoneNo'         => $result['mobileNumbers'],
+                    'PhoneNo'         => $phoneNo,
                     'ExpYrs'          => $result['expyrs'],
                     'ExperienceDetails' => json_encode($result['experience_details']),
                     'DomainBreakdown' => $result['domain'] ?? 'General',
@@ -205,7 +203,19 @@ public function analyzeResumeModal()
                         'recommendation'        => $result['recommendation'],
                         'recommendation_reason' => $result['recommendation_reason'],
                         'relevant_evidence'     => $result['relevant_evidence'],
-                        'missing_requirements'  => $result['missing_requirements']
+                        'missing_requirements'  => $result['missing_requirements'],
+                        'candidate_profile'     => $result['candidate_profile'] ?? null,
+                        'domain'                => $result['domain'] ?? 'General',
+                        'candidate_domain'      => $result['candidate_domain'] ?? ($result['domain'] ?? 'General'),
+                        'job_domain'            => $result['job_domain'] ?? 'General',
+                        'domain_status'         => $result['domain_status'] ?? 'UNCLEAR',
+                        'domain_analysis'       => $result['domain_analysis'] ?? null,
+                        'matched_skills'        => $result['matched_skills'] ?? '',
+                        'missing_skills'        => $result['missing_skills'] ?? '',
+                        'all_extracted_skills'  => $result['all_extracted_skills'] ?? '',
+                        'education_match'       => $result['education_match'] ?? '',
+                        'experience'            => $result['experience'] ?? '',
+                        'detected_degree'       => $result['detected_degree'] ?? ''
                     ]),
                     'VerifiedBy'      => $Hrms_Session['IUid'],
                     'VerifiedAt'      => date('Y-m-d H:i:s')
